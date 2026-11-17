@@ -1,0 +1,55 @@
+{% include "_style.html" %}
+{%- set pr = frappe.get_doc("Healthcare Practitioner", doc.practitioner) -%}
+{%- set pat = frappe.get_doc("Patient", doc.patient) -%}
+{%- set co = frappe.get_doc("Company", doc.company) if doc.company else none -%}
+{%- set formes = {"Tablet": "Comprimé", "Capsule": "Gélule", "Syrup": "Sirop", "Injection": "Injection", "Cream": "Crème"} -%}
+{%- set depts = {"Cardiology": "Cardiologie", "Gynaecology": "Gynécologie"} -%}
+<div class="mm">
+  <div class="hdr">
+    <div>
+      <h2>Dr {{ pr.practitioner_name }}</h2>
+      <div>{{ depts.get(pr.department, pr.department) or "" }}</div>
+      {% if pr.mobile_phone %}<div class="muted">Tél : {{ pr.mobile_phone }}</div>{% endif %}
+    </div>
+    <div style="text-align:right">
+      <b>{{ co.company_name if co else "" }}</b>
+      {% if co and co.get("ice") %}<div class="muted">ICE : {{ co.ice }}</div>{% endif %}
+    </div>
+  </div>
+
+  <div class="title">ORDONNANCE<span class="ar">وصفة طبية</span></div>
+
+  <div class="box">
+    <b>Patient :</b> {{ pat.patient_name }}
+    {% if pat.get("dob") %} &nbsp;— né(e) le {{ frappe.utils.formatdate(pat.dob) }}{% endif %}
+    {% if pat.get("cin") %} &nbsp;— CIN : {{ pat.cin }}{% endif %}
+    <br><b>Date :</b> {{ frappe.utils.formatdate(doc.encounter_date) }}
+    {% if doc.diagnosis %}<br><b>Diagnostic :</b> {% for d in doc.diagnosis %}{{ d.diagnosis }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}
+  </div>
+
+  {% if doc.drug_prescription %}
+  <table>
+    <thead><tr><th style="width:5%">#</th><th>Médicament</th><th>Forme</th><th>Durée</th><th>Posologie</th></tr></thead>
+    <tbody>
+    {% for r in doc.drug_prescription %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td><b>{{ r.medication or r.drug_name }}</b>{% if r.drug_code and r.drug_code != r.medication %}<br><span class="muted">{{ r.drug_code }}</span>{% endif %}</td>
+        <td>{{ formes.get(r.dosage_form, r.dosage_form) or "" }}</td>
+        <td>{{ (r.period or "") | replace("Week", "semaine(s)") | replace("Day", "jour(s)") | replace("Hour", "heure(s)") }}</td>
+        <td>{{ r.comment or r.dosage or "" }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if doc.lab_test_prescription %}
+  <div class="box"><b>Analyses prescrites :</b>
+    {% for l in doc.lab_test_prescription %}{{ l.lab_test_name or l.lab_test_code }}{% if not loop.last %}, {% endif %}{% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="sign">Signature et cachet<br><br><br>Dr {{ pr.practitioner_name }}</div>
+  <div class="foot">Document généré par MedMa — ordonnance valable pour la durée de traitement indiquée.</div>
+</div>

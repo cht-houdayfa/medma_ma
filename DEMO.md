@@ -26,7 +26,10 @@ Idempotent : relancé, il ne duplique rien. Les identifiants des 4 comptes de d�
 | Facturation | 30 factures **partagées** (part organisme / part patient), paiements en espèces, 3 créances ouvertes |
 | Remboursement | 4 dossiers : CNSS *payé*, CNOPS *payé partiellement*, AMO Tadamon *envoyé*, assureur privé *brouillon* |
 | Hospitalisation | 2 patients hospitalisés (chambres occupées) |
-| Comptes | médecin, réception, pharmacie, comptabilité (rôles distincts) |
+| Comptes | médecin, réception, pharmacie, comptabilité (rôles distincts, menus adaptés à chaque rôle) |
+| Documents imprimables | **Ordonnance**, **Facture** (part organisme / part patient, ICE-IF-RC-Patente) et **Bordereau de remboursement**, en français avec titres arabes |
+| Pilotage | Espace **Tableau de bord** : chiffre d'affaires, créances, rendez-vous par praticien, part des organismes, rapport **Créances par organisme** |
+| Rappel patient | Bouton **Rappel WhatsApp** sur le rendez-vous (message FR + AR prêt à envoyer) |
 
 ## Parcours de présentation (≈ 20 min)
 
@@ -41,7 +44,11 @@ Idempotent : relancé, il ne duplique rien. Les identifiants des 4 comptes de d�
 7. **Pharmacie** — niveaux de stock des médicaments.
 8. **Hospitalisation** — chambres occupées / vacantes.
 9. **Comptabilité** — créances (reste dû par les organismes), balance équilibrée.
-10. **Langues** — basculer l'interface en arabe (RTL) / français depuis le profil utilisateur.
+10. **Impression** — depuis une consultation : *Imprimer → Ordonnance MedMa* ; depuis une facture : *Facture MedMa* ;
+    depuis un dossier : *Bordereau MedMa* (PDF prêt à remettre au patient / à l'organisme).
+11. **Rappel** — sur un rendez-vous à venir : *Actions → Rappel WhatsApp* ouvre WhatsApp avec le message prérempli.
+12. **Pilotage** — compte comptabilité : espace *Tableau de bord* et rapport *Créances par organisme*.
+13. **Langues** — basculer l'interface en arabe (RTL) / français depuis le profil utilisateur.
 
 ## Limites à annoncer honnêtement au client
 
@@ -51,4 +58,8 @@ Idempotent : relancé, il ne duplique rien. Les identifiants des 4 comptes de d�
   un compte client par organisme reste à mettre en place pour un suivi comptable fin.
 - Tarifs officiels (TNR/ANAM) et base nationale des médicaments : **non fournis**, à importer.
 - Conformité loi 09-08 / CNDP, sauvegardes et hébergement : à valider pour chaque déploiement réel.
-- Rappels WhatsApp/SMS : non implémentés à ce stade.
+- Le rappel WhatsApp est un **lien de partage manuel** (wa.me) : le message est prérempli mais c'est le réceptionniste
+  qui l'envoie. L'envoi automatique via l'API WhatsApp Business n'est pas implémenté (il exige un compte et des
+  modèles de message validés par Meta).
+- Identifiants légaux de la société (ICE, IF, RC, Patente) : valeurs **fictives** dans la démo, à saisir pour chaque client.
+- Les médicaments portent des noms de marque courants avec des prix d'exemple : à remplacer avant tout usage réel.

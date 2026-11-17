@@ -1,0 +1,12 @@
+{%- macro ids_societe(co) -%}
+  {%- if co -%}
+    {%- if co.ice -%}ICE : {{ co.ice }} &nbsp;{%- endif -%}
+    {%- if co.identifiant_fiscal -%}IF : {{ co.identifiant_fiscal }} &nbsp;{%- endif -%}
+    {%- if co.registre_commerce -%}RC : {{ co.registre_commerce }} &nbsp;{%- endif -%}
+    {%- if co.patente -%}Patente : {{ co.patente }}{%- endif -%}
+  {%- endif -%}
+{%- endmacro -%}
+
+{%- macro mad(x) -%}
+  {{ "{:,.2f}".format(x or 0).replace(",", " ").replace(".", ",") }} MAD
+{%- endmacro -%}

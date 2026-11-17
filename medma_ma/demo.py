@@ -775,6 +775,23 @@ PROFILS = {
 }
 
 
+@step("identifiants légaux fictifs de la société")
+def identifiants_societe():
+	c = company()
+	frappe.db.set_value(
+		"Company",
+		c,
+		{
+			"ice": "000000000000000",
+			"identifiant_fiscal": "00000000",
+			"registre_commerce": "000000",
+			"patente": "00000000",
+		},
+		update_modified=False,
+	)
+	return "ICE/IF/RC/Patente fictifs (à remplacer par ceux du client)"
+
+
 @step("profils par rôle (menus)")
 def profils_modules():
 	tous = set(frappe.get_all("Module Def", pluck="name"))
@@ -808,7 +825,7 @@ def load_demo():
 	frappe.db.commit()
 	for fn in (
 		ref_data, service_units, consultation_items, practitioners, lab_templates, medications, stock, patients,
-		parcours, resultats_labo, facturation, dossiers, corriger_prescriptions, valider_consultations, hospitalisation, utilisateurs, profils_modules,
+		parcours, resultats_labo, facturation, dossiers, corriger_prescriptions, valider_consultations, hospitalisation, utilisateurs, identifiants_societe, profils_modules,
 	):
 		fn()
 	echecs = [m for m in LOG if m.startswith("FAIL")]

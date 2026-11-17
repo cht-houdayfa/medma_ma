@@ -1,6 +1,14 @@
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 
 CUSTOM_FIELDS = {
+    "Company": [
+        {"fieldname": "section_ids_maroc", "label": "Identifiants légaux (Maroc)", "fieldtype": "Section Break",
+         "insert_after": "company_name", "collapsible": 1},
+        {"fieldname": "ice", "label": "ICE", "fieldtype": "Data", "insert_after": "section_ids_maroc"},
+        {"fieldname": "identifiant_fiscal", "label": "IF (identifiant fiscal)", "fieldtype": "Data", "insert_after": "ice"},
+        {"fieldname": "registre_commerce", "label": "RC (registre de commerce)", "fieldtype": "Data", "insert_after": "identifiant_fiscal"},
+        {"fieldname": "patente", "label": "Patente", "fieldtype": "Data", "insert_after": "registre_commerce"},
+    ],
     "Patient": [
         {"fieldname": "cin", "label": "CIN (carte d'identité nationale)", "fieldtype": "Data",
          "insert_after": "sex", "unique": 0, "in_standard_filter": 1},
@@ -59,6 +67,9 @@ def after_install_and_migrate():
     ensure_custom_fields()
     seed_organismes()
     ensure_workspaces()
+    from medma_ma.features import ensure_all
+
+    ensure_all()
     restreindre_espaces_admin()
 
 

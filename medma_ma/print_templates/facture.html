@@ -1,0 +1,39 @@
+{% include "_style.html" %}
+{% from "_entete_societe.html" import ids_societe, mad %}
+{%- set co = frappe.get_doc("Company", doc.company) -%}
+{%- set cov = frappe.db.get_value("Couverture Patient", doc.couverture_patient, ["numero_affiliation", "organisme", "taux_prise_en_charge"], as_dict=True) if doc.get("couverture_patient") else none -%}
+<div class="mm">
+  <div class="hdr">
+    <div><h2>{{ co.company_name }}</h2><div class="muted">{{ ids_societe(co) }}</div></div>
+    <div style="text-align:right"><b>{{ doc.name }}</b><br>Date : {{ frappe.utils.formatdate(doc.posting_date) }}</div>
+  </div>
+
+  <div class="title">FACTURE<span class="ar">فاتورة</span></div>
+
+  <div class="box">
+    <b>Patient :</b> {{ doc.patient_name or doc.customer_name }}
+    {% if doc.get("patient") %}{% set cin = frappe.db.get_value("Patient", doc.patient, "cin") %}{% if cin %} &nbsp;— CIN : {{ cin }}{% endif %}{% endif %}
+    {% if cov %}<br><b>Prise en charge :</b> {{ cov.organisme }} — N° d'affiliation {{ cov.numero_affiliation }} ({{ cov.taux_prise_en_charge }} %){% endif %}
+  </div>
+
+  <table>
+    <thead><tr><th>Désignation</th><th class="num">Qté</th><th class="num">Prix unitaire</th><th class="num">Montant</th></tr></thead>
+    <tbody>
+    {% for it in doc.items %}
+      <tr><td>{{ it.item_name or it.item_code }}</td><td class="num">{{ it.qty }}</td><td class="num">{{ mad(it.rate) }}</td><td class="num">{{ mad(it.amount) }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <table class="tot" style="width:60%; margin-left:auto">
+    <tr><td class="lbl">Total</td><td class="num"><b>{{ mad(doc.grand_total) }}</b></td></tr>
+    {% if cov %}
+    <tr><td class="lbl">Part {{ cov.organisme }} ({{ cov.taux_prise_en_charge }} %)</td><td class="num">{{ mad(doc.part_organisme) }}</td></tr>
+    <tr><td class="lbl strong">Part à payer par le patient</td><td class="num strong">{{ mad(doc.part_patient) }}</td></tr>
+    {% endif %}
+    <tr><td class="lbl">Déjà réglé (patient + organisme)</td><td class="num">{{ mad((doc.grand_total or 0) - (doc.outstanding_amount or 0)) }}</td></tr>
+    <tr><td class="lbl">Reste dû</td><td class="num">{{ mad(doc.outstanding_amount) }}</td></tr>
+  </table>
+
+  <div class="foot">{{ co.company_name }} — {{ ids_societe(co) }}<br>Facture établie par MedMa. Conservez ce document pour votre remboursement.</div>
+</div>

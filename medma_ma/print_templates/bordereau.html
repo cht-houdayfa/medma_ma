@@ -1,0 +1,43 @@
+{% include "_style.html" %}
+{% from "_entete_societe.html" import ids_societe, mad %}
+{%- set co = frappe.get_doc("Company", frappe.get_all("Company", pluck="name", limit=1)[0]) -%}
+<div class="mm">
+  <div class="hdr">
+    <div><h2>{{ co.company_name }}</h2><div class="muted">{{ ids_societe(co) }}</div></div>
+    <div style="text-align:right"><b>{{ doc.name }}</b><br>Statut : {{ doc.statut }}</div>
+  </div>
+
+  <div class="title">BORDEREAU DE REMBOURSEMENT<span class="ar">بيان الاسترجاع</span></div>
+
+  <div class="box">
+    <b>Organisme :</b> {{ doc.organisme }}<br>
+    <b>Période :</b> du {{ frappe.utils.formatdate(doc.date_debut) }} au {{ frappe.utils.formatdate(doc.date_fin) }}
+  </div>
+
+  <table>
+    <thead><tr><th>Facture</th><th>Date</th><th>Patient</th><th>N° d'affiliation</th><th class="num">Part organisme</th></tr></thead>
+    <tbody>
+    {% for r in doc.factures %}
+      {% set cv = frappe.db.get_value("Sales Invoice", r.sales_invoice, "couverture_patient") %}
+      {% set aff = frappe.db.get_value("Couverture Patient", cv, "numero_affiliation") if cv else "" %}
+      <tr>
+        <td>{{ r.sales_invoice }}</td>
+        <td>{{ frappe.utils.formatdate(r.date_facture) if r.date_facture else "" }}</td>
+        <td>{{ r.patient_name or "" }}</td>
+        <td>{{ aff }}</td>
+        <td class="num">{{ mad(r.part_organisme) }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <table class="tot" style="width:55%; margin-left:auto">
+    <tr><td class="lbl">Nombre de factures</td><td class="num">{{ doc.factures | length }}</td></tr>
+    <tr><td class="lbl strong">Total réclamé</td><td class="num strong">{{ mad(doc.total_reclame) }}</td></tr>
+    <tr><td class="lbl">Total payé</td><td class="num">{{ mad(doc.total_paye) }}</td></tr>
+    <tr><td class="lbl">Reste à recouvrer</td><td class="num">{{ mad((doc.total_reclame or 0) - (doc.total_paye or 0)) }}</td></tr>
+  </table>
+
+  <div class="sign">Cachet et signature</div>
+  <div class="foot">Bordereau établi par MedMa — à joindre aux pièces justificatives de l'organisme.</div>
+</div>
