@@ -58,3 +58,53 @@ def seed_organismes():
 def after_install_and_migrate():
     ensure_custom_fields()
     seed_organismes()
+    ensure_workspace()
+    restreindre_espaces_admin()
+
+
+def ensure_workspace():
+    """Espace de travail MedMa : accès rapide aux organismes, couvertures et dossiers de remboursement."""
+    import json
+
+    import frappe
+
+    if frappe.db.exists("Workspace", "MedMa"):
+        return
+    raccourcis = [
+        ("Organismes payeurs", "Organisme Payeur"),
+        ("Couvertures patient", "Couverture Patient"),
+        ("Dossiers de remboursement", "Dossier Remboursement"),
+    ]
+    content = [
+        {"id": "medma-h", "type": "header", "data": {"text": '<span class="h4"><b>Prise en charge et remboursements</b></span>', "col": 12}}
+    ] + [
+        {"id": f"medma-s{i}", "type": "shortcut", "data": {"shortcut_name": lab, "col": 4}}
+        for i, (lab, _) in enumerate(raccourcis)
+    ]
+    frappe.get_doc(
+        {
+            "doctype": "Workspace",
+            "name": "MedMa",
+            "label": "MedMa",
+            "title": "MedMa",
+            "module": "MedMa",
+            "public": 1,
+            "is_hidden": 0,
+            "icon": "heart",
+            "content": json.dumps(content),
+            "shortcuts": [{"label": lab, "type": "DocType", "link_to": dt, "doc_view": "List"} for lab, dt in raccourcis],
+        }
+    ).insert(ignore_permissions=True)
+
+
+def restreindre_espaces_admin():
+    """Les espaces Users et Build (module Core) ne se bloquent pas par profil : réservés au Gestionnaire système."""
+    import frappe
+
+    for nom in ("Users", "Build"):
+        if not frappe.db.exists("Workspace", nom):
+            continue
+        ws = frappe.get_doc("Workspace", nom)
+        if [r.role for r in ws.roles] != ["System Manager"]:
+            ws.set("roles", [{"role": "System Manager"}])
+            ws.save(ignore_permissions=True)

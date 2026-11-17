@@ -764,6 +764,40 @@ def utilisateurs():
 	return "déjà créés"
 
 
+# Modules visibles par rôle (tous les autres sont masqués via un Module Profile).
+# Core/Desk/Contacts/Email restent accessibles : profil utilisateur, ToDo, notifications.
+BASE_MODULES = {"Core", "Desk", "Contacts", "Email", "Custom"}
+PROFILS = {
+	"medecin": ("Profil Médecin", {"Healthcare", "MedMa"}, "Healthcare"),
+	"reception": ("Profil Réception", {"Healthcare", "MedMa", "Accounts"}, "Healthcare"),
+	"pharmacie": ("Profil Pharmacie", {"Healthcare", "Stock", "Selling"}, "Stock"),
+	"compta": ("Profil Comptabilité", {"Accounts", "MedMa"}, "Accounting"),
+}
+
+
+@step("profils par rôle (menus)")
+def profils_modules():
+	tous = set(frappe.get_all("Module Def", pluck="name"))
+	res = []
+	for cle, (nom_profil, autorises, accueil) in PROFILS.items():
+		bloques = sorted(tous - autorises - BASE_MODULES)
+		if frappe.db.exists("Module Profile", nom_profil):
+			mp = frappe.get_doc("Module Profile", nom_profil)
+		else:
+			mp = frappe.get_doc({"doctype": "Module Profile", "module_profile_name": nom_profil})
+		mp.set("block_modules", [{"module": m} for m in bloques])
+		mp.save(ignore_permissions=True) if mp.name else mp.insert(ignore_permissions=True)
+		email = f"demo.{cle}@chtmed.ma"
+		if frappe.db.exists("User", email):
+			u = frappe.get_doc("User", email)
+			u.module_profile = nom_profil
+			if frappe.db.exists("Workspace", accueil):
+				u.default_workspace = accueil
+			u.save(ignore_permissions=True)
+			res.append(f"{cle}: {len(autorises)} modules visibles")
+	return ", ".join(res)
+
+
 def load_demo():
 	"""Point d'entrée : bench --site <site> execute medma_ma.demo.load_demo"""
 	frappe.flags.mute_emails = True
@@ -774,7 +808,7 @@ def load_demo():
 	frappe.db.commit()
 	for fn in (
 		ref_data, service_units, consultation_items, practitioners, lab_templates, medications, stock, patients,
-		parcours, resultats_labo, facturation, dossiers, corriger_prescriptions, valider_consultations, hospitalisation, utilisateurs,
+		parcours, resultats_labo, facturation, dossiers, corriger_prescriptions, valider_consultations, hospitalisation, utilisateurs, profils_modules,
 	):
 		fn()
 	echecs = [m for m in LOG if m.startswith("FAIL")]
