@@ -1,6 +1,10 @@
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 
 CUSTOM_FIELDS = {
+    "Patient": [
+        {"fieldname": "cin", "label": "CIN (carte d'identité nationale)", "fieldtype": "Data",
+         "insert_after": "sex", "unique": 0, "in_standard_filter": 1},
+    ],
     "Sales Invoice": [
         {"fieldname": "section_prise_en_charge", "label": "Prise en charge (CNSS / AMO / mutuelle)",
          "fieldtype": "Section Break", "insert_after": "patient_name", "collapsible": 1},
