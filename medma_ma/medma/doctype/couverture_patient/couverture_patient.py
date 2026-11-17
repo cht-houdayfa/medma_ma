@@ -10,3 +10,10 @@ class CouverturePatient(Document):
             frappe.throw(_("Le taux de prise en charge doit être compris entre 0 et 100."))
         if self.valide_du and self.valide_au and getdate(self.valide_au) < getdate(self.valide_du):
             frappe.throw(_("La date de fin de validité précède la date de début."))
+        if not (self.taux_prise_en_charge or 0):
+            frappe.msgprint(
+                _("Taux de prise en charge à 0 % : le patient paiera la totalité de ses factures. Renseignez le taux prévu par le contrat."),
+                title=_("Vérifiez le taux"),
+                indicator="orange",
+                alert=True,
+            )

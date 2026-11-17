@@ -58,53 +58,141 @@ def seed_organismes():
 def after_install_and_migrate():
     ensure_custom_fields()
     seed_organismes()
-    ensure_workspace()
+    ensure_workspaces()
     restreindre_espaces_admin()
 
 
-def ensure_workspace():
-    """Espace de travail MedMa : accès rapide aux organismes, couvertures et dossiers de remboursement."""
+CARTES = {
+    "Rendez-vous à venir": ("Patient Appointment", [["Patient Appointment", "status", "=", "Scheduled"]]),
+    "Patients hospitalisés": ("Inpatient Record", [["Inpatient Record", "status", "=", "Admitted"]]),
+    "Analyses à valider": ("Lab Test", [["Lab Test", "docstatus", "=", 0]]),
+    "Factures non soldées": (
+        "Sales Invoice",
+        [["Sales Invoice", "docstatus", "=", 1], ["Sales Invoice", "outstanding_amount", ">", 0]],
+    ),
+}
+
+ESPACES = [
+    {
+        "name": "Cabinet médecin",
+        "module": "Healthcare",
+        "icon": "stethoscope",
+        "roles": ["Physician", "Nursing User", "Laboratory User", "System Manager"],
+        "cartes": ["Rendez-vous à venir", "Patients hospitalisés", "Analyses à valider"],
+        "titre": "Mon cabinet",
+        "raccourcis": [
+            ("Patients", "Patient"),
+            ("Rendez-vous", "Patient Appointment"),
+            ("Consultations", "Patient Encounter"),
+            ("Analyses", "Lab Test"),
+            ("Constantes", "Vital Signs"),
+            ("Hospitalisations", "Inpatient Record"),
+            ("Médicaments", "Medication"),
+        ],
+    },
+    {
+        "name": "Réception",
+        "module": "Healthcare",
+        "icon": "users",
+        "roles": ["Healthcare Administrator", "Accounts User", "System Manager"],
+        "cartes": ["Rendez-vous à venir", "Factures non soldées"],
+        "titre": "Accueil et facturation",
+        "raccourcis": [
+            ("Patients", "Patient"),
+            ("Rendez-vous", "Patient Appointment"),
+            ("Factures", "Sales Invoice"),
+            ("Paiements", "Payment Entry"),
+            ("Couvertures patient", "Couverture Patient"),
+        ],
+    },
+    {
+        "name": "MedMa",
+        "module": "MedMa",
+        "icon": "heart",
+        "roles": [],
+        "cartes": [],
+        "titre": "Prise en charge et remboursements",
+        "raccourcis": [
+            ("Organismes payeurs", "Organisme Payeur"),
+            ("Couvertures patient", "Couverture Patient"),
+            ("Dossiers de remboursement", "Dossier Remboursement"),
+        ],
+    },
+]
+
+
+def _ensure_cartes():
     import json
 
     import frappe
 
-    if frappe.db.exists("Workspace", "MedMa"):
-        return
-    raccourcis = [
-        ("Organismes payeurs", "Organisme Payeur"),
-        ("Couvertures patient", "Couverture Patient"),
-        ("Dossiers de remboursement", "Dossier Remboursement"),
-    ]
-    content = [
-        {"id": "medma-h", "type": "header", "data": {"text": '<span class="h4"><b>Prise en charge et remboursements</b></span>', "col": 12}}
-    ] + [
-        {"id": f"medma-s{i}", "type": "shortcut", "data": {"shortcut_name": lab, "col": 4}}
-        for i, (lab, _) in enumerate(raccourcis)
-    ]
-    frappe.get_doc(
-        {
-            "doctype": "Workspace",
-            "name": "MedMa",
-            "label": "MedMa",
-            "title": "MedMa",
-            "module": "MedMa",
+    for label, (dt, filtres) in CARTES.items():
+        if frappe.db.exists("Number Card", label):
+            continue
+        frappe.get_doc(
+            {
+                "doctype": "Number Card",
+                "name": label,
+                "label": label,
+                "type": "Document Type",
+                "document_type": dt,
+                "function": "Count",
+                "is_public": 1,
+                "show_percentage_stats": 0,
+                "filters_json": json.dumps(filtres),
+            }
+        ).insert(ignore_permissions=True)
+
+
+def ensure_workspaces():
+    """Crée ou met à jour les espaces de travail MedMa (idempotent : rejoué à chaque migration)."""
+    import json
+
+    import frappe
+
+    _ensure_cartes()
+    for spec in ESPACES:
+        content = [{"id": "h", "type": "header", "data": {"text": f'<span class="h4"><b>{spec["titre"]}</b></span>', "col": 12}}]
+        content += [{"id": f"c{i}", "type": "number_card", "data": {"number_card_name": c, "col": 4}} for i, c in enumerate(spec["cartes"])]
+        content += [{"id": f"s{i}", "type": "shortcut", "data": {"shortcut_name": lab, "col": 3}} for i, (lab, _) in enumerate(spec["raccourcis"])]
+        valeurs = {
+            "label": spec["name"],
+            "title": spec["name"],
+            "module": spec["module"],
             "public": 1,
             "is_hidden": 0,
-            "icon": "heart",
+            "icon": spec["icon"],
             "content": json.dumps(content),
-            "shortcuts": [{"label": lab, "type": "DocType", "link_to": dt, "doc_view": "List"} for lab, dt in raccourcis],
         }
-    ).insert(ignore_permissions=True)
+        if frappe.db.exists("Workspace", spec["name"]):
+            ws = frappe.get_doc("Workspace", spec["name"])
+            ws.update(valeurs)
+        else:
+            ws = frappe.get_doc({"doctype": "Workspace", "name": spec["name"], **valeurs})
+        ws.set("shortcuts", [{"label": lab, "type": "DocType", "link_to": dt, "doc_view": "List"} for lab, dt in spec["raccourcis"]])
+        ws.set("number_cards", [{"number_card_name": c, "label": c} for c in spec["cartes"]])
+        ws.set("roles", [{"role": r} for r in spec["roles"]])
+        ws.save(ignore_permissions=True) if ws.get("creation") else ws.insert(ignore_permissions=True)
+
+
+def ensure_workspace():
+    ensure_workspaces()
 
 
 def restreindre_espaces_admin():
-    """Les espaces Users et Build (module Core) ne se bloquent pas par profil : réservés au Gestionnaire système."""
+    """Espaces non métier réservés à l'administration. Users/Build (module Core) ne se bloquent pas par profil de modules ;
+    l'espace Healthcare complet est réservé aux administrateurs, les médecins ayant leur espace « Cabinet médecin »."""
     import frappe
 
-    for nom in ("Users", "Build"):
+    restrictions = {
+        "Users": ["System Manager"],
+        "Build": ["System Manager"],
+        "Healthcare": ["Healthcare Administrator", "System Manager"],
+    }
+    for nom, roles in restrictions.items():
         if not frappe.db.exists("Workspace", nom):
             continue
         ws = frappe.get_doc("Workspace", nom)
-        if [r.role for r in ws.roles] != ["System Manager"]:
-            ws.set("roles", [{"role": "System Manager"}])
+        if sorted(r.role for r in ws.roles) != sorted(roles):
+            ws.set("roles", [{"role": r} for r in roles])
             ws.save(ignore_permissions=True)

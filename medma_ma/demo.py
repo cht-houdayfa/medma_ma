@@ -768,8 +768,8 @@ def utilisateurs():
 # Core/Desk/Contacts/Email restent accessibles : profil utilisateur, ToDo, notifications.
 BASE_MODULES = {"Core", "Desk", "Contacts", "Email", "Custom"}
 PROFILS = {
-	"medecin": ("Profil Médecin", {"Healthcare", "MedMa"}, "Healthcare"),
-	"reception": ("Profil Réception", {"Healthcare", "MedMa", "Accounts"}, "Healthcare"),
+	"medecin": ("Profil Médecin", {"Healthcare", "MedMa"}, "Cabinet médecin"),
+	"reception": ("Profil Réception", {"Healthcare", "MedMa", "Accounts"}, "Réception"),
 	"pharmacie": ("Profil Pharmacie", {"Healthcare", "Stock", "Selling"}, "Stock"),
 	"compta": ("Profil Comptabilité", {"Accounts", "MedMa"}, "Accounting"),
 }
