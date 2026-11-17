@@ -1,0 +1,91 @@
+{
+ "doctype": "DocType",
+ "name": "Organisme Payeur",
+ "module": "MedMa",
+ "custom": 0,
+ "engine": "InnoDB",
+ "field_order": [
+  "organisme_name",
+  "type_organisme",
+  "taux_defaut",
+  "customer",
+  "actif"
+ ],
+ "fields": [
+  {
+   "fieldname": "organisme_name",
+   "label": "Nom de l'organisme",
+   "fieldtype": "Data",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "type_organisme",
+   "label": "Type",
+   "fieldtype": "Select",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "options": "CNSS\nCNOPS\nAMO Tadamon\nMutuelle\nAssurance privée\nAutre"
+  },
+  {
+   "fieldname": "taux_defaut",
+   "label": "Taux de prise en charge par défaut (%)",
+   "fieldtype": "Percent",
+   "default": "70",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "customer",
+   "label": "Client comptable (créances)",
+   "fieldtype": "Link",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "actif",
+   "label": "Actif",
+   "fieldtype": "Check",
+   "default": "1"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "report": 1,
+   "export": 1,
+   "share": 1
+  },
+  {
+   "role": "Healthcare Administrator",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "report": 1,
+   "export": 1,
+   "share": 1
+  },
+  {
+   "role": "Accounts User",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "report": 1,
+   "print": 1
+  }
+ ],
+ "track_changes": 1,
+ "autoname": "field:organisme_name",
+ "naming_rule": "By fieldname"
+}

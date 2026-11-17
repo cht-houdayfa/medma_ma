@@ -1,0 +1,108 @@
+{
+ "doctype": "DocType",
+ "name": "Couverture Patient",
+ "module": "MedMa",
+ "custom": 0,
+ "engine": "InnoDB",
+ "field_order": [
+  "patient",
+  "organisme",
+  "numero_affiliation",
+  "taux_prise_en_charge",
+  "valide_du",
+  "valide_au",
+  "actif"
+ ],
+ "fields": [
+  {
+   "fieldname": "patient",
+   "label": "Patient",
+   "fieldtype": "Link",
+   "options": "Patient",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "organisme",
+   "label": "Organisme payeur",
+   "fieldtype": "Link",
+   "options": "Organisme Payeur",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "numero_affiliation",
+   "label": "N° d'affiliation / immatriculation",
+   "fieldtype": "Data",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "taux_prise_en_charge",
+   "label": "Taux de prise en charge (%)",
+   "fieldtype": "Percent",
+   "reqd": 1,
+   "in_list_view": 1,
+   "fetch_from": "organisme.taux_defaut",
+   "fetch_if_empty": 1
+  },
+  {
+   "fieldname": "valide_du",
+   "label": "Valide du",
+   "fieldtype": "Date"
+  },
+  {
+   "fieldname": "valide_au",
+   "label": "Valide au",
+   "fieldtype": "Date"
+  },
+  {
+   "fieldname": "actif",
+   "label": "Actif",
+   "fieldtype": "Check",
+   "default": "1"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "report": 1,
+   "export": 1,
+   "share": 1
+  },
+  {
+   "role": "Healthcare Administrator",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "report": 1,
+   "export": 1,
+   "share": 1
+  },
+  {
+   "role": "Accounts User",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "report": 1,
+   "print": 1
+  }
+ ],
+ "track_changes": 1,
+ "autoname": "format:COUV-{#####}",
+ "naming_rule": "Expression",
+ "title_field": "numero_affiliation"
+}

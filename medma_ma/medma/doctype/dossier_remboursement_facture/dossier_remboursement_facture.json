@@ -1,0 +1,52 @@
+{
+ "doctype": "DocType",
+ "name": "Dossier Remboursement Facture",
+ "module": "MedMa",
+ "custom": 0,
+ "engine": "InnoDB",
+ "field_order": [
+  "sales_invoice",
+  "date_facture",
+  "patient_name",
+  "part_organisme"
+ ],
+ "fields": [
+  {
+   "fieldname": "sales_invoice",
+   "label": "Facture",
+   "fieldtype": "Link",
+   "options": "Sales Invoice",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "date_facture",
+   "label": "Date",
+   "fieldtype": "Date",
+   "fetch_from": "sales_invoice.posting_date",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "patient_name",
+   "label": "Patient",
+   "fieldtype": "Data",
+   "fetch_from": "sales_invoice.patient_name",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "part_organisme",
+   "label": "Part organisme",
+   "fieldtype": "Currency",
+   "fetch_from": "sales_invoice.part_organisme",
+   "read_only": 1,
+   "in_list_view": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "permissions": [],
+ "track_changes": 1,
+ "istable": 1
+}

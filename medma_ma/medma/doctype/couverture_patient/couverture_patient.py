@@ -1,0 +1,12 @@
+import frappe
+from frappe import _
+from frappe.model.document import Document
+from frappe.utils import getdate
+
+
+class CouverturePatient(Document):
+    def validate(self):
+        if not 0 <= (self.taux_prise_en_charge or 0) <= 100:
+            frappe.throw(_("Le taux de prise en charge doit être compris entre 0 et 100."))
+        if self.valide_du and self.valide_au and getdate(self.valide_au) < getdate(self.valide_du):
+            frappe.throw(_("La date de fin de validité précède la date de début."))

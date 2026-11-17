@@ -1,0 +1,123 @@
+{
+ "doctype": "DocType",
+ "name": "Dossier Remboursement",
+ "module": "MedMa",
+ "custom": 0,
+ "engine": "InnoDB",
+ "field_order": [
+  "organisme",
+  "date_debut",
+  "date_fin",
+  "statut",
+  "section_factures",
+  "factures",
+  "section_totaux",
+  "total_reclame",
+  "total_paye",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "organisme",
+   "label": "Organisme payeur",
+   "fieldtype": "Link",
+   "options": "Organisme Payeur",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "date_debut",
+   "label": "Du",
+   "fieldtype": "Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "date_fin",
+   "label": "Au",
+   "fieldtype": "Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "statut",
+   "label": "Statut",
+   "fieldtype": "Select",
+   "default": "Brouillon",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "options": "Brouillon\nEnvoyé\nPayé partiellement\nPayé\nRejeté"
+  },
+  {
+   "fieldname": "section_factures",
+   "label": "Factures",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "factures",
+   "label": "Factures",
+   "fieldtype": "Table",
+   "options": "Dossier Remboursement Facture"
+  },
+  {
+   "fieldname": "section_totaux",
+   "label": "Totaux",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_reclame",
+   "label": "Total réclamé",
+   "fieldtype": "Currency",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "total_paye",
+   "label": "Total payé",
+   "fieldtype": "Currency"
+  },
+  {
+   "fieldname": "notes",
+   "label": "Notes",
+   "fieldtype": "Small Text"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "report": 1,
+   "export": 1,
+   "share": 1
+  },
+  {
+   "role": "Healthcare Administrator",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "report": 1,
+   "export": 1,
+   "share": 1
+  },
+  {
+   "role": "Accounts User",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "report": 1,
+   "print": 1
+  }
+ ],
+ "track_changes": 1,
+ "autoname": "format:DOS-{YYYY}-{#####}",
+ "naming_rule": "Expression"
+}
