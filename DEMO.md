@@ -39,8 +39,10 @@ Idempotent : relancé, il ne duplique rien. Les identifiants des 4 comptes de d�
 4. **Facturation partagée** — créer une facture : choisir la *couverture du patient* ; la part organisme et la
    part patient se calculent seules. Montrer qu'une couverture d'un autre patient est refusée.
 5. **Encaissement** — payer la part patient, laisser la part organisme en attente.
-6. **Dossier de remboursement** — « Charger les factures » d'un organisme sur une période, suivre le statut
-   (brouillon → envoyé → payé / partiellement payé).
+6. **Dossier de remboursement** — créer un dossier (organisme + période), bouton **Charger les factures**, puis
+   *Actions → Marquer comme envoyé*, puis *Actions → Enregistrer un paiement* (montant, date, référence du virement) :
+   le paiement est réparti sur les factures de la plus ancienne à la plus récente, les écritures sont créées et le
+   statut passe à *payé partiellement* puis *payé*.
 7. **Pharmacie** — niveaux de stock des médicaments.
 8. **Hospitalisation** — chambres occupées / vacantes.
 9. **Comptabilité** — créances (reste dû par les organismes), balance équilibrée.
@@ -48,7 +50,15 @@ Idempotent : relancé, il ne duplique rien. Les identifiants des 4 comptes de d�
     depuis un dossier : *Bordereau MedMa* (PDF prêt à remettre au patient / à l'organisme).
 11. **Rappel** — sur un rendez-vous à venir : *Actions → Rappel WhatsApp* ouvre WhatsApp avec le message prérempli.
 12. **Pilotage** — compte comptabilité : espace *Tableau de bord* et rapport *Créances par organisme*.
-13. **Langues** — basculer l'interface en arabe (RTL) / français depuis le profil utilisateur.
+13. **Langues** — basculer l'interface en arabe (RTL) / français depuis le profil utilisateur. Les écrans MedMa
+    (organismes, couvertures, remboursements, espaces de travail) sont traduits en arabe ; les écrans natifs de
+    Healthcare/ERPNext dépendent des traductions de ces projets.
+
+## Qualité et exploitation
+
+- 18 tests automatisés de la logique métier (`bench --site <site> execute medma_ma.tests.run_all`), exécutés dans
+  une transaction annulée, avec contrôle qu'aucune donnée n'est laissée dans la base.
+- Sauvegarde et **restauration vérifiée** : voir `deploy/BACKUP.md`.
 
 ## Limites à annoncer honnêtement au client
 

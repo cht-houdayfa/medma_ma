@@ -1,0 +1,105 @@
+Organisme Payeur,الجهة الدافعة
+Couverture Patient,تغطية المريض
+Dossier Remboursement,ملف الاسترجاع
+Dossier Remboursement Facture,فاتورة ملف الاسترجاع
+Nom de l'organisme,اسم الجهة
+Type,النوع
+Taux de prise en charge par défaut (%),نسبة التحمل الافتراضية (%)
+Client comptable (créances),الزبون المحاسبي (المستحقات)
+Actif,نشط
+Patient,المريض
+Organisme payeur,الجهة الدافعة
+N° d'affiliation / immatriculation,رقم الانخراط / التسجيل
+Taux de prise en charge (%),نسبة التحمل (%)
+Valide du,صالحة من
+Valide au,صالحة إلى
+Du,من
+Au,إلى
+Statut,الحالة
+Factures,الفواتير
+Totaux,المجاميع
+Total réclamé,المبلغ المطالب به
+Total payé,المبلغ المدفوع
+Notes,ملاحظات
+Facture,الفاتورة
+Date,التاريخ
+Part organisme,حصة الجهة
+Part patient,حصة المريض
+Payé par l'organisme,المدفوع من طرف الجهة
+Prise en charge (CNSS / AMO / mutuelle),التغطية (الصندوق الوطني للضمان الاجتماعي / التأمين الإجباري / التعاضدية)
+Couverture du patient,تغطية المريض
+Taux de prise en charge,نسبة التحمل
+Identifiants légaux (Maroc),المعرّفات القانونية (المغرب)
+ICE,المعرّف الموحد للمقاولة (ICE)
+IF (identifiant fiscal),المعرّف الجبائي (IF)
+RC (registre de commerce),السجل التجاري (RC)
+Patente,الرخصة المهنية (Patente)
+CIN (carte d'identité nationale),رقم البطاقة الوطنية (CIN)
+Brouillon,مسودة
+Envoyé,مرسل
+Payé partiellement,مدفوع جزئياً
+Payé,مدفوع
+Rejeté,مرفوض
+Mutuelle,تعاضدية
+Assurance privée,تأمين خاص
+Autre,أخرى
+Le taux par défaut doit être compris entre 0 et 100.,يجب أن تكون النسبة الافتراضية بين 0 و100.
+Le taux de prise en charge doit être compris entre 0 et 100.,يجب أن تكون نسبة التحمل بين 0 و100.
+La date de fin de validité précède la date de début.,تاريخ نهاية الصلاحية يسبق تاريخ البداية.
+Taux de prise en charge à 0 % : le patient paiera la totalité de ses factures. Renseignez le taux prévu par le contrat.,نسبة التحمل 0 %: سيدفع المريض كامل فواتيره. أدخل النسبة المنصوص عليها في العقد.
+Vérifiez le taux,تحقق من النسبة
+La date de fin précède la date de début.,تاريخ النهاية يسبق تاريخ البداية.
+Facture en double : {0},فاتورة مكررة: {0}
+Le total payé dépasse le total réclamé.,المبلغ المدفوع يتجاوز المبلغ المطالب به.
+Seul un dossier en brouillon peut être marqué comme envoyé.,لا يمكن تعليم ملف كمرسل إلا إذا كان مسودة.
+Le dossier ne contient aucune facture.,الملف لا يحتوي على أي فاتورة.
+Le dossier doit être envoyé avant d'enregistrer un paiement.,يجب إرسال الملف قبل تسجيل أي دفعة.
+Le montant doit être positif.,يجب أن يكون المبلغ موجباً.
+La référence du virement est obligatoire.,مرجع التحويل إلزامي.
+Le montant ({0}) dépasse le reste à recouvrer ({1}).,المبلغ ({0}) يتجاوز المتبقي للاسترجاع ({1}).
+Couverture introuvable : {0},التغطية غير موجودة: {0}
+La couverture {0} est inactive.,التغطية {0} غير نشطة.
+La couverture {0} n'appartient pas au patient {1}.,التغطية {0} لا تخص المريض {1}.
+La couverture {0} n'est pas valide à la date de facturation.,التغطية {0} غير صالحة في تاريخ الفوترة.
+Rappel WhatsApp,تذكير عبر واتساب
+Aucun numéro de mobile pour ce patient.,لا يوجد رقم هاتف محمول لهذا المريض.
+Charger les factures,تحميل الفواتير
+Renseignez l'organisme et la période.,أدخل الجهة والفترة.
+{0} facture(s) ajoutée(s),{0} فاتورة مضافة
+Marquer comme envoyé,تعليم كمرسل
+Enregistrer un paiement,تسجيل دفعة
+Montant reçu (MAD),المبلغ المستلم (درهم)
+Référence du virement,مرجع التحويل
+Paiement de l'organisme,دفعة من الجهة
+Enregistrer,حفظ
+Cabinet médecin,عيادة الطبيب
+Réception,الاستقبال
+Tableau de bord,لوحة القيادة
+Mon cabinet,عيادتي
+Accueil et facturation,الاستقبال والفوترة
+Prise en charge et remboursements,التغطية والاسترجاع
+Pilotage de l'établissement,قيادة المؤسسة
+Patients,المرضى
+Rendez-vous,المواعيد
+Consultations,الفحوصات الطبية
+Analyses,التحاليل
+Constantes,المؤشرات الحيوية
+Hospitalisations,حالات الاستشفاء
+Médicaments,الأدوية
+Paiements,المدفوعات
+Couvertures patient,تغطيات المرضى
+Organismes payeurs,الجهات الدافعة
+Dossiers de remboursement,ملفات الاسترجاع
+Rendez-vous à venir,المواعيد القادمة
+Patients hospitalisés,المرضى المقيمون
+Analyses à valider,تحاليل بانتظار التصديق
+Factures non soldées,فواتير غير مسددة
+Chiffre d'affaires facturé,رقم المعاملات المفوتر
+Créances ouvertes (MAD),المستحقات المفتوحة (درهم)
+Patients enregistrés,المرضى المسجلون
+Chiffre d'affaires mensuel,رقم المعاملات الشهري
+Rendez-vous par praticien,المواعيد حسب الطبيب
+Part des organismes (MAD),حصة الجهات (درهم)
+Créances par organisme,المستحقات حسب الجهة
+Organisme,الجهة
+À recouvrer,المتبقي للاسترجاع
