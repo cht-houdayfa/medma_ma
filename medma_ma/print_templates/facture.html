@@ -26,12 +26,12 @@
   </table>
 
   <table class="tot" style="width:60%; margin-left:auto">
-    <tr><td class="lbl">Total</td><td class="num"><b>{{ mad(doc.grand_total) }}</b></td></tr>
+    <tr><td class="lbl">Total</td><td class="num"><b>{{ mad(doc.rounded_total or doc.grand_total) }}</b></td></tr>
     {% if cov %}
     <tr><td class="lbl">Part {{ cov.organisme }} ({{ cov.taux_prise_en_charge }} %)</td><td class="num">{{ mad(doc.part_organisme) }}</td></tr>
     <tr><td class="lbl strong">Part à payer par le patient</td><td class="num strong">{{ mad(doc.part_patient) }}</td></tr>
     {% endif %}
-    <tr><td class="lbl">Déjà réglé (patient + organisme)</td><td class="num">{{ mad((doc.grand_total or 0) - (doc.outstanding_amount or 0)) }}</td></tr>
+    <tr><td class="lbl">Déjà réglé (patient + organisme)</td><td class="num">{{ mad((doc.rounded_total or doc.grand_total or 0) - (doc.outstanding_amount or 0)) }}</td></tr>
     <tr><td class="lbl">Reste dû</td><td class="num">{{ mad(doc.outstanding_amount) }}</td></tr>
   </table>
 

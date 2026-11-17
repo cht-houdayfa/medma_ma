@@ -657,8 +657,10 @@ def dossiers():
 				part = flt(frappe.db.get_value("Sales Invoice", si, "part_organisme"))
 				if _paiement(si, part, add_days(today(), -1), "Virement", ref=f"{org[:4].upper()}-{si[-5:]}"):
 					paye += part
+					for ligne in d.factures:
+						if ligne.sales_invoice == si:
+							ligne.montant_paye = part
 		d.statut = statut
-		d.total_paye = paye
 		d.save(ignore_permissions=True)
 		out.append(f"{org}: {len(invoices)} fact., {statut}, réclamé {d.total_reclame}, payé {paye}")
 	return " | ".join(out)

@@ -70,6 +70,7 @@ def after_install_and_migrate():
     from medma_ma.features import ensure_all
 
     ensure_all()
+    ensure_permissions()
     restreindre_espaces_admin()
 
 
@@ -207,3 +208,16 @@ def restreindre_espaces_admin():
         if sorted(r.role for r in ws.roles) != sorted(roles):
             ws.set("roles", [{"role": r} for r in roles])
             ws.save(ignore_permissions=True)
+
+
+def ensure_permissions():
+    """Le formulaire de rendez-vous de Healthcare lit « Healthcare Settings » pour tout utilisateur : sans droit de lecture,
+    chaque médecin voit « Pas d'autorisation ». Lecture seule uniquement (aucune écriture)."""
+    import frappe
+    from frappe.permissions import add_permission
+
+    for role in ("Physician", "Nursing User", "Laboratory User", "Accounts User"):
+        existe = frappe.db.exists("Custom DocPerm", {"parent": "Healthcare Settings", "role": role, "permlevel": 0})
+        if not existe:
+            add_permission("Healthcare Settings", role, 0, "read")
+    frappe.clear_cache(doctype="Healthcare Settings")

@@ -247,7 +247,82 @@ def ensure_client_scripts():
 		frappe.get_doc({"doctype": "Client Script", "name": nom, **valeurs}).insert(ignore_permissions=True)
 
 
+SCRIPT_DOSSIER = """
+frappe.ui.form.on('Dossier Remboursement', {
+	refresh(frm) {
+		const brouillon = frm.is_new() || frm.doc.statut === 'Brouillon';
+		if (brouillon) {
+			frm.add_custom_button(__('Charger les factures'), () => {
+				if (!frm.doc.organisme || !frm.doc.date_debut || !frm.doc.date_fin) {
+					frappe.msgprint(__("Renseignez l'organisme et la période."));
+					return;
+				}
+				frm.call('charger_factures').then(r => {
+					frappe.show_alert({message: __('{0} facture(s) ajoutée(s)', [r.message]), indicator: 'green'});
+					frm.refresh_field('factures');
+					frm.dirty();
+				});
+			});
+		}
+		if (!frm.is_new() && frm.doc.statut === 'Brouillon' && (frm.doc.factures || []).length) {
+			frm.add_custom_button(__('Marquer comme envoyé'), () => {
+				frm.call('marquer_envoye').then(() => frm.reload_doc());
+			}, __('Actions'));
+		}
+		if (!frm.is_new() && ['Envoyé', 'Payé partiellement'].includes(frm.doc.statut)) {
+			frm.add_custom_button(__('Enregistrer un paiement'), () => {
+				const reste = flt(frm.doc.total_reclame) - flt(frm.doc.total_paye);
+				frappe.prompt([
+					{fieldname: 'montant', label: __('Montant reçu (MAD)'), fieldtype: 'Currency', reqd: 1, default: reste},
+					{fieldname: 'date_paiement', label: __('Date'), fieldtype: 'Date', reqd: 1, default: frappe.datetime.get_today()},
+					{fieldname: 'reference', label: __('Référence du virement'), fieldtype: 'Data', reqd: 1}
+				], v => {
+					frm.call('enregistrer_paiement', v).then(() => frm.reload_doc());
+				}, __("Paiement de l'organisme"), __('Enregistrer'));
+			}, __('Actions'));
+		}
+	}
+});
+"""
+
+
+def ensure_client_scripts_dossier():
+	nom = "MedMa - Dossier de remboursement"
+	valeurs = {"dt": "Dossier Remboursement", "view": "Form", "enabled": 1, "script": SCRIPT_DOSSIER}
+	if frappe.db.exists("Client Script", nom):
+		cs = frappe.get_doc("Client Script", nom)
+		cs.update(valeurs)
+		cs.save(ignore_permissions=True)
+	else:
+		frappe.get_doc({"doctype": "Client Script", "name": nom, **valeurs}).insert(ignore_permissions=True)
+
+
+SCRIPT_COUVERTURE = """
+frappe.ui.form.on('Couverture Patient', {
+	organisme(frm) {
+		if (!frm.doc.organisme) return;
+		frappe.db.get_value('Organisme Payeur', frm.doc.organisme, 'taux_defaut').then(r => {
+			frm.set_value('taux_prise_en_charge', (r.message && r.message.taux_defaut) || 0);
+		});
+	}
+});
+"""
+
+
+def ensure_client_scripts_couverture():
+	nom = "MedMa - Couverture patient"
+	valeurs = {"dt": "Couverture Patient", "view": "Form", "enabled": 1, "script": SCRIPT_COUVERTURE}
+	if frappe.db.exists("Client Script", nom):
+		cs = frappe.get_doc("Client Script", nom)
+		cs.update(valeurs)
+		cs.save(ignore_permissions=True)
+	else:
+		frappe.get_doc({"doctype": "Client Script", "name": nom, **valeurs}).insert(ignore_permissions=True)
+
+
 def ensure_all():
 	ensure_print_formats()
 	ensure_dashboard()
 	ensure_client_scripts()
+	ensure_client_scripts_dossier()
+	ensure_client_scripts_couverture()

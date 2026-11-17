@@ -73,7 +73,8 @@
   {
    "fieldname": "total_paye",
    "label": "Total payé",
-   "fieldtype": "Currency"
+   "fieldtype": "Currency",
+   "read_only": 1
   },
   {
    "fieldname": "notes",

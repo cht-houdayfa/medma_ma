@@ -8,7 +8,8 @@
   "sales_invoice",
   "date_facture",
   "patient_name",
-  "part_organisme"
+  "part_organisme",
+  "montant_paye"
  ],
  "fields": [
   {
@@ -40,6 +41,13 @@
    "label": "Part organisme",
    "fieldtype": "Currency",
    "fetch_from": "sales_invoice.part_organisme",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "montant_paye",
+   "label": "Payé par l'organisme",
+   "fieldtype": "Currency",
    "read_only": 1,
    "in_list_view": 1
   }

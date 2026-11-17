@@ -6,6 +6,9 @@ from frappe.utils import getdate
 
 class CouverturePatient(Document):
     def validate(self):
+        if self.taux_prise_en_charge is None or self.taux_prise_en_charge == "":
+            # Taux non fourni (ex. création par API) : on applique celui de l'organisme. Un 0 saisi explicitement est conservé.
+            self.taux_prise_en_charge = frappe.db.get_value("Organisme Payeur", self.organisme, "taux_defaut") or 0
         if not 0 <= (self.taux_prise_en_charge or 0) <= 100:
             frappe.throw(_("Le taux de prise en charge doit être compris entre 0 et 100."))
         if self.valide_du and self.valide_au and getdate(self.valide_au) < getdate(self.valide_du):
