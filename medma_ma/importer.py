@@ -42,6 +42,7 @@ def importer_medicaments(fichier, dry_run=0):
     lignes = _lire(fichier, COLONNES_MEDICAMENTS)
     rapport = {"crees": 0, "mis_a_jour": 0, "erreurs": []}
     for i, l in enumerate(lignes, start=2):
+        frappe.db.savepoint("ligne")
         try:
             for c in ("nom_commercial", "dci", "dosage", "unite", "ppv"):
                 if not l.get(c):
@@ -87,7 +88,10 @@ def importer_medicaments(fichier, dry_run=0):
                     "valuation_rate": achat or ppv,
                     "description": (f"Code : {l['code']}" if l.get("code") else None),
                 }, update_modified=False)
+            if not dry_run and i % 200 == 0:
+                frappe.db.commit()
         except Exception as e:
+            frappe.db.rollback(save_point="ligne")
             rapport["erreurs"].append(f"ligne {i} ({l.get('nom_commercial', '?')}) : {e}")
     return _finir(rapport, dry_run)
 
