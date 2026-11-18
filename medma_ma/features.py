@@ -326,3 +326,42 @@ def ensure_all():
 	ensure_client_scripts()
 	ensure_client_scripts_dossier()
 	ensure_client_scripts_couverture()
+	ensure_branding()
+
+
+# --- Thème et identité visuelle -------------------------------------------------------------------
+
+LOGO = "/assets/medma_ma/images/medma-logo.svg"
+
+
+def ensure_assets_link():
+    """Expose public/ sous sites/assets/medma_ma (le volume `sites` masque ce que bench build fait dans l'image)."""
+    import os
+
+    cible = os.path.join(frappe.get_app_path("medma_ma"), "public")
+    lien = os.path.join(frappe.get_site_path("..", "assets"), "medma_ma")
+    if os.path.islink(lien) and os.path.realpath(lien) == os.path.realpath(cible):
+        return
+    if os.path.lexists(lien):
+        os.remove(lien)
+    os.symlink(cible, lien)
+
+
+def ensure_branding():
+    """Nom, logo et menus : l'utilisateur voit MedMa, pas les liens de support du framework."""
+    ensure_assets_link()
+    ws = frappe.get_single("Website Settings")
+    ws.app_name = "MedMa"
+    ws.app_logo = LOGO
+    ws.splash_image = LOGO
+    ws.favicon = LOGO
+    ws.footer_powered = "MedMa — Gestion de cabinets et cliniques"
+    ws.hide_footer_signup = 1
+    ws.save(ignore_permissions=True)
+
+    nav = frappe.get_single("Navbar Settings")
+    nav.app_logo = LOGO
+    # Menu d'aide : on garde uniquement ce qui est utile à un cabinet (pas de liens de support du framework).
+    for ligne in nav.help_dropdown:
+        ligne.hidden = 1
+    nav.save(ignore_permissions=True)

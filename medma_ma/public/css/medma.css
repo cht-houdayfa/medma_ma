@@ -1,0 +1,39 @@
+/* MedMa — thème clinique : sarcelle (teal) sobre, lisible, adapté RTL. */
+:root, [data-theme="light"] {
+  --primary: #0f766e;
+  --primary-color: #0f766e;
+  --btn-primary: #0f766e;
+  --blue-500: #0f766e;
+  --blue-600: #0d9488;
+  --control-bg-on-gray: #f1f5f9;
+  --medma-accent: #0d9488;
+  --medma-soft: #ecfdf5;
+  --card-radius: 12px;
+}
+body { font-feature-settings: "tnum" 1; }
+.navbar { border-bottom: 2px solid var(--medma-accent); box-shadow: 0 1px 6px rgba(15,118,110,.08); }
+.btn-primary, .btn-primary:hover, .btn-primary:focus { background: #0f766e; border-color: #0f766e; }
+.btn-primary:hover { background: #0d9488; border-color: #0d9488; }
+.sidebar-item-container.active-sidebar .item-anchor,
+.desk-sidebar .sidebar-item-container.active-sidebar { background: var(--medma-soft); color: #0f766e; font-weight: 600; }
+.number-card, .widget.shortcut-widget-box, .widget.links-widget-box, .widget.chart-widget {
+  border-radius: var(--card-radius); border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(15,23,42,.05);
+  transition: box-shadow .15s, transform .15s;
+}
+.number-card:hover, .shortcut-widget-box:hover { box-shadow: 0 6px 16px rgba(15,118,110,.14); transform: translateY(-1px); }
+.number-widget-box .widget-title, .number-card .card-title { color: #475569; }
+.number-card .card-stats, .number-card .number { color: #0f766e; font-weight: 700; }
+.indicator-pill.green, .indicator-pill.blue { font-weight: 600; }
+.page-head { border-bottom: 1px solid #e2e8f0; }
+.form-layout .section-head { color: #0f766e; font-weight: 600; }
+.form-section .section-head::before { content: ""; display: inline-block; width: 4px; height: 14px; border-radius: 2px; background: var(--medma-accent); margin-inline-end: 8px; vertical-align: -2px; }
+.frappe-card { border-radius: var(--card-radius); }
+.list-row-head, .list-row-head .list-row-col { background: #f8fafc; }
+/* Écran de connexion */
+.for-login, .for-forgot, .for-signup, .for-login-with-email-link { background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 55%, #99f6e4 100%); }
+.page-card { border-radius: 16px; border: 0; box-shadow: 0 20px 45px rgba(15,118,110,.18); }
+.page-card-head .app-logo { width: 64px; height: 64px; }
+.login-content .btn-primary { height: 42px; font-weight: 600; }
+.page-card-head h4 { color: #0f766e; font-weight: 700; }
+[dir="rtl"] .form-section .section-head::before { margin-inline-end: 0; margin-inline-start: 8px; }
+@media print { .navbar, .sidebar-item-container { box-shadow: none; } }
