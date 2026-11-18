@@ -197,3 +197,31 @@ def run_all():
 	print("Aucune fuite de données : compteurs identiques avant/après.")
 	if not res.wasSuccessful():
 		raise SystemExit(1)
+
+
+class TestPortailEtCartes(Base):
+	def test_portail_lie_utilisateur_et_patient_par_email(self):
+		from healthcare.healthcare.web_form.lab_test.lab_test import get_patient
+
+		email = "test.portail@chtmed.ma"
+		frappe.get_doc({"doctype": "User", "email": email, "first_name": "Portail", "user_type": "Website User",
+			"send_welcome_email": 0, "roles": [{"role": "Patient"}]}).insert(ignore_permissions=True)
+		frappe.db.set_value("Patient", self.patient.name, "email", email)
+		frappe.set_user(email)
+		try:
+			self.assertEqual(get_patient(), self.patient.name)
+		finally:
+			frappe.set_user("Administrator")
+
+	def test_cartes_ont_des_filtres_valides(self):
+		import json
+
+		from medma_ma.setup import CARTES
+
+		for label, (dt, filtres) in CARTES.items():
+			self.assertTrue(frappe.db.exists("Number Card", label), label)
+			frappe.get_list(dt, filters=[f[1:] if f[0] == dt else f for f in json.loads(frappe.db.get_value("Number Card", label, "filters_json"))], limit=1)
+
+	def test_formulaires_portail_affichent_la_liste(self):
+		for nom in ("lab-test", "prescription", "patient-appointments"):
+			self.assertEqual(frappe.db.get_value("Web Form", nom, "show_list"), 1, nom)

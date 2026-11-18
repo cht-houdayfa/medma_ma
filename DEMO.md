@@ -59,7 +59,7 @@ Idempotent : relancé, il ne duplique rien. Les identifiants des 4 comptes de d�
 
 ## Qualité et exploitation
 
-- 18 tests automatisés de la logique métier (`bench --site <site> execute medma_ma.tests.run_all`), exécutés dans
+- 21 tests automatisés de la logique métier (`bench --site <site> execute medma_ma.tests.run_all`), exécutés dans
   une transaction annulée, avec contrôle qu'aucune donnée n'est laissée dans la base.
 - Sauvegarde et **restauration vérifiée** : voir `deploy/BACKUP.md`.
 
