@@ -60,7 +60,7 @@ Idempotent : relancé, il ne duplique rien. Les identifiants des 4 comptes de d�
 
 ## Qualité et exploitation
 
-- 25 tests automatisés de la logique métier (`bench --site <site> execute medma_ma.tests.run_all`), exécutés dans
+- 28 tests automatisés de la logique métier (`bench --site <site> execute medma_ma.tests.run_all`), exécutés dans
   une transaction annulée, avec contrôle qu'aucune donnée n'est laissée dans la base.
 - Sauvegarde et **restauration vérifiée** : voir `deploy/BACKUP.md`.
 
@@ -71,7 +71,7 @@ Idempotent : relancé, il ne duplique rien. Les identifiants des 4 comptes de d�
   (CNSS, CNOPS…) n'est pas intégré.
 - Les paiements d'organismes sont enregistrés **sur la facture du patient** (comptabilité simplifiée) ;
   un compte client par organisme reste à mettre en place pour un suivi comptable fin.
-- Tarifs officiels (TNR/ANAM) et base nationale des médicaments : **non fournis**, à importer.
+- Tarifs officiels (TNR/ANAM) et base nationale des médicaments : **non fournis** ; outil d'import CSV prêt (`deploy/IMPORT.md`), à alimenter avec les fichiers officiels.
 - Conformité loi 09-08 / CNDP, sauvegardes et hébergement : à valider pour chaque déploiement réel.
 - Le rappel WhatsApp est un **lien de partage manuel** (wa.me) : le message est prérempli mais c'est le réceptionniste
   qui l'envoie. L'envoi automatique via l'API WhatsApp Business n'est pas implémenté (il exige un compte et des

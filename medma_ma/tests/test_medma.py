@@ -265,3 +265,40 @@ class TestCataloguesConsultation(Base):
 			self.assertFalse(frappe.has_permission("Medication", "write"))
 		finally:
 			frappe.set_user("Administrator")
+
+
+class TestImportCatalogues(Base):
+	def _csv(self, contenu):
+		import tempfile
+
+		f = tempfile.NamedTemporaryFile("w", suffix=".csv", delete=False, encoding="utf-8")
+		f.write(contenu)
+		f.close()
+		self.addCleanup(__import__("os").unlink, f.name)
+		return f.name
+
+	def test_medicaments_idempotent_et_erreurs_listees(self):
+		from medma_ma.importer import importer_medicaments
+
+		src = self._csv(
+			"nom_commercial;dci;dosage;unite;forme;classe;ppv;prix_achat;code\n"
+			"TESTIMP-A;Testamol;500;mg;Comprimé;Antalgique;12,50;9;AMM1\n"
+			"TESTIMP-B;Testamol;500;mg;Comprimé;Antalgique;11;;\n"
+			"TESTIMP-C;Testamol;;mg;Comprimé;Antalgique;5;;\n"
+		)
+		r1 = importer_medicaments(src)
+		self.assertEqual((r1["crees"], len(r1["erreurs"])), (2, 1))
+		med = frappe.get_doc("Medication", "Testamol 500mg")
+		self.assertEqual({x.item_code: x.rate for x in med.linked_items}, {"TESTIMP-A": 12.5, "TESTIMP-B": 11})
+		r2 = importer_medicaments(src)
+		self.assertEqual((r2["crees"], r2["mis_a_jour"]), (0, 2))
+		self.assertEqual(len(frappe.get_doc("Medication", "Testamol 500mg").linked_items), 2)
+
+	def test_analyses_et_simulation(self):
+		from medma_ma.importer import importer_analyses
+
+		src = self._csv("code,nom,departement,tarif\nB999,Test TSH importé,Biochemistry,150\n")
+		importer_analyses(src, dry_run=1)
+		self.assertFalse(frappe.db.exists("Lab Test Template", "Test TSH importé"))
+		importer_analyses(src)
+		self.assertEqual(frappe.db.get_value("Lab Test Template", "Test TSH importé", "lab_test_code"), "B999")

@@ -1,0 +1,4 @@
+FROM medma/hms:15
+COPY --chown=frappe:0 medma_ma /home/frappe/frappe-bench/apps/medma_ma
+RUN /home/frappe/frappe-bench/env/bin/pip install --quiet -e /home/frappe/frappe-bench/apps/medma_ma
+RUN ln -sfn /home/frappe/frappe-bench/apps/medma_ma/medma_ma/public /home/frappe/frappe-bench/assets/medma_ma
