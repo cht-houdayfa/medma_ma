@@ -94,7 +94,7 @@ ESPACES = [
         "name": "Cabinet médecin",
         "module": "Healthcare",
         "icon": "stethoscope",
-        "roles": ["Physician", "Nursing User", "Laboratory User", "System Manager"],
+        "roles": ["Physician", "System Manager"],
         "cartes": ["Rendez-vous du jour", "Analyses à valider", "Patients hospitalisés"],
         "titre": "Mon cabinet",
         "raccourcis": [
@@ -120,6 +120,34 @@ ESPACES = [
             ("Factures", "Sales Invoice"),
             ("Paiements", "Payment Entry"),
             ("Couvertures patient", "Couverture Patient"),
+        ],
+    },
+    {
+        "name": "Soins infirmiers",
+        "module": "Healthcare",
+        "icon": "heart",
+        "roles": ["Nursing User", "Healthcare Administrator", "System Manager"],
+        "cartes": ["Rendez-vous du jour", "Patients hospitalisés"],
+        "titre": "Soins et hospitalisation",
+        "raccourcis": [
+            ("Patients", "Patient"),
+            ("Constantes", "Vital Signs"),
+            ("Hospitalisations", "Inpatient Record"),
+            ("Rendez-vous", "Patient Appointment"),
+            ("Consultations", "Patient Encounter"),
+        ],
+    },
+    {
+        "name": "Laboratoire",
+        "module": "Healthcare",
+        "icon": "flask",
+        "roles": ["Laboratory User", "Healthcare Administrator", "System Manager"],
+        "cartes": ["Analyses à valider"],
+        "titre": "Analyses et résultats",
+        "raccourcis": [
+            ("Analyses", "Lab Test"),
+            ("Patients", "Patient"),
+            ("Modèles d'analyse", "Lab Test Template"),
         ],
     },
     {

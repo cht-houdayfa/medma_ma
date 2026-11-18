@@ -727,6 +727,9 @@ ROLES_DEMO = {
 	"reception": ("Réception (démo)", ["Healthcare Administrator", "Sales User", "Accounts User"]),
 	"pharmacie": ("Pharmacie (démo)", ["Stock User", "Stock Manager", "Sales User"]),
 	"compta": ("Comptabilité (démo)", ["Accounts Manager", "Accounts User"]),
+	"infirmier": ("Infirmier (démo)", ["Nursing User"]),
+	"labo": ("Laboratoire (démo)", ["Laboratory User"]),
+	"direction": ("Direction (démo)", ["Healthcare Administrator", "Accounts Manager", "Stock Manager"]),
 }
 
 
@@ -759,8 +762,9 @@ def utilisateurs():
 
 		chemin = frappe.get_site_path("private", "demo_users.txt")
 		os.makedirs(os.path.dirname(chemin), exist_ok=True)
+		anciennes = open(chemin).read().splitlines() if os.path.exists(chemin) else []
 		with open(chemin, "w") as f:
-			f.write("\n".join(lignes) + "\n")
+			f.write("\n".join(anciennes + lignes) + "\n")
 		os.chmod(chemin, 0o600)
 		return f"{len(lignes)} comptes créés (identifiants dans {chemin})"
 	return "déjà créés"
@@ -774,6 +778,9 @@ PROFILS = {
 	"reception": ("Profil Réception", {"Healthcare", "MedMa", "Accounts"}, "Réception"),
 	"pharmacie": ("Profil Pharmacie", {"Healthcare", "Stock", "Selling", "MedMa"}, "Pharmacie"),
 	"compta": ("Profil Comptabilité", {"Accounts", "MedMa"}, "Tableau de bord"),
+	"infirmier": ("Profil Infirmier", {"Healthcare"}, "Soins infirmiers"),
+	"labo": ("Profil Laboratoire", {"Healthcare"}, "Laboratoire"),
+	"direction": ("Profil Direction", {"Healthcare", "MedMa", "Accounts", "Stock"}, "Tableau de bord"),
 }
 
 
