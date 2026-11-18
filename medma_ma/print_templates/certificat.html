@@ -1,0 +1,46 @@
+{% include "_style.html" %}
+{%- set pr = frappe.get_doc("Healthcare Practitioner", doc.practitioner) -%}
+{%- set pat = frappe.get_doc("Patient", doc.patient) -%}
+{%- set cos = frappe.get_all("Company", pluck="name", limit=1) -%}
+{%- set co = frappe.get_doc("Company", cos[0]) if cos else none -%}
+{%- set depts = {"Cardiology": "Cardiologie", "Gynaecology": "Gynécologie"} -%}
+<div class="mm">
+  <div class="hdr">
+    <div>
+      <h2>Dr {{ pr.practitioner_name }}</h2>
+      <div>{{ depts.get(pr.department, pr.department) or "" }}</div>
+      {% if pr.mobile_phone %}<div class="muted">Tél : {{ pr.mobile_phone }}</div>{% endif %}
+    </div>
+    <div style="text-align:right">
+      <b>{{ co.company_name if co else "" }}</b>
+      {% if co and co.get("ice") %}<div class="muted">ICE : {{ co.ice }}</div>{% endif %}
+    </div>
+  </div>
+
+  <div class="title">{{ doc.type_certificat | upper }}<span class="ar">
+    {%- if doc.type_certificat == "Arrêt de travail" %}شهادة توقف عن العمل
+    {%- elif doc.type_certificat == "Certificat d'aptitude" %}شهادة القدرة
+    {%- elif doc.type_certificat == "Certificat de présence" %}شهادة حضور
+    {%- elif doc.type_certificat == "Dispense sportive" %}إعفاء من الرياضة
+    {%- else %}شهادة طبية{% endif -%}</span></div>
+
+  <p style="font-size:14px;line-height:1.8;margin:18px 0">
+    Je soussigné(e), <b>Dr {{ pr.practitioner_name }}</b>, certifie avoir examiné ce jour
+    <b>{{ pat.patient_name }}</b>{% if pat.get("cin") %} (CIN : {{ pat.cin }}){% endif %}{% if pat.get("dob") %}, né(e) le {{ frappe.utils.formatdate(pat.dob) }}{% endif %}.
+    {% if doc.motif %}<br>{{ doc.motif }}{% endif %}
+    {% if doc.type_certificat == "Arrêt de travail" %}
+      <br>Son état de santé nécessite un arrêt de travail de <b>{{ doc.nombre_jours }} jour(s)</b>,
+      du <b>{{ frappe.utils.formatdate(doc.debut) }}</b> au <b>{{ frappe.utils.formatdate(doc.fin) }}</b> inclus, sauf complication.
+    {% elif doc.type_certificat == "Dispense sportive" %}
+      <br>Une dispense de sport est accordée pour <b>{{ doc.nombre_jours }} jour(s)</b>,
+      du <b>{{ frappe.utils.formatdate(doc.debut) }}</b> au <b>{{ frappe.utils.formatdate(doc.fin) }}</b>.
+    {% elif doc.type_certificat == "Certificat d'aptitude" %}
+      <br>Il/elle ne présente, à ce jour, aucune contre-indication apparente à l'activité envisagée.
+    {% endif %}
+  </p>
+  {% if doc.observations %}<div class="box"><b>Observations :</b> {{ doc.observations }}</div>{% endif %}
+  <p>Certificat établi le {{ frappe.utils.formatdate(doc.date_certificat) }}, remis à l'intéressé(e) pour servir et valoir ce que de droit.</p>
+
+  <div class="sign">Signature et cachet<br><br><br>Dr {{ pr.practitioner_name }}</div>
+  <div class="foot">Document généré par MedMa — N° {{ doc.name }}</div>
+</div>

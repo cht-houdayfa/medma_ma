@@ -32,6 +32,7 @@ Idempotent : relancé, il ne duplique rien. Les identifiants des 4 comptes de d�
 | Comptes | médecin, infirmier, laboratoire, réception, pharmacie, comptabilité, direction (rôles distincts, menus et page d'accueil adaptés) |
 | Documents imprimables | **Ordonnance**, **Facture** (part organisme / part patient, ICE-IF-RC-Patente) et **Bordereau de remboursement**, en français avec titres arabes |
 | Pilotage | Espace **Tableau de bord** : chiffre d'affaires, créances, rendez-vous par praticien, part des organismes, rapport **Créances par organisme** |
+| Certificats médicaux | 4 certificats (arrêt de travail, médical, aptitude, dispense sportive) avec calcul des jours et impression **Certificat MedMa** (FR + titre arabe) ; création réservée au médecin |
 | Rappel patient | Bouton **Rappel WhatsApp** sur le rendez-vous (message FR + AR prêt à envoyer) |
 
 ## Parcours de présentation (≈ 20 min)
@@ -59,7 +60,7 @@ Idempotent : relancé, il ne duplique rien. Les identifiants des 4 comptes de d�
 
 ## Qualité et exploitation
 
-- 21 tests automatisés de la logique métier (`bench --site <site> execute medma_ma.tests.run_all`), exécutés dans
+- 25 tests automatisés de la logique métier (`bench --site <site> execute medma_ma.tests.run_all`), exécutés dans
   une transaction annulée, avec contrôle qu'aucune donnée n'est laissée dans la base.
 - Sauvegarde et **restauration vérifiée** : voir `deploy/BACKUP.md`.
 

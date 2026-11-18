@@ -181,7 +181,7 @@ class TestImpression(Base):
 		self.assertIn("400,00 MAD", html)  # total à payer
 
 
-SURVEILLES = ["Sales Invoice", "Patient", "Customer", "Item", "Organisme Payeur", "Couverture Patient",
+SURVEILLES = ["Certificat Medical", "Sales Invoice", "Patient", "Customer", "Item", "Organisme Payeur", "Couverture Patient",
               "Dossier Remboursement", "Payment Entry", "GL Entry"]
 
 
@@ -225,3 +225,30 @@ class TestPortailEtCartes(Base):
 	def test_formulaires_portail_affichent_la_liste(self):
 		for nom in ("lab-test", "prescription", "patient-appointments"):
 			self.assertEqual(frappe.db.get_value("Web Form", nom, "show_list"), 1, nom)
+
+
+class TestCertificat(Base):
+	def _certificat(self, **kw):
+		prat = frappe.get_all("Healthcare Practitioner", pluck="name", limit=1)[0]
+		return frappe.get_doc({"doctype": "Certificat Medical", "patient": self.patient.name, "practitioner": prat,
+			"type_certificat": "Arrêt de travail", **kw})
+
+	def test_arret_calcule_les_jours(self):
+		c = self._certificat(debut=today(), fin=add_days(today(), 4)).insert(ignore_permissions=True)
+		self.assertEqual(c.nombre_jours, 5)
+
+	def test_arret_exige_les_dates_et_leur_ordre(self):
+		with self.assertRaises(frappe.ValidationError):
+			self._certificat().insert(ignore_permissions=True)
+		with self.assertRaises(frappe.ValidationError):
+			self._certificat(debut=today(), fin=add_days(today(), -1)).insert(ignore_permissions=True)
+
+	def test_certificat_simple_sans_periode(self):
+		c = self._certificat(type_certificat="Certificat médical", debut=today(), fin=today()).insert(ignore_permissions=True)
+		self.assertEqual((c.nombre_jours, c.debut), (0, None))
+
+	def test_impression(self):
+		c = self._certificat(debut=today(), fin=add_days(today(), 1)).insert(ignore_permissions=True)
+		html = frappe.get_print("Certificat Medical", c.name, print_format="Certificat MedMa")
+		self.assertIn("ARRÊT DE TRAVAIL", html)
+		self.assertIn("2 jour(s)", html)

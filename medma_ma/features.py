@@ -27,6 +27,7 @@ FORMATS = [
 	("Ordonnance MedMa", "Patient Encounter", "ordonnance.html"),
 	("Facture MedMa", "Sales Invoice", "facture.html"),
 	("Bordereau MedMa", "Dossier Remboursement", "bordereau.html"),
+	("Certificat MedMa", "Certificat Medical", "certificat.html"),
 ]
 
 
@@ -375,6 +376,7 @@ GUIDE = [
     ("Médecin", "Espace « Cabinet médecin »",
      ["Rendez-vous du jour → ouvrir un patient → Consultation → ordonnance (marque + générique).",
       "Prescrire une analyse ; Imprimer → « Ordonnance MedMa » (PDF).",
+      "Certificats médicaux → Nouveau : arrêt de travail (jours calculés) ; Imprimer → « Certificat MedMa ».",
       "Carte « Analyses à valider » : résultats en attente."]),
     ("Réception", "Espace « Réception »",
      ["Nouveau patient (CIN, couverture CNSS/CNOPS/AMO) ; prendre un rendez-vous.",

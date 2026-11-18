@@ -913,6 +913,30 @@ def journee_en_cours():
 	return f"{n_rdv} rdv du jour, {n_lab} analyses en attente, {n_stock} médicaments en stock bas"
 
 
+@step("certificats médicaux")
+def certificats():
+	if frappe.db.count("Certificat Medical") >= 4:
+		return "déjà créés"
+	pracs, pats = _praticiens(), _patients()
+	modeles = [
+		("Arrêt de travail", 3, "Syndrome grippal fébrile nécessitant du repos."),
+		("Certificat médical", 0, "Consultation de ce jour ; état de santé compatible avec les activités habituelles."),
+		("Certificat d'aptitude", 0, "Examen clinique sans anomalie."),
+		("Dispense sportive", 7, "Entorse de la cheville."),
+	]
+	for i, (typ, jours, motif) in enumerate(modeles):
+		debut = today()
+		doc = {
+			"doctype": "Certificat Medical", "patient": pats[(i * 3 + 2) % len(pats)].name,
+			"practitioner": pracs[i % len(pracs)].name, "date_certificat": today(), "type_certificat": typ,
+			"motif": motif,
+		}
+		if jours:
+			doc.update({"debut": debut, "fin": add_days(debut, jours - 1)})
+		frappe.get_doc(doc).insert(ignore_permissions=True)
+	return "4 certificats (arrêt de travail, médical, aptitude, dispense)"
+
+
 def load_demo():
 	"""Point d'entrée : bench --site <site> execute medma_ma.demo.load_demo"""
 	frappe.flags.mute_emails = True
@@ -923,7 +947,7 @@ def load_demo():
 	frappe.db.commit()
 	for fn in (
 		ref_data, service_units, consultation_items, practitioners, lab_templates, medications, stock, patients,
-		parcours, resultats_labo, facturation, dossiers, corriger_prescriptions, valider_consultations, hospitalisation, journee_en_cours, utilisateurs, portail_patient, identifiants_societe, profils_modules,
+		parcours, resultats_labo, facturation, dossiers, corriger_prescriptions, valider_consultations, hospitalisation, journee_en_cours, certificats, utilisateurs, portail_patient, identifiants_societe, profils_modules,
 	):
 		fn()
 	echecs = [m for m in LOG if m.startswith("FAIL")]

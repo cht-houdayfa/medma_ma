@@ -101,6 +101,7 @@ ESPACES = [
             ("Patients", "Patient"),
             ("Rendez-vous", "Patient Appointment"),
             ("Consultations", "Patient Encounter"),
+            ("Certificats médicaux", "Certificat Medical"),
             ("Analyses", "Lab Test"),
             ("Constantes", "Vital Signs"),
             ("Hospitalisations", "Inpatient Record"),
@@ -120,6 +121,7 @@ ESPACES = [
             ("Factures", "Sales Invoice"),
             ("Paiements", "Payment Entry"),
             ("Couvertures patient", "Couverture Patient"),
+            ("Certificats médicaux", "Certificat Medical"),
         ],
     },
     {

@@ -1,0 +1,33 @@
+{
+ "doctype": "DocType",
+ "name": "Certificat Medical",
+ "module": "MedMa",
+ "custom": 0,
+ "engine": "InnoDB",
+ "field_order": ["patient", "practitioner", "date_certificat", "type_certificat", "col1", "debut", "fin", "nombre_jours", "section_texte", "motif", "observations"],
+ "fields": [
+  {"fieldname": "patient", "label": "Patient", "fieldtype": "Link", "options": "Patient", "reqd": 1, "in_list_view": 1, "in_standard_filter": 1},
+  {"fieldname": "practitioner", "label": "Praticien", "fieldtype": "Link", "options": "Healthcare Practitioner", "reqd": 1, "in_list_view": 1, "in_standard_filter": 1},
+  {"fieldname": "date_certificat", "label": "Date du certificat", "fieldtype": "Date", "default": "Today", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "type_certificat", "label": "Type de certificat", "fieldtype": "Select", "options": "Certificat médical\nArrêt de travail\nCertificat d'aptitude\nCertificat de présence\nDispense sportive", "default": "Certificat médical", "reqd": 1, "in_list_view": 1, "in_standard_filter": 1},
+  {"fieldname": "col1", "fieldtype": "Column Break"},
+  {"fieldname": "debut", "label": "Du", "fieldtype": "Date", "depends_on": "eval:doc.type_certificat=='Arrêt de travail' || doc.type_certificat=='Dispense sportive'"},
+  {"fieldname": "fin", "label": "Au", "fieldtype": "Date", "depends_on": "eval:doc.type_certificat=='Arrêt de travail' || doc.type_certificat=='Dispense sportive'"},
+  {"fieldname": "nombre_jours", "label": "Nombre de jours", "fieldtype": "Int", "read_only": 1},
+  {"fieldname": "section_texte", "fieldtype": "Section Break"},
+  {"fieldname": "motif", "label": "Motif / constatation", "fieldtype": "Small Text"},
+  {"fieldname": "observations", "label": "Observations", "fieldtype": "Small Text"}
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "permissions": [
+  {"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1, "print": 1, "report": 1, "export": 1},
+  {"role": "Physician", "read": 1, "write": 1, "create": 1, "delete": 1, "print": 1, "email": 1, "report": 1},
+  {"role": "Nursing User", "read": 1},
+  {"role": "Healthcare Administrator", "read": 1, "print": 1, "report": 1}
+ ],
+ "track_changes": 1,
+ "autoname": "format:CERT-{YYYY}-{#####}",
+ "naming_rule": "Expression",
+ "title_field": "patient"
+}
