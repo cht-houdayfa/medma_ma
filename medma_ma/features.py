@@ -70,7 +70,7 @@ CARTES_BORD = {
 		"aggregate_function_based_on": "outstanding_amount",
 		"filters_json": [["Sales Invoice", "docstatus", "=", 1]],
 	},
-	"Patients enregistrés": {"document_type": "Patient", "function": "Count", "filters_json": []},
+	"Factures émises": {"document_type": "Sales Invoice", "function": "Count", "filters_json": [["Sales Invoice", "docstatus", "=", 1]]},
 }
 
 GRAPHIQUES = {
@@ -127,7 +127,7 @@ REPORT_CREANCES = {
 	),
 }
 
-ANCIENNES_CARTES = ["Chiffre d'affaires du mois"]
+ANCIENNES_CARTES = ["Chiffre d'affaires du mois", "Patients enregistrés"]
 
 
 def ensure_dashboard():
@@ -327,6 +327,7 @@ def ensure_all():
 	ensure_client_scripts_dossier()
 	ensure_client_scripts_couverture()
 	ensure_branding()
+	ensure_guide()
 
 
 # --- Thème et identité visuelle -------------------------------------------------------------------
@@ -365,3 +366,43 @@ def ensure_branding():
     for ligne in nav.help_dropdown:
         ligne.hidden = 1
     nav.save(ignore_permissions=True)
+
+
+# --- Guide de démonstration par rôle ----------------------------------------------------------------
+
+GUIDE = [
+    ("Médecin", "Espace « Cabinet médecin »",
+     ["Rendez-vous du jour → ouvrir un patient → Consultation → ordonnance (marque + générique).",
+      "Prescrire une analyse ; Imprimer → « Ordonnance MedMa » (PDF).",
+      "Carte « Analyses à valider » : résultats en attente."]),
+    ("Réception", "Espace « Réception »",
+     ["Nouveau patient (CIN, couverture CNSS/CNOPS/AMO) ; prendre un rendez-vous.",
+      "Facture : choisir la couverture, part organisme / part patient calculées seules ; Imprimer → « Facture MedMa ».",
+      "Encaisser la part patient (Paiement)."]),
+    ("Pharmacie", "Espace « Pharmacie »",
+     ["Carte « Médicaments en stock bas » (2 médicaments sous 50 unités).",
+      "Niveaux de stock, mouvement de stock (réception / sortie), prescriptions à délivrer."]),
+    ("Comptabilité", "Espaces « Tableau de bord » et « MedMa »",
+     ["Chiffre d'affaires, créances, rapport « Créances par organisme ».",
+      "Dossier de remboursement : Charger les factures → Marquer comme envoyé → Enregistrer un paiement ; Imprimer → « Bordereau MedMa »."]),
+]
+
+
+def ensure_guide():
+    import json
+
+    esc = frappe.utils.escape_html
+    contenu = [{"id": "gh", "type": "header", "data": {"text": '<span class="h4"><b>Guide de démonstration</b></span>', "col": 12}},
+               {"id": "gp", "type": "paragraph", "data": {"text": "Chaque rôle voit uniquement son propre menu. Données 100 % fictives ; connectez-vous avec les comptes demo.* (médecin, réception, pharmacie, compta).", "col": 12}}]
+    for i, (role, espace, etapes) in enumerate(GUIDE):
+        contenu.append({"id": f"r{i}", "type": "header", "data": {"text": f'<span class="h5"><b>{esc(role)}</b> — {esc(espace)}</span>', "col": 12}})
+        for j, e in enumerate(etapes):
+            contenu.append({"id": f"r{i}_{j}", "type": "paragraph", "data": {"text": f"• {esc(e)}", "col": 12}})
+    valeurs = {"label": "Guide démo", "title": "Guide démo", "module": "Desk", "public": 1, "is_hidden": 0,
+               "icon": "book", "content": json.dumps(contenu, ensure_ascii=False)}
+    if frappe.db.exists("Workspace", "Guide démo"):
+        ws = frappe.get_doc("Workspace", "Guide démo")
+        ws.update(valeurs)
+        ws.save(ignore_permissions=True)
+    else:
+        frappe.get_doc({"doctype": "Workspace", "name": "Guide démo", **valeurs}).insert(ignore_permissions=True)

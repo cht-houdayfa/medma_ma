@@ -75,6 +75,11 @@ def after_install_and_migrate():
 
 
 CARTES = {
+    "Rendez-vous du jour": (
+        "Patient Appointment",
+        [["Patient Appointment", "status", "in", ["Scheduled", "Open"]], ["Patient Appointment", "appointment_date", "Timespan", "today"]],
+    ),
+    "Médicaments en stock bas": ("Bin", [["Bin", "actual_qty", "<", 50]]),
     "Rendez-vous à venir": ("Patient Appointment", [["Patient Appointment", "status", "=", "Scheduled"]]),
     "Patients hospitalisés": ("Inpatient Record", [["Inpatient Record", "status", "=", "Admitted"]]),
     "Analyses à valider": ("Lab Test", [["Lab Test", "docstatus", "=", 0]]),
@@ -90,7 +95,7 @@ ESPACES = [
         "module": "Healthcare",
         "icon": "stethoscope",
         "roles": ["Physician", "Nursing User", "Laboratory User", "System Manager"],
-        "cartes": ["Rendez-vous à venir", "Patients hospitalisés", "Analyses à valider"],
+        "cartes": ["Rendez-vous du jour", "Analyses à valider", "Patients hospitalisés"],
         "titre": "Mon cabinet",
         "raccourcis": [
             ("Patients", "Patient"),
@@ -107,7 +112,7 @@ ESPACES = [
         "module": "Healthcare",
         "icon": "users",
         "roles": ["Healthcare Administrator", "Accounts User", "System Manager"],
-        "cartes": ["Rendez-vous à venir", "Factures non soldées"],
+        "cartes": ["Rendez-vous du jour", "Rendez-vous à venir", "Factures non soldées"],
         "titre": "Accueil et facturation",
         "raccourcis": [
             ("Patients", "Patient"),
@@ -115,6 +120,21 @@ ESPACES = [
             ("Factures", "Sales Invoice"),
             ("Paiements", "Payment Entry"),
             ("Couvertures patient", "Couverture Patient"),
+        ],
+    },
+    {
+        "name": "Pharmacie",
+        "module": "Stock",
+        "icon": "pill",
+        "roles": ["Stock User", "Stock Manager", "Healthcare Administrator", "System Manager"],
+        "cartes": ["Médicaments en stock bas"],
+        "titre": "Pharmacie et stock",
+        "raccourcis": [
+            ("Médicaments (articles)", "Item"),
+            ("Mouvements de stock", "Stock Entry"),
+            ("Niveaux de stock", "Bin"),
+            ("Prescriptions", "Medication Request"),
+            ("Patients", "Patient"),
         ],
     },
     {
@@ -140,6 +160,10 @@ def _ensure_cartes():
 
     for label, (dt, filtres) in CARTES.items():
         if frappe.db.exists("Number Card", label):
+            nc = frappe.get_doc("Number Card", label)
+            nc.filters_json = json.dumps(filtres)
+            nc.dynamic_filters_json = None
+            nc.save(ignore_permissions=True)
             continue
         frappe.get_doc(
             {

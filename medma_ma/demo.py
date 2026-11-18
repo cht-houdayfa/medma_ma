@@ -772,8 +772,8 @@ BASE_MODULES = {"Core", "Desk", "Contacts", "Email", "Custom"}
 PROFILS = {
 	"medecin": ("Profil Médecin", {"Healthcare", "MedMa"}, "Cabinet médecin"),
 	"reception": ("Profil Réception", {"Healthcare", "MedMa", "Accounts"}, "Réception"),
-	"pharmacie": ("Profil Pharmacie", {"Healthcare", "Stock", "Selling"}, "Stock"),
-	"compta": ("Profil Comptabilité", {"Accounts", "MedMa"}, "Accounting"),
+	"pharmacie": ("Profil Pharmacie", {"Healthcare", "Stock", "Selling", "MedMa"}, "Pharmacie"),
+	"compta": ("Profil Comptabilité", {"Accounts", "MedMa"}, "Tableau de bord"),
 }
 
 
@@ -817,6 +817,71 @@ def profils_modules():
 	return ", ".join(res)
 
 
+@step("journée en cours (file du jour, analyses en attente, stock bas)")
+def journee_en_cours():
+	c = company()
+	pracs, pats = _praticiens(), _patients()
+	deja = frappe.db.count("Patient Appointment", {"notes": "demo-jour"})
+	n_rdv = 0
+	for i in range(max(0, 6 - deja)):
+		prac = pracs[i % len(pracs)]
+		pat = pats[(i * 2 + 1) % len(pats)]
+		typ = "Consultation générale" if prac.department == "Médecine générale" else "Consultation spécialiste"
+		a = frappe.get_doc(
+			{
+				"doctype": "Patient Appointment",
+				"appointment_type": typ,
+				"appointment_for": "Practitioner",
+				"company": c,
+				"patient": pat.name,
+				"practitioner": prac.name,
+				"appointment_date": today(),
+				"appointment_time": f"{9 + i}:{(i * 15) % 60:02d}:00".rjust(8, "0"),
+				"duration": 20,
+				"status": "Open" if i < 2 else "Scheduled",
+				"notes": "demo-jour",
+			}
+		)
+		a.flags.ignore_validate = True
+		a.flags.ignore_mandatory = True
+		a.insert(ignore_permissions=True)
+		n_rdv += 1
+	# Analyses prescrites mais pas encore validées : alimentent la carte « Analyses à valider » du médecin et du labo.
+	n_lab = 0
+	if frappe.db.count("Lab Test", {"docstatus": 0}) < 3:
+		for i, tpl in enumerate(["Glycémie à jeun", "CRP", "Créatinine"]):
+			try:
+				lt = frappe.get_doc(
+					{"doctype": "Lab Test", "patient": pats[i + 4].name, "patient_sex": pats[i + 4].sex, "template": tpl, "company": c,
+					 "practitioner": _praticiens()[0].name}
+				)
+				lt.insert(ignore_permissions=True)
+				n_lab += 1
+			except Exception as e:  # noqa: BLE001
+				log(f"  (analyse en attente {tpl} : {str(e)[:100]})")
+				frappe.db.rollback()
+	# Deux médicaments sous le seuil de 50 unités : la pharmacie voit l'alerte tout de suite.
+	n_stock = 0
+	wh = f"Magasins - {CTX['abbr']}"
+	if not frappe.db.exists("Stock Entry", {"remarks": "Démo : consommation pharmacie", "docstatus": 1}):
+		se = frappe.get_doc(
+			{
+				"doctype": "Stock Entry",
+				"stock_entry_type": "Material Issue",
+				"company": c,
+				"remarks": "Démo : consommation pharmacie",
+				"items": [
+					{"item_code": MEDICAMENTS[0][5], "qty": 165, "s_warehouse": wh},
+					{"item_code": MEDICAMENTS[2][5], "qty": 180, "s_warehouse": wh},
+				],
+			}
+		)
+		se.insert(ignore_permissions=True)
+		se.submit()
+		n_stock = 2
+	return f"{n_rdv} rdv du jour, {n_lab} analyses en attente, {n_stock} médicaments en stock bas"
+
+
 def load_demo():
 	"""Point d'entrée : bench --site <site> execute medma_ma.demo.load_demo"""
 	frappe.flags.mute_emails = True
@@ -827,7 +892,7 @@ def load_demo():
 	frappe.db.commit()
 	for fn in (
 		ref_data, service_units, consultation_items, practitioners, lab_templates, medications, stock, patients,
-		parcours, resultats_labo, facturation, dossiers, corriger_prescriptions, valider_consultations, hospitalisation, utilisateurs, identifiants_societe, profils_modules,
+		parcours, resultats_labo, facturation, dossiers, corriger_prescriptions, valider_consultations, hospitalisation, journee_en_cours, utilisateurs, identifiants_societe, profils_modules,
 	):
 		fn()
 	echecs = [m for m in LOG if m.startswith("FAIL")]

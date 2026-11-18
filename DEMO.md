@@ -26,6 +26,8 @@ Idempotent : relancé, il ne duplique rien. Les identifiants des 4 comptes de d�
 | Facturation | 30 factures **partagées** (part organisme / part patient), paiements en espèces, 3 créances ouvertes |
 | Remboursement | 4 dossiers : CNSS *payé*, CNOPS *payé partiellement*, AMO Tadamon *envoyé*, assureur privé *brouillon* |
 | Hospitalisation | 2 patients hospitalisés (chambres occupées) |
+| Journée en cours | 6 rendez-vous aujourd'hui, 3 analyses en attente de validation, 2 médicaments en stock bas (alertes visibles dès la connexion) |
+| Guide | Espace **Guide démo** : parcours par rôle (médecin, réception, pharmacie, comptabilité) |
 | Comptes | médecin, réception, pharmacie, comptabilité (rôles distincts, menus adaptés à chaque rôle) |
 | Documents imprimables | **Ordonnance**, **Facture** (part organisme / part patient, ICE-IF-RC-Patente) et **Bordereau de remboursement**, en français avec titres arabes |
 | Pilotage | Espace **Tableau de bord** : chiffre d'affaires, créances, rendez-vous par praticien, part des organismes, rapport **Créances par organisme** |
