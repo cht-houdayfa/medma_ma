@@ -22,3 +22,9 @@ bench --site <site> execute medma_ma.importer.importer_analyses   --kwargs "{'fi
 - Les lignes invalides sont ignorées et listées avec leur numéro ; `dry_run: 1` n'écrit rien.
 - Le médecin choisit ensuite médicaments et analyses dans ces listes lors de la consultation.
 - La conformité au catalogue officiel dépend du fichier fourni, pas du logiciel : à faire valider par le client.
+
+## Listes à compléter
+
+`deploy/import/medicaments.a-completer.csv` et `analyses.a-completer.csv` contiennent des molécules (DCI) et analyses courantes
+**sans noms commerciaux, prix ni codes** : ces colonnes sont volontairement vides car elles doivent venir de la source officielle
+ou du client. L'import refuse les lignes incomplètes et les liste, donc rien d'inventé n'entre dans la base.

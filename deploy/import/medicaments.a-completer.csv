@@ -1,0 +1,26 @@
+nom_commercial;dci;dosage;unite;forme;classe;ppv;prix_achat;code
+;Paracétamol;500;mg;Comprimé;Antalgique;;;
+;Paracétamol;1000;mg;Comprimé;Antalgique;;;
+;Ibuprofène;400;mg;Comprimé;Anti-inflammatoire;;;
+;Diclofénac;50;mg;Comprimé;Anti-inflammatoire;;;
+;Amoxicilline;500;mg;Gélule;Antibiotique;;;
+;Amoxicilline + acide clavulanique;1000;mg;Comprimé;Antibiotique;;;
+;Azithromycine;500;mg;Comprimé;Antibiotique;;;
+;Ciprofloxacine;500;mg;Comprimé;Antibiotique;;;
+;Céfixime;200;mg;Comprimé;Antibiotique;;;
+;Métronidazole;500;mg;Comprimé;Antibiotique;;;
+;Oméprazole;20;mg;Gélule;Inhibiteur de la pompe à protons;;;
+;Ésoméprazole;40;mg;Comprimé;Inhibiteur de la pompe à protons;;;
+;Metformine;850;mg;Comprimé;Antidiabétique;;;
+;Gliclazide;60;mg;Comprimé;Antidiabétique;;;
+;Amlodipine;5;mg;Comprimé;Antihypertenseur;;;
+;Périndopril;5;mg;Comprimé;Antihypertenseur;;;
+;Bisoprolol;5;mg;Comprimé;Antihypertenseur;;;
+;Losartan;50;mg;Comprimé;Antihypertenseur;;;
+;Hydrochlorothiazide;25;mg;Comprimé;Antihypertenseur;;;
+;Atorvastatine;20;mg;Comprimé;Hypolipémiant;;;
+;Acide acétylsalicylique;100;mg;Comprimé;Antiagrégant;;;
+;Lévothyroxine;100;µg;Comprimé;Hormone thyroïdienne;;;
+;Salbutamol;100;µg;Aérosol;Bronchodilatateur;;;
+;Cétirizine;10;mg;Comprimé;Antihistaminique;;;
+;Prednisolone;20;mg;Comprimé;Corticoïde;;;
