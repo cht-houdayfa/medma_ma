@@ -275,3 +275,14 @@ def ensure_permissions():
         if not existe:
             add_permission("Healthcare Settings", role, 0, "read")
     frappe.clear_cache(doctype="Healthcare Settings")
+
+    # Listes de choix de la consultation : le médecin sélectionne médicaments et analyses dans les catalogues (lecture seule).
+    catalogues = {
+        "Medication": ("Physician", "Nursing User", "Laboratory User"),
+        "Lab Test Template": ("Physician", "Nursing User"),
+    }
+    for dt, roles in catalogues.items():
+        for role in roles:
+            if not frappe.db.exists("Custom DocPerm", {"parent": dt, "role": role, "permlevel": 0}):
+                add_permission(dt, role, 0, "read")
+        frappe.clear_cache(doctype=dt)

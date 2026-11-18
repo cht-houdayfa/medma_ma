@@ -252,3 +252,16 @@ class TestCertificat(Base):
 		html = frappe.get_print("Certificat Medical", c.name, print_format="Certificat MedMa")
 		self.assertIn("ARRÊT DE TRAVAIL", html)
 		self.assertIn("2 jour(s)", html)
+
+
+class TestCataloguesConsultation(Base):
+	def test_medecin_choisit_medicaments_et_analyses_dans_les_listes(self):
+		from frappe.desk.search import search_link
+
+		frappe.set_user("demo.medecin@chtmed.ma")
+		try:
+			self.assertTrue(search_link("Medication", ""))
+			self.assertTrue(search_link("Lab Test Template", ""))
+			self.assertFalse(frappe.has_permission("Medication", "write"))
+		finally:
+			frappe.set_user("Administrator")
