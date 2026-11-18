@@ -770,6 +770,30 @@ def utilisateurs():
 	return "déjà créés"
 
 
+@step("compte patient (portail)")
+def portail_patient():
+	import os
+	import secrets
+
+	email = "demo.patient@chtmed.ma"
+	pat = next((p for p in _patients() if frappe.db.exists("Lab Test", {"patient": p.name, "docstatus": 1})), _patients()[0])
+	if not frappe.db.exists("User", email):
+		mdp = secrets.token_urlsafe(9)
+		frappe.get_doc(
+			{
+				"doctype": "User", "email": email, "first_name": pat.patient_name, "user_type": "Website User",
+				"language": "fr", "send_welcome_email": 0, "new_password": mdp, "roles": [{"role": "Patient"}],
+			}
+		).insert(ignore_permissions=True)
+		chemin = frappe.get_site_path("private", "demo_users.txt")
+		with open(chemin, "a") as f:
+			f.write(f"{email}  {mdp}\n")
+		os.chmod(chemin, 0o600)
+	# Healthcare relie l'utilisateur du portail à son dossier par l'e-mail du patient.
+	frappe.db.set_value("Patient", pat.name, {"user_id": email, "email": email}, update_modified=False)
+	return f"portail lié au patient {pat.patient_name}"
+
+
 # Modules visibles par rôle (tous les autres sont masqués via un Module Profile).
 # Core/Desk/Contacts/Email restent accessibles : profil utilisateur, ToDo, notifications.
 BASE_MODULES = {"Core", "Desk", "Contacts", "Email", "Custom"}
@@ -899,7 +923,7 @@ def load_demo():
 	frappe.db.commit()
 	for fn in (
 		ref_data, service_units, consultation_items, practitioners, lab_templates, medications, stock, patients,
-		parcours, resultats_labo, facturation, dossiers, corriger_prescriptions, valider_consultations, hospitalisation, journee_en_cours, utilisateurs, identifiants_societe, profils_modules,
+		parcours, resultats_labo, facturation, dossiers, corriger_prescriptions, valider_consultations, hospitalisation, journee_en_cours, utilisateurs, portail_patient, identifiants_societe, profils_modules,
 	):
 		fn()
 	echecs = [m for m in LOG if m.startswith("FAIL")]

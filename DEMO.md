@@ -28,6 +28,7 @@ Idempotent : relancé, il ne duplique rien. Les identifiants des 4 comptes de d�
 | Hospitalisation | 2 patients hospitalisés (chambres occupées) |
 | Journée en cours | 6 rendez-vous aujourd'hui, 3 analyses en attente de validation, 2 médicaments en stock bas (alertes visibles dès la connexion) |
 | Guide | Espace **Guide démo** : parcours par rôle (médecin, réception, pharmacie, comptabilité) |
+| Portail patient | Compte `demo.patient` (rôle Patient) : voit uniquement ses propres rendez-vous, analyses et ordonnances sur `/lab-test`, `/prescription`, `/patient-appointments` ; aucun accès au bureau ni aux factures |
 | Comptes | médecin, infirmier, laboratoire, réception, pharmacie, comptabilité, direction (rôles distincts, menus et page d'accueil adaptés) |
 | Documents imprimables | **Ordonnance**, **Facture** (part organisme / part patient, ICE-IF-RC-Patente) et **Bordereau de remboursement**, en français avec titres arabes |
 | Pilotage | Espace **Tableau de bord** : chiffre d'affaires, créances, rendez-vous par praticien, part des organismes, rapport **Créances par organisme** |
@@ -64,8 +65,7 @@ Idempotent : relancé, il ne duplique rien. Les identifiants des 4 comptes de d�
 
 ## Limites à annoncer honnêtement au client
 
-- **Portail patient** (rôle Patient : voir ses rendez-vous, analyses, ordonnances) : non finalisé. Les formulaires web standards de Healthcare
-  s'ouvrent mais leurs listes restent vides ; à développer avant de le proposer.
+- **Portail patient** : version de base (consultation seule de ses rendez-vous, analyses et ordonnances). Pas de prise de rendez-vous en ligne, pas de paiement, pas de notifications.
 - Le format du dossier de remboursement est **interne** : l'échange électronique avec les organismes
   (CNSS, CNOPS…) n'est pas intégré.
 - Les paiements d'organismes sont enregistrés **sur la facture du patient** (comptabilité simplifiée) ;

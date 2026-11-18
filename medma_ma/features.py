@@ -328,6 +328,7 @@ def ensure_all():
 	ensure_client_scripts_couverture()
 	ensure_branding()
 	ensure_guide()
+	ensure_portail()
 
 
 # --- Thème et identité visuelle -------------------------------------------------------------------
@@ -387,6 +388,9 @@ GUIDE = [
       "Le résultat apparaît aussitôt dans le dossier du patient."]),
     ("Direction", "Espace « Tableau de bord »",
      ["Vue d'ensemble : chiffre d'affaires, créances, activité et accès à tous les modules métier."]),
+    ("Patient (portail)", "Portail /lab-test, /prescription, /patient-appointments",
+     ["Se connecter avec demo.patient : le patient ne voit que ses rendez-vous, analyses et ordonnances.",
+      "Aucun accès au bureau, aux factures ni aux dossiers des autres patients."]),
     ("Pharmacie", "Espace « Pharmacie »",
      ["Carte « Médicaments en stock bas » (2 médicaments sous 50 unités).",
       "Niveaux de stock, mouvement de stock (réception / sortie), prescriptions à délivrer."]),
@@ -414,3 +418,18 @@ def ensure_guide():
         ws.save(ignore_permissions=True)
     else:
         frappe.get_doc({"doctype": "Workspace", "name": "Guide démo", **valeurs}).insert(ignore_permissions=True)
+
+
+# --- Portail patient ------------------------------------------------------------------------------
+
+FORMULAIRES_PORTAIL = ["lab-test", "prescription", "patient-appointments"]
+
+
+def ensure_portail():
+    """Les formulaires web de Healthcare s'ouvrent par défaut sur « nouveau » ; on affiche d'abord la liste du patient.
+
+    Le lien utilisateur → patient se fait par l'e-mail du patient (Healthcare cherche Patient.email = utilisateur connecté).
+    """
+    for nom in FORMULAIRES_PORTAIL:
+        if frappe.db.exists("Web Form", nom):
+            frappe.db.set_value("Web Form", nom, "show_list", 1, update_modified=False)
