@@ -252,6 +252,8 @@ class TestCertificat(Base):
 		html = frappe.get_print("Certificat Medical", c.name, print_format="Certificat MedMa")
 		self.assertIn("ARRÊT DE TRAVAIL", html)
 		self.assertIn("2 jour(s)", html)
+		# document français : reste de gauche à droite même imprimé depuis une interface arabe
+		self.assertIn("direction: ltr", html)
 
 
 class TestCataloguesConsultation(Base):
