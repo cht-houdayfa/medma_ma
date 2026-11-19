@@ -449,11 +449,12 @@ CSS_PORTAIL = """
 .web-list-table td { vertical-align: middle; }
 .web-list-table tr:hover td { background: #f7fbfa; }
 .indicator-pill { border-radius: 999px; padding: 3px 10px; font-weight: 600; }
+a[href="/app"], a[href="/desk"] { display: none !important; }
 .mm-portail-note { background: #eef7f5; border-inline-start: 4px solid #0f766e; padding: 12px 16px; border-radius: 8px; color: #134e48; margin-bottom: 16px; }
 """
 
 
-def _polir_formulaire(nom, titre, libelles, colonnes, champs_ajoutes=()):
+def _polir_formulaire(nom, titre, libelles, colonnes, champs_ajoutes=(), masques=()):
     """Formulaire web standard → page patient en lecture seule, titres et colonnes en français.
 
     Frappe refuse d'enregistrer un formulaire standard hors mode développeur : on écrit directement en base.
@@ -479,6 +480,9 @@ def _polir_formulaire(nom, titre, libelles, colonnes, champs_ajoutes=()):
     for champ, libelle in libelles.items():
         frappe.db.set_value("Web Form Field", {"parent": nom, "fieldname": champ},
                             {"label": libelle, "read_only": 1}, update_modified=False)
+    for champ in masques:
+        frappe.db.set_value("Web Form Field", {"parent": nom, "fieldname": champ}, "hidden", 1, update_modified=False)
+    frappe.db.set_value("Web Form", nom, "allow_comments", 0, update_modified=False)
     frappe.db.delete("Web Form List Column", {"parent": nom})
     for i, (champ, typ) in enumerate(colonnes, 1):
         frappe.get_doc({"doctype": "Web Form List Column", "parent": nom, "parenttype": "Web Form",
@@ -516,7 +520,10 @@ def ensure_portail_rendez_vous():
          "patient_sex": "Sexe", "practitioner_name": "Médecin prescripteur", "lab_test_comment": "Commentaires",
          "custom_result": "Résultat", "employee_name": "Technicien de laboratoire", "company": "Établissement"},
         [("submitted_date", "Datetime"), ("lab_test_name", "Data"), ("practitioner_name", "Data"),
-         ("status", "Select")])
+         ("status", "Select")],
+        masques=["patient", "practitioner", "inpatient_record", "report_preference", "requesting_department",
+                 "employee", "employee_designation", "company", "department", "descriptive_test_items",
+                 "organisms", "sensitivity_test_items", "custom_result", "email", "mobile"])
     _polir_formulaire(
         "prescription", "Mes ordonnances",
         {"practitioner": "Praticien", "practitioner_name": "Praticien", "visit_department": "Département",
