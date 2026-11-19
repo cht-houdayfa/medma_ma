@@ -330,6 +330,7 @@ def ensure_all():
 	ensure_branding()
 	ensure_guide()
 	ensure_portail()
+	ensure_ordonnance_ui()
 
 
 # --- Thème et identité visuelle -------------------------------------------------------------------
@@ -435,3 +436,24 @@ def ensure_portail():
     for nom in FORMULAIRES_PORTAIL:
         if frappe.db.exists("Web Form", nom):
             frappe.db.set_value("Web Form", nom, "show_list", 1, update_modified=False)
+
+
+# --- Ordonnance : le médecin choisit l'analyse dans le catalogue -------------------------------------
+
+def ensure_ordonnance_ui():
+    """Dans la consultation, la grille « Lab Tests » affichait « Observation » (modèles vides) ; le choix du catalogue
+    des analyses (Lab Test Template) était caché dans le formulaire de ligne. On met le catalogue en colonne."""
+    reglages = [
+        ("lab_test_code", "in_list_view", "1", "Check"),
+        ("lab_test_code", "label", "Analyse", "Data"),
+        ("observation_template", "in_list_view", "0", "Check"),
+        ("observation_template", "hidden", "1", "Check"),
+    ]
+    for champ, prop, valeur, typ in reglages:
+        frappe.make_property_setter(
+            {"doctype": "Lab Prescription", "doctype_or_field": "DocField", "fieldname": champ,
+             "property": prop, "value": valeur, "property_type": typ},
+            validate_fields_for_doctype=False,
+        )
+    frappe.clear_cache(doctype="Lab Prescription")
+    frappe.clear_cache(doctype="Patient Encounter")

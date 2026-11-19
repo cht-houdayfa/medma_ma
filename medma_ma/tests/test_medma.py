@@ -263,6 +263,11 @@ class TestCataloguesConsultation(Base):
 			self.assertTrue(search_link("Medication", ""))
 			self.assertTrue(search_link("Lab Test Template", ""))
 			self.assertFalse(frappe.has_permission("Medication", "write"))
+			# la ligne d'analyse de la consultation lit aussi ce modèle : sans droit, le formulaire affiche « Pas permis »
+			self.assertTrue(frappe.has_permission("Observation Template", "read"))
+			# la grille d'analyses de la consultation propose le catalogue (colonne « Analyse »)
+			champ = frappe.get_meta("Lab Prescription").get_field("lab_test_code")
+			self.assertEqual((champ.in_list_view, champ.label), (1, "Analyse"))
 		finally:
 			frappe.set_user("Administrator")
 

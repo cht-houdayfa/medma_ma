@@ -280,6 +280,7 @@ def ensure_permissions():
     catalogues = {
         "Medication": ("Physician", "Nursing User", "Laboratory User"),
         "Lab Test Template": ("Physician", "Nursing User"),
+        "Observation Template": ("Physician", "Nursing User", "Laboratory User"),
     }
     for dt, roles in catalogues.items():
         for role in roles:
