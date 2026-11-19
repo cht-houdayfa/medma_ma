@@ -439,6 +439,58 @@ def ensure_portail():
     for nom in FORMULAIRES_PORTAIL:
         if frappe.db.exists("Web Form", nom):
             frappe.db.set_value("Web Form", nom, "show_list", 1, update_modified=False)
+    ensure_portail_rendez_vous()
+
+
+CSS_PORTAIL = """
+.web-form-container, .web-list-container { font-family: inherit; }
+.web-list-header .btn-primary, a.btn[href$="/new"], .list-view-actions .btn-primary { display: none !important; }
+.web-list-table th { background: #f1f5f4; color: #0f4c46; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .03em; }
+.web-list-table td { vertical-align: middle; }
+.web-list-table tr:hover td { background: #f7fbfa; }
+.indicator-pill { border-radius: 999px; padding: 3px 10px; font-weight: 600; }
+.mm-portail-note { background: #eef7f5; border-inline-start: 4px solid #0f766e; padding: 12px 16px; border-radius: 8px; color: #134e48; margin-bottom: 16px; }
+"""
+
+
+def ensure_portail_rendez_vous():
+    """Portail patient : « Mes rendez-vous » en lecture seule, colonnes utiles, sans formulaire de création vide.
+
+    La prise de rendez-vous en ligne n'est pas proposée (le patient n'a pas le droit de créer un rendez-vous) :
+    on l'indique clairement au lieu d'afficher un formulaire inutilisable.
+    """
+    nom = "patient-appointments"
+    if not frappe.db.exists("Web Form", nom):
+        return
+    # formulaire standard : Frappe refuse l'enregistrement hors mode développeur, on écrit donc directement en base
+    frappe.db.set_value("Web Form", nom, {
+        "title": "Mes rendez-vous",
+        "list_title": "Mes rendez-vous",
+        "allow_edit": 0,
+        "allow_delete": 0,
+        "introduction_text": (
+            '<div class="mm-portail-note">Retrouvez ici vos rendez-vous passés et à venir. '
+            "Pour prendre, modifier ou annuler un rendez-vous, contactez la réception de l'établissement.</div>"
+        ),
+        "custom_css": CSS_PORTAIL,
+    }, update_modified=False)
+    libelles = {"patient": "Patient", "practitioner": "Praticien", "appointment_date": "Date",
+                "appointment_time": "Heure", "department": "Département", "appointment_type": "Type",
+                "status": "Statut"}
+    for champ, libelle in libelles.items():
+        frappe.db.set_value("Web Form Field", {"parent": nom, "fieldname": champ},
+                            {"label": libelle, "read_only": 1}, update_modified=False)
+    if not frappe.db.exists("Web Form Field", {"parent": nom, "fieldname": "practitioner_name"}):
+        frappe.get_doc({"doctype": "Web Form Field", "parent": nom, "parenttype": "Web Form",
+                        "parentfield": "web_form_fields", "idx": 8, "fieldname": "practitioner_name",
+                        "fieldtype": "Data", "label": "Praticien", "read_only": 1}).db_insert()
+    frappe.db.delete("Web Form List Column", {"parent": nom})
+    for i, (champ, typ) in enumerate((("appointment_date", "Date"), ("appointment_time", "Data"),
+                                      ("practitioner_name", "Data"), ("department", "Link"), ("status", "Select")), 1):
+        frappe.get_doc({"doctype": "Web Form List Column", "parent": nom, "parenttype": "Web Form",
+                        "parentfield": "list_columns", "idx": i, "fieldname": champ, "fieldtype": typ,
+                        "label": libelles.get(champ, "Praticien")}).db_insert()
+    frappe.clear_document_cache("Web Form", nom)
 
 
 # --- Ordonnance : le médecin choisit l'analyse dans le catalogue -------------------------------------

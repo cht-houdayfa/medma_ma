@@ -24,3 +24,8 @@ add_to_apps_screen = [
 override_doctype_class = {
     "Patient Encounter": "medma_ma.overrides.PatientEncounterMedMa",
 }
+
+# Portail patient : pas de formulaire de création (la prise de rendez-vous en ligne n'est pas proposée)
+website_redirects = [
+	{"source": "/patient-appointments/new", "target": "/patient-appointments"},
+]
