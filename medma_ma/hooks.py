@@ -28,4 +28,6 @@ override_doctype_class = {
 # Portail patient : pas de formulaire de création (la prise de rendez-vous en ligne n'est pas proposée)
 website_redirects = [
 	{"source": "/patient-appointments/new", "target": "/patient-appointments"},
+	{"source": "/lab-test/new", "target": "/lab-test"},
+	{"source": "/prescription/new", "target": "/prescription"},
 ]

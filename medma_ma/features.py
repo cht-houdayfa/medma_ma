@@ -453,44 +453,82 @@ CSS_PORTAIL = """
 """
 
 
-def ensure_portail_rendez_vous():
-    """Portail patient : « Mes rendez-vous » en lecture seule, colonnes utiles, sans formulaire de création vide.
+def _polir_formulaire(nom, titre, libelles, colonnes, champs_ajoutes=()):
+    """Formulaire web standard → page patient en lecture seule, titres et colonnes en français.
 
-    La prise de rendez-vous en ligne n'est pas proposée (le patient n'a pas le droit de créer un rendez-vous) :
-    on l'indique clairement au lieu d'afficher un formulaire inutilisable.
+    Frappe refuse d'enregistrer un formulaire standard hors mode développeur : on écrit directement en base.
     """
-    nom = "patient-appointments"
     if not frappe.db.exists("Web Form", nom):
         return
-    # formulaire standard : Frappe refuse l'enregistrement hors mode développeur, on écrit donc directement en base
     frappe.db.set_value("Web Form", nom, {
-        "title": "Mes rendez-vous",
-        "list_title": "Mes rendez-vous",
-        "allow_edit": 0,
-        "allow_delete": 0,
+        "title": titre, "list_title": titre, "allow_edit": 0, "allow_delete": 0,
         "introduction_text": (
-            '<div class="mm-portail-note">Retrouvez ici vos rendez-vous passés et à venir. '
-            "Pour prendre, modifier ou annuler un rendez-vous, contactez la réception de l'établissement.</div>"
+            '<div class="mm-portail-note">Pour toute question, ou pour prendre, modifier ou annuler un rendez-vous, '
+            "contactez la réception de l'établissement.</div>"
         ),
         "custom_css": CSS_PORTAIL,
     }, update_modified=False)
-    libelles = {"patient": "Patient", "practitioner": "Praticien", "appointment_date": "Date",
-                "appointment_time": "Heure", "department": "Département", "appointment_type": "Type",
-                "status": "Statut"}
+    existants = set(frappe.get_all("Web Form Field", filters={"parent": nom}, pluck="fieldname"))
+    idx = len(existants) + 100
+    for champ, typ in champs_ajoutes:
+        if champ not in existants:
+            idx += 1
+            frappe.get_doc({"doctype": "Web Form Field", "parent": nom, "parenttype": "Web Form",
+                            "parentfield": "web_form_fields", "idx": idx, "fieldname": champ, "fieldtype": typ,
+                            "label": libelles.get(champ, champ), "read_only": 1}).db_insert()
     for champ, libelle in libelles.items():
         frappe.db.set_value("Web Form Field", {"parent": nom, "fieldname": champ},
                             {"label": libelle, "read_only": 1}, update_modified=False)
-    if not frappe.db.exists("Web Form Field", {"parent": nom, "fieldname": "practitioner_name"}):
-        frappe.get_doc({"doctype": "Web Form Field", "parent": nom, "parenttype": "Web Form",
-                        "parentfield": "web_form_fields", "idx": 8, "fieldname": "practitioner_name",
-                        "fieldtype": "Data", "label": "Praticien", "read_only": 1}).db_insert()
     frappe.db.delete("Web Form List Column", {"parent": nom})
-    for i, (champ, typ) in enumerate((("appointment_date", "Date"), ("appointment_time", "Data"),
-                                      ("practitioner_name", "Data"), ("department", "Link"), ("status", "Select")), 1):
+    for i, (champ, typ) in enumerate(colonnes, 1):
         frappe.get_doc({"doctype": "Web Form List Column", "parent": nom, "parenttype": "Web Form",
                         "parentfield": "list_columns", "idx": i, "fieldname": champ, "fieldtype": typ,
-                        "label": libelles.get(champ, "Praticien")}).db_insert()
+                        "label": libelles.get(champ, champ)}).db_insert()
     frappe.clear_document_cache("Web Form", nom)
+
+
+MENU_PORTAIL = {
+    "/personal-details": "Mes informations",
+    "/lab-test": "Mes analyses",
+    "/prescription": "Mes ordonnances",
+    "/patient-appointments": "Mes rendez-vous",
+}
+
+
+def ensure_portail_rendez_vous():
+    """Portail patient : rendez-vous, analyses et ordonnances en lecture seule, menu en français.
+
+    La prise de rendez-vous en ligne n'est pas proposée (le patient n'a pas le droit de créer un rendez-vous) :
+    pas de formulaire de création inutilisable.
+    """
+    _polir_formulaire(
+        "patient-appointments", "Mes rendez-vous",
+        {"patient": "Patient", "practitioner": "Praticien", "practitioner_name": "Praticien",
+         "appointment_date": "Date", "appointment_time": "Heure", "department": "Département",
+         "appointment_type": "Type", "status": "Statut"},
+        [("appointment_date", "Date"), ("appointment_time", "Data"), ("practitioner_name", "Data"),
+         ("department", "Link"), ("status", "Select")],
+        champs_ajoutes=[("practitioner_name", "Data")])
+    _polir_formulaire(
+        "lab-test", "Mes analyses",
+        {"lab_test_name": "Analyse", "department": "Département", "status": "Statut",
+         "submitted_date": "Date du résultat", "patient_name": "Patient", "patient_age": "Âge",
+         "patient_sex": "Sexe", "practitioner_name": "Médecin prescripteur", "lab_test_comment": "Commentaires",
+         "custom_result": "Résultat", "employee_name": "Technicien de laboratoire", "company": "Établissement"},
+        [("submitted_date", "Datetime"), ("lab_test_name", "Data"), ("practitioner_name", "Data"),
+         ("status", "Select")])
+    _polir_formulaire(
+        "prescription", "Mes ordonnances",
+        {"practitioner": "Praticien", "practitioner_name": "Praticien", "visit_department": "Département",
+         "encounter_date": "Date", "encounter_time": "Heure", "drug_prescription": "Médicaments",
+         "lab_test_prescription": "Analyses prescrites", "encounter_comment": "Recommandations",
+         "status": "Statut"},
+        [("encounter_date", "Date"), ("encounter_time", "Data"), ("practitioner_name", "Data")],
+        champs_ajoutes=[("practitioner_name", "Data")])
+    for route, titre in MENU_PORTAIL.items():
+        frappe.db.set_value("Portal Menu Item", {"route": route}, "title", titre, update_modified=False)
+    frappe.db.set_value("Portal Menu Item", {"route": "/newsletters"}, "enabled", 0, update_modified=False)
+    frappe.clear_cache()
 
 
 # --- Ordonnance : le médecin choisit l'analyse dans le catalogue -------------------------------------
