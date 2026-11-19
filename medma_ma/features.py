@@ -92,6 +92,9 @@ GRAPHIQUES = {
 		"document_type": "Patient Appointment",
 		"group_by_type": "Count",
 		"group_by_based_on": "practitioner_name",
+		# un nombre de rendez-vous, pas un montant : sans champ de valeur entier, Frappe affiche « 13.00 د.م. »
+		"value_based_on": "duration",
+		"currency": None,
 		"number_of_groups": 10,
 		"timeseries": 0,
 		"type": "Donut",

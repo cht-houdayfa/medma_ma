@@ -329,3 +329,9 @@ class TestMenusParRole(Base):
 		vus = self._espaces("direction")
 		for attendu in ("Tableau de bord", "Réception", "Laboratoire", "Soins infirmiers", "Pharmacie"):
 			self.assertIn(attendu, vus)
+
+	def test_graphique_rendez_vous_affiche_des_entiers(self):
+		champ = frappe.db.get_value("Dashboard Chart", "Rendez-vous par praticien", "value_based_on")
+		self.assertEqual(frappe.get_meta("Patient Appointment").get_field(champ).fieldtype, "Int")
+		# une devise ferait afficher « 13.00 د.م. » pour un nombre de rendez-vous
+		self.assertFalse(frappe.db.get_value("Dashboard Chart", "Rendez-vous par praticien", "currency"))
