@@ -270,6 +270,8 @@ class TestCataloguesConsultation(Base):
 			# la grille d'analyses de la consultation propose le catalogue (colonne « Analyse »)
 			champ = frappe.get_meta("Lab Prescription").get_field("lab_test_code")
 			self.assertEqual((champ.in_list_view, champ.label), (1, "Analyse"))
+			# prescription par DCI : la marque n'est pas obligatoire (sinon « Drug Code is mandatory » dès que le médicament a plusieurs marques)
+			self.assertFalse(frappe.get_meta("Drug Prescription").get_field("drug_code").reqd)
 		finally:
 			frappe.set_user("Administrator")
 
@@ -337,3 +339,11 @@ class TestMenusParRole(Base):
 		self.assertEqual(frappe.get_meta("Patient Appointment").get_field(champ).fieldtype, "Int")
 		# une devise ferait afficher « 13.00 د.م. » pour un nombre de rendez-vous
 		self.assertFalse(frappe.db.get_value("Dashboard Chart", "Rendez-vous par praticien", "currency"))
+
+
+class TestPrescriptionParDci(Base):
+	def test_la_marque_n_est_pas_obligatoire(self):
+		doc = frappe.get_doc({"doctype": "Patient Encounter", "drug_prescription": [
+			{"medication": "Amlodipine", "dosage_form": "Comprimé", "period": "1 Week"}]})
+		self.assertEqual(type(doc).__name__, "PatientEncounterMedMa")
+		doc.validate_medications()  # ne doit pas lever « Drug Code is mandatory »
