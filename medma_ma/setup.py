@@ -128,7 +128,7 @@ ESPACES = [
         "name": "Soins infirmiers",
         "module": "Healthcare",
         "icon": "heart",
-        "roles": ["Nursing User", "Healthcare Administrator", "System Manager"],
+        "roles": ["Nursing User", "System Manager"],
         "cartes": ["Rendez-vous du jour", "Patients hospitalisés"],
         "titre": "Soins et hospitalisation",
         "raccourcis": [
@@ -143,7 +143,7 @@ ESPACES = [
         "name": "Laboratoire",
         "module": "Healthcare",
         "icon": "flask",
-        "roles": ["Laboratory User", "Healthcare Administrator", "System Manager"],
+        "roles": ["Laboratory User", "System Manager"],
         "cartes": ["Analyses à valider"],
         "titre": "Analyses et résultats",
         "raccourcis": [

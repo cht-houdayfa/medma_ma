@@ -729,7 +729,7 @@ ROLES_DEMO = {
 	"compta": ("Comptabilité (démo)", ["Accounts Manager", "Accounts User"]),
 	"infirmier": ("Infirmier (démo)", ["Nursing User"]),
 	"labo": ("Laboratoire (démo)", ["Laboratory User"]),
-	"direction": ("Direction (démo)", ["Healthcare Administrator", "Accounts Manager", "Stock Manager"]),
+	"direction": ("Direction (démo)", ["Healthcare Administrator", "Accounts Manager", "Stock Manager", "Nursing User", "Laboratory User"]),
 }
 
 
@@ -741,6 +741,10 @@ def utilisateurs():
 	for cle, (nom, roles) in ROLES_DEMO.items():
 		email = f"demo.{cle}@chtmed.ma"
 		if frappe.db.exists("User", email):
+			u = frappe.get_doc("User", email)
+			manquants = [r for r in roles if r not in {x.role for x in u.roles}]
+			if manquants:
+				u.add_roles(*manquants)
 			continue
 		mdp = secrets.token_urlsafe(9)
 		u = frappe.get_doc(

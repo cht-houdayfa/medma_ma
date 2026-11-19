@@ -208,7 +208,7 @@ def _workspace_bord():
 	ws.set("number_cards", [{"number_card_name": c, "label": c} for c in cartes])
 	ws.set("charts", [{"chart_name": g, "label": g} for g in graphs])
 	ws.set("shortcuts", [{"label": "Créances par organisme", "type": "Report", "link_to": REPORT_CREANCES["name"], "is_query_report": 1}])
-	ws.set("roles", [{"role": r} for r in ("Accounts Manager", "Healthcare Administrator", "System Manager")])
+	ws.set("roles", [{"role": r} for r in ("Accounts Manager", "System Manager")])
 	ws.save(ignore_permissions=True) if ws.get("creation") else ws.insert(ignore_permissions=True)
 
 

@@ -307,3 +307,25 @@ class TestImportCatalogues(Base):
 		self.assertFalse(frappe.db.exists("Lab Test Template", "Test TSH importé"))
 		importer_analyses(src)
 		self.assertEqual(frappe.db.get_value("Lab Test Template", "Test TSH importé", "lab_test_code"), "B999")
+
+
+class TestMenusParRole(Base):
+	def _espaces(self, role):
+		from frappe.desk.desktop import get_workspace_sidebar_items
+
+		frappe.set_user(f"demo.{role}@chtmed.ma")
+		try:
+			return {p["name"] for p in get_workspace_sidebar_items().get("pages", [])}
+		finally:
+			frappe.set_user("Administrator")
+
+	def test_la_reception_ne_voit_ni_pilotage_ni_clinique(self):
+		vus = self._espaces("reception")
+		self.assertIn("Réception", vus)
+		for interdit in ("Tableau de bord", "Laboratoire", "Soins infirmiers"):
+			self.assertNotIn(interdit, vus)
+
+	def test_la_direction_voit_tout_le_metier(self):
+		vus = self._espaces("direction")
+		for attendu in ("Tableau de bord", "Réception", "Laboratoire", "Soins infirmiers", "Pharmacie"):
+			self.assertIn(attendu, vus)
