@@ -267,6 +267,7 @@ class TestCataloguesConsultation(Base):
 			self.assertFalse(frappe.has_permission("Medication", "write"))
 			# la ligne d'analyse de la consultation lit aussi ce modèle : sans droit, le formulaire affiche « Pas permis »
 			self.assertTrue(frappe.has_permission("Observation Template", "read"))
+			self.assertTrue(frappe.has_permission("Nursing Checklist Template", "read"))
 			# la grille d'analyses de la consultation propose le catalogue (colonne « Analyse »)
 			champ = frappe.get_meta("Lab Prescription").get_field("lab_test_code")
 			self.assertEqual((champ.in_list_view, champ.label), (1, "Analyse"))

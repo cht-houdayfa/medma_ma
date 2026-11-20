@@ -281,6 +281,7 @@ def ensure_permissions():
         "Medication": ("Physician", "Nursing User", "Laboratory User"),
         "Lab Test Template": ("Physician", "Nursing User"),
         "Observation Template": ("Physician", "Nursing User", "Laboratory User"),
+        "Nursing Checklist Template": ("Physician",),
     }
     for dt, roles in catalogues.items():
         for role in roles:
