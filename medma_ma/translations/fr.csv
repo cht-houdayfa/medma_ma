@@ -18,3 +18,206 @@ Gynaecology,Gynécologie
 Biochemistry,Biochimie
 Male,Masculin
 Female,Féminin
+Admission Instructions,Instructions d'admission
+Admission Nursing Checklist Template,Liste de soins infirmiers à l'admission
+Admission Ordered For,Admission prévue le
+Admission Schedule Date,Date d'admission prévue
+Admission Service Unit Type,Type d'unité d'admission
+Admitted Datetime,Date et heure d'admission
+Alcohol Consumption (Past),Consommation d'alcool (passée)
+Alcohol Consumption (Present),Consommation d'alcool (actuelle)
+Allergies,Allergies
+Allow Appointments,Autoriser les rendez-vous
+Allow Overlap,Autoriser le chevauchement
+Allow Video Conferencing,Autoriser la visioconférence
+Appointment Datetime,Date et heure du rendez-vous
+Appointment For,Rendez-vous pour
+Appointment Reminder,Rappel de rendez-vous
+Appointment Type,Type de rendez-vous
+Approved Date,Date d'approbation
+Attach Result,Joindre le résultat
+Billing Item,Article de facturation
+Blood Pressure,Tension artérielle
+Blood Pressure (diastolic),Tension artérielle (diastolique)
+Blood Pressure (systolic),Tension artérielle (systolique)
+Body Temperature,Température corporelle
+Check In,Arrivée
+Check Out,Départ
+Chief Complaint,Motif de consultation
+Clinical Notes,Notes cliniques
+Clinical Procedure Template,Modèle d'acte clinique
+Clinical Procedures,Actes cliniques
+Collection Details,Détails du prélèvement
+Confirmation Message,Message de confirmation
+Consumables,Consommables
+Consumption Details,Détails de consommation
+Container Closure Color,Couleur du bouchon
+Create Sample Collection document for Lab Test,Créer un document de prélèvement pour l'analyse
+Custom Signature in Print,Signature personnalisée à l'impression
+Date of birth,Date de naissance
+Default Prescription Dosage,Posologie par défaut
+Default Prescription Duration,Durée de prescription par défaut
+Descriptive Result,Résultat descriptif
+Descriptive Test Result,Résultat descriptif de l'analyse
+Discharge Date,Date de sortie
+Discharge Instructions,Instructions de sortie
+Discharge Nursing Checklist Template,Liste de soins infirmiers à la sortie
+Disapproval Reason,Motif de refus
+Dosage by Time Interval,Posologie par intervalle de temps
+Drug Name / Description,Médicament / description
+Drug Prescription,Prescription de médicaments
+Duration (In Minutes),Durée (en minutes)
+Employee (Lab Technician),Employé (technicien de laboratoire)
+Encounter Date,Date de la consultation
+Encounter Time,Heure de la consultation
+Exercises,Exercices
+Expected By,Attendu pour le
+Expected Discharge,Sortie prévue
+Expected Length of Stay,Durée de séjour prévue
+Expected Result Date,Date de résultat prévue
+Expected Result Time,Heure de résultat prévue
+Follow Up Date,Date de suivi
+Generic Name,Nom générique
+Get Prescribed Clinical Procedures,Récupérer les actes cliniques prescrits
+Get Prescribed Therapies,Récupérer les thérapies prescrites
+Healthcare Practitioner,Praticien
+Healthcare Practitioner (Primary),Praticien (principal)
+Healthcare Practitioner (Secondary),Praticien (secondaire)
+Healthcare Service Unit,Unité de soins
+Healthcare Service Unit Type,Type d'unité de soins
+Heart Rate / Pulse,Fréquence cardiaque / pouls
+Height (In Meter),Taille (en mètres)
+Identification Number (UID),Numéro d'identification
+Inpatient Occupancy,Occupation hospitalière
+Inpatient Record,Dossier d'hospitalisation
+Inpatient Status,Statut d'hospitalisation
+Interval UOM,Unité d'intervalle
+Invoiced,Facturé
+Lab Technician Designation,Fonction du technicien de laboratoire
+Lab Technician Name,Nom du technicien de laboratoire
+Lab Test Name,Nom de l'analyse
+Lab Tests,Analyses
+Linked Items,Articles liés
+Medical Code,Code médical
+Medical Codes,Codes médicaux
+Medical History,Antécédents médicaux
+Medication,Médicament
+Medication Class,Classe thérapeutique
+Medication Request,Demande de médicament
+Middle Name (optional),Deuxième prénom (facultatif)
+Mobile,Mobile
+Naming Series,Série de numérotation
+National Drug Code,Code national du médicament
+Normal Test Result,Résultat normal de l'analyse
+Nursing Checklist Template,Modèle de liste de soins infirmiers
+Observation,Observation
+Observation Category,Catégorie d'observation
+Observation Method,Méthode d'observation
+Observation Reference Range,Valeurs de référence
+Observation Template,Modèle d'observation
+Occupancy Status,Statut d'occupation
+Occupation,Profession
+Occupational Hazards and Environmental Factors,Risques professionnels et facteurs environnementaux
+Occurrence Date,Date de survenue
+Occurrence Time,Heure de survenue
+Order Description,Description de la prescription
+Order Group,Groupe de prescriptions
+Order History,Historique des prescriptions
+Ordered by Practitioner,Prescrit par le praticien
+Organism Test Result,Résultat de l'analyse (germe)
+Other Risk Factors,Autres facteurs de risque
+Out Patient Consulting Charge,Tarif de consultation externe
+Out Patient Consulting Charge Item,Article du tarif de consultation externe
+Parent Service Unit,Unité parente
+Patient Age,Âge du patient
+Patient Appointment,Rendez-vous patient
+Patient Care Type,Type de prise en charge
+Patient Details,Détails du patient
+Patient Encounter,Consultation
+Patient Instructions,Instructions au patient
+Patient Name,Nom du patient
+Patient Registration,Inscription du patient
+Patient Relation,Lien de parenté
+Phone (Office),Téléphone (bureau)
+Phone (R),Téléphone (domicile)
+Position In Queue,Position dans la file d'attente
+Practitioner Email,E-mail du praticien
+Practitioner Name,Nom du praticien
+Practitioner Schedules,Horaires du praticien
+Practitioner Type,Type de praticien
+Preferred Display Name,Nom d'affichage préféré
+Printed on,Imprimé le
+Procedure Prescription,Prescription d'actes
+Procedure Template,Modèle d'acte
+Reason Reference,Référence du motif
+Referred to Practitioner,Adressé au praticien
+Referring Practitioner,Praticien adressant
+Registration Fee,Frais d'inscription
+Registration Message,Message d'inscription
+Remind Before,Rappeler avant
+Reminded,Rappelé
+Reminder Message,Message de rappel
+Report Preference,Préférence de rapport
+Requested End Time,Heure de fin demandée
+Requested Start Time,Heure de début demandée
+Requesting Department,Département demandeur
+Requesting Practitioner,Médecin prescripteur
+Respiratory rate,Fréquence respiratoire
+Result Date,Date du résultat
+Result Format,Format du résultat
+Result Interpretation,Interprétation du résultat
+Result Period From,Période du résultat : du
+Result Period To,Période du résultat : au
+Result Template,Modèle de résultat
+Review Details,Recommandations
+SMS Sent,SMS envoyé
+Sales Invoice Status,Statut de la facture
+Sample Collection Required,Prélèvement requis
+Sample Collection Time,Heure du prélèvement
+Sample ID,N° d'échantillon
+Sample Status,Statut de l'échantillon
+Sample Type,Type d'échantillon
+Schedule Name,Nom de l'horaire
+Secondary UOM,Unité secondaire
+Sensitivity Test Result,Résultat d'antibiogramme
+Service Request,Demande de service
+Service Unit,Unité de soins
+Service Unit Capacity,Capacité de l'unité
+Service Unit Type,Type d'unité
+Specimen,Prélèvement
+Staff Role,Rôle du personnel
+Strength,Dosage
+Strength UOM,Unité du dosage
+Submitted Date,Date de soumission
+Surgical History,Antécédents chirurgicaux
+Symptoms,Symptômes
+Task Duration,Durée de la tâche
+Task End Time,Heure de fin de la tâche
+Task Start Time,Heure de début de la tâche
+Test Created,Analyse créée
+Test Group,Groupe d'analyses
+Test Template,Modèle d'analyse
+Therapies,Thérapies
+Therapy,Thérapie
+Therapy Plan,Plan de thérapie
+Therapy Type,Type de thérapie
+Time Slots,Créneaux horaires
+Time of Approval,Heure d'approbation
+Time of Result,Heure du résultat
+Tobacco Consumption (Past),Consommation de tabac (passée)
+Tobacco Consumption (Present),Consommation de tabac (actuelle)
+Tongue,Langue
+Total Dispensable Quantity,Quantité totale délivrable
+Valid Number of Days,Nombre de jours de validité
+Weight (In Kilogram),Poids (en kg)
+Worksheet Instructions,Instructions de la feuille de travail
+Update Schedule,Mettre à jour l'horaire
+Create Nursing Tasks,Créer des tâches infirmières
+Registration Item,Article d'inscription
+Link Customer to Patient,Lier le client au patient
+Show Payment Popup,Afficher la fenêtre de paiement
+Number Of Repeats Allowed,Nombre de renouvellements autorisés
+Enable Free Follow-ups,Activer les suivis gratuits
+Italic,Italique
+Underline,Souligné
+Printed,Imprimé
