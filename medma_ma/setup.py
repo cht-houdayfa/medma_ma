@@ -71,6 +71,7 @@ def after_install_and_migrate():
 
     ensure_all()
     ensure_permissions()
+    ensure_permissions_reception()
     restreindre_espaces_admin()
 
 
@@ -287,4 +288,21 @@ def ensure_permissions():
         for role in roles:
             if not frappe.db.exists("Custom DocPerm", {"parent": dt, "role": role, "permlevel": 0}):
                 add_permission(dt, role, 0, "read")
+        frappe.clear_cache(doctype=dt)
+
+
+def ensure_permissions_reception():
+    """La réception inscrit les patients et choisit le praticien du rendez-vous. Healthcare ne donne au rôle
+    « Healthcare Administrator » aucun droit sur Patient : sans cela, « Pas permis » à la création d'un rendez-vous.
+    Le dossier médical (consultations, constantes) reste réservé aux soignants : on n'ouvre que Patient et Praticien."""
+    import frappe
+    from frappe.permissions import add_permission, update_permission_property
+
+    role = "Healthcare Administrator"
+    for dt, droits in {"Patient": ("read", "write", "create", "print", "email", "export", "share", "report"),
+                       "Healthcare Practitioner": ("read",)}.items():
+        if not frappe.db.exists("Custom DocPerm", {"parent": dt, "role": role, "permlevel": 0}):
+            add_permission(dt, role, 0, "read")
+        for droit in droits:
+            update_permission_property(dt, role, 0, droit, 1)
         frappe.clear_cache(doctype=dt)

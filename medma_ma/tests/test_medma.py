@@ -324,6 +324,15 @@ class TestMenusParRole(Base):
 		finally:
 			frappe.set_user("Administrator")
 
+	def test_la_reception_inscrit_les_patients_sans_voir_le_dossier_medical(self):
+		u = "demo.reception@chtmed.ma"
+		self.assertTrue(frappe.has_permission("Patient", "create", user=u))
+		self.assertTrue(frappe.has_permission("Healthcare Practitioner", "read", user=u))
+		self.assertTrue(frappe.has_permission("Patient Appointment", "create", user=u))
+		# secret médical : pas d'accès aux consultations ni aux constantes
+		self.assertFalse(frappe.has_permission("Patient Encounter", "read", user=u))
+		self.assertFalse(frappe.has_permission("Vital Signs", "read", user=u))
+
 	def test_la_reception_ne_voit_ni_pilotage_ni_clinique(self):
 		vus = self._espaces("reception")
 		self.assertIn("Réception", vus)
