@@ -138,6 +138,13 @@ ESPACES = [
         "roles": ["Healthcare Administrator", "Accounts User", "System Manager"],
         "cartes": ["Patients en salle d'attente", "Rendez-vous du jour", "Rendez-vous à venir", "Factures non soldées"],
         "titre": "Accueil et facturation",
+        "actions": [
+            ("Nouveau patient", "/app/patient/new"),
+            ("Nouveau rendez-vous", "/app/patient-appointment/new"),
+            ("Patients arrivés", "/app/patient-appointment?status=Checked%20In"),
+            ("Nouvelle facture", "/app/sales-invoice/new"),
+        ],
+        "rapports": ["Rendez-vous du jour (liste)"],
         "raccourcis": [
             ("Patients", "Patient"),
             ("Rendez-vous", "Patient Appointment"),
@@ -240,9 +247,20 @@ def ensure_workspaces():
     import frappe
 
     _ensure_cartes()
+    from medma_ma.features import ensure_rapport_rdv_jour
+
+    ensure_rapport_rdv_jour()
     for spec in ESPACES:
         content = [{"id": "h", "type": "header", "data": {"text": f'<span class="h4"><b>{spec["titre"]}</b></span>', "col": 12}}]
         content += [{"id": f"c{i}", "type": "number_card", "data": {"number_card_name": c, "col": 4}} for i, c in enumerate(spec["cartes"])]
+        actions = spec.get("actions", [])
+        rapports = spec.get("rapports", [])
+        if actions:
+            content += [{"id": "ha", "type": "header", "data": {"text": '<span class="h5"><b>Actions rapides</b></span>', "col": 12}}]
+            content += [{"id": f"a{i}", "type": "shortcut", "data": {"shortcut_name": lab, "col": 3}} for i, (lab, _) in enumerate(actions)]
+        if rapports:
+            content += [{"id": f"r{i}", "type": "shortcut", "data": {"shortcut_name": lab, "col": 3}} for i, lab in enumerate(rapports)]
+        content += [{"id": "hr", "type": "header", "data": {"text": '<span class="h5"><b>Dossiers</b></span>', "col": 12}}]
         content += [{"id": f"s{i}", "type": "shortcut", "data": {"shortcut_name": lab, "col": 3}} for i, (lab, _) in enumerate(spec["raccourcis"])]
         valeurs = {
             "label": spec["name"],
@@ -258,7 +276,10 @@ def ensure_workspaces():
             ws.update(valeurs)
         else:
             ws = frappe.get_doc({"doctype": "Workspace", "name": spec["name"], **valeurs})
-        ws.set("shortcuts", [{"label": lab, "type": "DocType", "link_to": dt, "doc_view": "List"} for lab, dt in spec["raccourcis"]])
+        raccourcis = [{"label": lab, "type": "URL", "url": url, "color": "green"} for lab, url in spec.get("actions", [])]
+        raccourcis += [{"label": lab, "type": "Report", "link_to": lab, "is_query_report": 1} for lab in spec.get("rapports", [])]
+        raccourcis += [{"label": lab, "type": "DocType", "link_to": dt, "doc_view": "List"} for lab, dt in spec["raccourcis"]]
+        ws.set("shortcuts", raccourcis)
         ws.set("number_cards", [{"number_card_name": c, "label": c} for c in spec["cartes"]])
         ws.set("roles", [{"role": r} for r in spec["roles"]])
         ws.save(ignore_permissions=True) if ws.get("creation") else ws.insert(ignore_permissions=True)

@@ -131,6 +131,40 @@ REPORT_CREANCES = {
 	),
 }
 
+REPORT_RDV_JOUR = {
+	"name": "Rendez-vous du jour (liste)",
+	"query": (
+		"SELECT pa.appointment_time AS `Heure:Time:80`, pa.patient_name AS `Patient:Data:200`, "
+		"pa.practitioner_name AS `Praticien:Data:180`, pa.appointment_type AS `Type:Data:160`, "
+		"CASE pa.status WHEN 'Checked In' THEN 'Arrivé' WHEN 'Open' THEN 'Ouvert' WHEN 'Scheduled' THEN 'Prévu' "
+		"WHEN 'Confirmed' THEN 'Confirmé' WHEN 'Closed' THEN 'Terminé' WHEN 'Cancelled' THEN 'Annulé' "
+		"ELSE pa.status END AS `Statut:Data:100`, pa.name AS `Rendez-vous:Link/Patient Appointment:150` "
+		"FROM `tabPatient Appointment` pa "
+		"WHERE pa.appointment_date = CURDATE() AND pa.status != 'Cancelled' "
+		"ORDER BY pa.appointment_time"
+	),
+}
+
+
+def ensure_rapport_rdv_jour():
+	rep = REPORT_RDV_JOUR
+	valeurs = {
+		"report_name": rep["name"],
+		"ref_doctype": "Patient Appointment",
+		"report_type": "Query Report",
+		"is_standard": "No",
+		"module": "MedMa",
+		"query": rep["query"],
+		"roles": [{"role": r} for r in ("Healthcare Administrator", "Physician", "Nursing User", "System Manager")],
+	}
+	if frappe.db.exists("Report", rep["name"]):
+		r = frappe.get_doc("Report", rep["name"])
+		r.update(valeurs)
+		r.save(ignore_permissions=True)
+	else:
+		frappe.get_doc({"doctype": "Report", **valeurs}).insert(ignore_permissions=True)
+
+
 ANCIENNES_CARTES = ["Chiffre d'affaires du mois", "Patients enregistrés"]
 
 

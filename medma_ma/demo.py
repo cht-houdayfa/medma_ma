@@ -957,3 +957,22 @@ def load_demo():
 	echecs = [m for m in LOG if m.startswith("FAIL")]
 	print(f"\nTerminé : {len(LOG) - len(echecs)} étapes OK, {len(echecs)} en échec.")
 	return echecs
+
+
+def rafraichir_rendez_vous():
+	"""Remet les rendez-vous de démonstration non clos sur les jours ouvrés à venir : la page d'accueil n'est pas vide
+	quand on présente la démo des jours après son chargement. À lancer avant une présentation :
+	bench --site <site> execute medma_ma.demo.rafraichir_rendez_vous"""
+	from frappe.utils import add_days, getdate
+
+	jour, n = getdate(today()), 0
+	noms = frappe.get_all("Patient Appointment", filters={"status": ["in", ["Open", "Scheduled"]],
+	                      "appointment_date": ["<", today()]}, pluck="name", order_by="appointment_date, appointment_time")
+	for i, nom in enumerate(noms):
+		cible = add_days(jour, i // 6)
+		while getdate(cible).weekday() >= 5:  # samedi, dimanche : pas de consultation dans les horaires de la démo
+			cible = add_days(cible, 1)
+		frappe.db.set_value("Patient Appointment", nom, "appointment_date", cible, update_modified=False)
+		n += 1
+	frappe.db.commit()
+	print(f"{n} rendez-vous déplacés vers les prochains jours ouvrés")
