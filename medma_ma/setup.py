@@ -78,7 +78,12 @@ def after_install_and_migrate():
 CARTES = {
     "Rendez-vous du jour": (
         "Patient Appointment",
-        [["Patient Appointment", "status", "in", ["Scheduled", "Open"]], ["Patient Appointment", "appointment_date", "Timespan", "today"]],
+        [["Patient Appointment", "status", "in", ["Scheduled", "Open", "Confirmed", "Checked In"]], ["Patient Appointment", "appointment_date", "Timespan", "today"]],
+    ),
+    # le réceptionniste clique « Patient arrivé » : le patient passe dans cette file, visible par le médecin
+    "Patients en salle d'attente": (
+        "Patient Appointment",
+        [["Patient Appointment", "status", "=", "Checked In"], ["Patient Appointment", "appointment_date", "Timespan", "today"]],
     ),
     "Médicaments en stock bas": ("Bin", [["Bin", "actual_qty", "<", 50]]),
     "Rendez-vous à venir": ("Patient Appointment", [["Patient Appointment", "status", "=", "Scheduled"]]),
@@ -96,7 +101,7 @@ ESPACES = [
         "module": "Healthcare",
         "icon": "stethoscope",
         "roles": ["Physician", "System Manager"],
-        "cartes": ["Rendez-vous du jour", "Analyses à valider", "Patients hospitalisés"],
+        "cartes": ["Patients en salle d'attente", "Rendez-vous du jour", "Analyses à valider", "Patients hospitalisés"],
         "titre": "Mon cabinet",
         "raccourcis": [
             ("Patients", "Patient"),
@@ -114,7 +119,7 @@ ESPACES = [
         "module": "Healthcare",
         "icon": "users",
         "roles": ["Healthcare Administrator", "Accounts User", "System Manager"],
-        "cartes": ["Rendez-vous du jour", "Rendez-vous à venir", "Factures non soldées"],
+        "cartes": ["Patients en salle d'attente", "Rendez-vous du jour", "Rendez-vous à venir", "Factures non soldées"],
         "titre": "Accueil et facturation",
         "raccourcis": [
             ("Patients", "Patient"),
@@ -130,7 +135,7 @@ ESPACES = [
         "module": "Healthcare",
         "icon": "heart",
         "roles": ["Nursing User", "System Manager"],
-        "cartes": ["Rendez-vous du jour", "Patients hospitalisés"],
+        "cartes": ["Patients en salle d'attente", "Rendez-vous du jour", "Patients hospitalisés"],
         "titre": "Soins et hospitalisation",
         "raccourcis": [
             ("Patients", "Patient"),

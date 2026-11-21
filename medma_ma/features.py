@@ -251,6 +251,34 @@ def ensure_client_scripts():
 		frappe.get_doc({"doctype": "Client Script", "name": nom, **valeurs}).insert(ignore_permissions=True)
 
 
+SCRIPT_ARRIVEE = """
+frappe.ui.form.on('Patient Appointment', {
+	refresh(frm) {
+		if (frm.is_new()) return;
+		if (['Open', 'Scheduled', 'Confirmed'].includes(frm.doc.status)) {
+			frm.add_custom_button(__('Patient arrivé'), () => {
+				frm.set_value('status', 'Checked In');
+				frm.save().then(() => frappe.show_alert({message: __('Arrivée enregistrée'), indicator: 'green'}));
+			}).addClass('btn-primary');
+		} else if (frm.doc.status === 'Checked In') {
+			frm.dashboard.set_headline(__('Patient arrivé — en attente de consultation'), 'green');
+		}
+	}
+});
+"""
+
+
+def ensure_client_script_arrivee():
+	nom = "MedMa - Arrivée patient"
+	valeurs = {"dt": "Patient Appointment", "view": "Form", "enabled": 1, "script": SCRIPT_ARRIVEE}
+	if frappe.db.exists("Client Script", nom):
+		cs = frappe.get_doc("Client Script", nom)
+		cs.update(valeurs)
+		cs.save(ignore_permissions=True)
+	else:
+		frappe.get_doc({"doctype": "Client Script", "name": nom, **valeurs}).insert(ignore_permissions=True)
+
+
 SCRIPT_DOSSIER = """
 frappe.ui.form.on('Dossier Remboursement', {
 	refresh(frm) {
@@ -328,6 +356,7 @@ def ensure_all():
 	ensure_print_formats()
 	ensure_dashboard()
 	ensure_client_scripts()
+	ensure_client_script_arrivee()
 	ensure_client_scripts_dossier()
 	ensure_client_scripts_couverture()
 	ensure_branding()
