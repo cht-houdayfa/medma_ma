@@ -1,0 +1,14 @@
+{
+  "url": "https://dev.chtmed.ma",
+  "api_key": "CLE_API_DU_COMPTE_LABORATOIRE",
+  "api_secret": "SECRET_API",
+  "appareil": "Mindray BC-6800",
+  "port": 5000,
+  "dossier_donnees": "donnees",
+  "correspondance": {
+    "GLU": "Glycémie à jeun",
+    "CRP": "CRP",
+    "WBC": "GB (globules blancs)",
+    "HGB": "Hémoglobine"
+  }
+}

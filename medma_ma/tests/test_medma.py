@@ -314,6 +314,55 @@ class TestImportCatalogues(Base):
 		self.assertEqual(frappe.db.get_value("Lab Test Template", "Test TSH importé", "lab_test_code"), "B999")
 
 
+def _agent_lis():
+	import importlib.util
+	import os
+
+	chemin = os.path.join(os.path.dirname(__file__), "..", "..", "deploy", "lis", "lis_agent.py")
+	spec = importlib.util.spec_from_file_location("lis_agent", chemin)
+	mod = importlib.util.module_from_spec(spec)
+	spec.loader.exec_module(mod)
+	return mod
+
+
+class TestLIS(Base):
+	def test_astm_avec_trames_et_hl7_mllp(self):
+		agent = _agent_lis()
+		astm = (b"\x05\x02" b"1H|\\^&|||BC-6800\r" b"P|1\r" b"O|1|HLC-LAB-2026-00001||^^^GLU|R\r"
+		        b"R|1|^^^GLU|5.4|mmol/L|3.9-6.1|N||F\r" b"L|1|N\r\x03" b"00\r\n\x04")
+		ech = agent.analyser(astm)
+		self.assertEqual(ech[0]["echantillon"], "HLC-LAB-2026-00001")
+		self.assertEqual((ech[0]["resultats"][0]["code"], ech[0]["resultats"][0]["valeur"]), ("GLU", "5.4"))
+		hl7 = (b"\x0bMSH|^~\\&|BC|LAB|M|C|2026||ORU^R01|1|P|2.3.1\rOBR|1||HLC-LAB-2026-00002|X\r"
+		       b"OBX|1|NM|WBC^Globules blancs||6.2|10*9/L|4-10|N|||F\rOBX|2|ED|IMG^histo||blob\r\x1c\r")
+		ech = agent.analyser(hl7)
+		self.assertEqual(ech[0]["echantillon"], "HLC-LAB-2026-00002")
+		self.assertEqual(len(ech[0]["resultats"]), 1)  # l'image (ED) est ignorée
+		self.assertEqual(ech[0]["resultats"][0]["libelle"], "Globules blancs")
+
+	def test_resultats_inscrits_en_brouillon_sans_validation(self):
+		from medma_ma.lis import recevoir_resultats
+
+		modele = frappe.db.get_value("Lab Test Template", {"lab_test_name": "CRP"}, "name")
+		analyse = frappe.get_doc({"doctype": "Lab Test", "patient": self.patient.name, "template": modele,
+		                          "company": self.company, "patient_sex": self.patient.sex or "Male"}).insert(ignore_permissions=True)
+		rep = recevoir_resultats(analyse.name, [{"libelle": "CRP", "valeur": "12.5", "reference": "0-5"},
+		                                        {"libelle": "XYZ", "valeur": "1"}], "Test")
+		self.assertEqual(len(rep["appliques"]), 1)
+		self.assertEqual(rep["ignores"][0]["libelle"], "XYZ")  # rien n'est perdu en silence
+		analyse.reload()
+		self.assertEqual(analyse.docstatus, 0)  # jamais validé automatiquement
+		self.assertEqual(analyse.normal_test_items[0].result_value, "12.5")
+		self.assertEqual(analyse.etat_prelevement, "Prélevé - en attente du résultat")
+
+	def test_analyse_validee_refuse_les_resultats(self):
+		from medma_ma.lis import recevoir_resultats
+
+		analyse = frappe.get_all("Lab Test", filters={"docstatus": 1}, pluck="name", limit=1)[0]
+		with self.assertRaises(frappe.ValidationError):
+			recevoir_resultats(analyse, [{"libelle": "CRP", "valeur": "1"}])
+
+
 class TestMenusParRole(Base):
 	def _espaces(self, role):
 		from frappe.desk.desktop import get_workspace_sidebar_items
