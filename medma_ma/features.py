@@ -279,6 +279,39 @@ def ensure_client_script_arrivee():
 		frappe.get_doc({"doctype": "Client Script", "name": nom, **valeurs}).insert(ignore_permissions=True)
 
 
+SCRIPT_PRELEVEMENT = """
+frappe.ui.form.on('Lab Test', {
+	refresh(frm) {
+		if (frm.is_new() || frm.doc.docstatus !== 0) return;
+		if (frm.doc.etat_prelevement === 'Prélevé - en attente du résultat') {
+			frm.dashboard.set_headline(__('Prélevé — en attente du résultat'), 'orange');
+			return;
+		}
+		frm.dashboard.set_headline(__('Échantillon à prélever'), 'blue');
+		frm.add_custom_button(__('Prélèvement effectué'), () => {
+			frappe.confirm(__("Confirmer que l'échantillon a été prélevé ?"), () => {
+				frm.set_value('etat_prelevement', 'Prélevé - en attente du résultat');
+				frm.set_value('date_prelevement', frappe.datetime.now_datetime());
+				frm.set_value('preleve_par', frappe.session.user);
+				frm.save().then(() => frappe.show_alert({message: __('Prélèvement enregistré'), indicator: 'green'}));
+			});
+		}).addClass('btn-primary');
+	}
+});
+"""
+
+
+def ensure_client_script_prelevement():
+	nom = "MedMa - Prélèvement"
+	valeurs = {"dt": "Lab Test", "view": "Form", "enabled": 1, "script": SCRIPT_PRELEVEMENT}
+	if frappe.db.exists("Client Script", nom):
+		cs = frappe.get_doc("Client Script", nom)
+		cs.update(valeurs)
+		cs.save(ignore_permissions=True)
+	else:
+		frappe.get_doc({"doctype": "Client Script", "name": nom, **valeurs}).insert(ignore_permissions=True)
+
+
 SCRIPT_DOSSIER = """
 frappe.ui.form.on('Dossier Remboursement', {
 	refresh(frm) {
@@ -357,6 +390,7 @@ def ensure_all():
 	ensure_dashboard()
 	ensure_client_scripts()
 	ensure_client_script_arrivee()
+	ensure_client_script_prelevement()
 	ensure_client_scripts_dossier()
 	ensure_client_scripts_couverture()
 	ensure_branding()

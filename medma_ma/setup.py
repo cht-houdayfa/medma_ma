@@ -9,6 +9,17 @@ CUSTOM_FIELDS = {
         {"fieldname": "registre_commerce", "label": "RC (registre de commerce)", "fieldtype": "Data", "insert_after": "identifiant_fiscal"},
         {"fieldname": "patente", "label": "Patente", "fieldtype": "Data", "insert_after": "registre_commerce"},
     ],
+    "Lab Test": [
+        {"fieldname": "section_prelevement", "label": "Prélèvement", "fieldtype": "Section Break",
+         "insert_after": "company"},
+        {"fieldname": "etat_prelevement", "label": "État du prélèvement", "fieldtype": "Select",
+         "options": "À prélever\nPrélevé - en attente du résultat", "default": "À prélever", "read_only": 1,
+         "in_standard_filter": 1, "allow_on_submit": 1, "insert_after": "section_prelevement"},
+        {"fieldname": "date_prelevement", "label": "Date et heure du prélèvement", "fieldtype": "Datetime",
+         "read_only": 1, "allow_on_submit": 1, "insert_after": "etat_prelevement"},
+        {"fieldname": "preleve_par", "label": "Prélevé par", "fieldtype": "Link", "options": "User",
+         "read_only": 1, "allow_on_submit": 1, "insert_after": "date_prelevement"},
+    ],
     "Patient": [
         {"fieldname": "cin", "label": "CIN (carte d'identité nationale)", "fieldtype": "Data",
          "insert_after": "sex", "unique": 0, "in_standard_filter": 1},
@@ -65,6 +76,7 @@ def seed_organismes():
 
 def after_install_and_migrate():
     ensure_custom_fields()
+    _initialiser_prelevements()
     seed_organismes()
     ensure_workspaces()
     from medma_ma.features import ensure_all
@@ -89,6 +101,11 @@ CARTES = {
     "Rendez-vous à venir": ("Patient Appointment", [["Patient Appointment", "status", "=", "Scheduled"]]),
     "Patients hospitalisés": ("Inpatient Record", [["Inpatient Record", "status", "=", "Admitted"]]),
     "Analyses à valider": ("Lab Test", [["Lab Test", "docstatus", "=", 0]]),
+    "Prélèvements à faire": (
+        "Lab Test", [["Lab Test", "docstatus", "=", 0], ["Lab Test", "etat_prelevement", "=", "À prélever"]]),
+    "Résultats en attente": (
+        "Lab Test",
+        [["Lab Test", "docstatus", "=", 0], ["Lab Test", "etat_prelevement", "=", "Prélevé - en attente du résultat"]]),
     "Factures non soldées": (
         "Sales Invoice",
         [["Sales Invoice", "docstatus", "=", 1], ["Sales Invoice", "outstanding_amount", ">", 0]],
@@ -150,7 +167,7 @@ ESPACES = [
         "module": "Healthcare",
         "icon": "flask",
         "roles": ["Laboratory User", "System Manager"],
-        "cartes": ["Analyses à valider"],
+        "cartes": ["Prélèvements à faire", "Résultats en attente", "Analyses à valider"],
         "titre": "Analyses et résultats",
         "raccourcis": [
             ("Analyses", "Lab Test"),
@@ -311,3 +328,13 @@ def ensure_permissions_reception():
         for droit in droits:
             update_permission_property(dt, role, 0, droit, 1)
         frappe.clear_cache(doctype=dt)
+
+
+def _initialiser_prelevements():
+    """Les analyses déjà créées avant l'ajout du champ sont considérées « à prélever » tant qu'elles sont en brouillon."""
+    import frappe
+
+    frappe.db.sql(
+        "update `tabLab Test` set etat_prelevement = 'À prélever' "
+        "where docstatus = 0 and (etat_prelevement is null or etat_prelevement = '')"
+    )
