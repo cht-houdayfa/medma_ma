@@ -723,7 +723,7 @@ def hospitalisation():
 
 
 ROLES_DEMO = {
-	"medecin": ("Dr Karim Benjelloun (démo)", ["Physician", "Nursing User", "Laboratory User"]),
+	"medecin": ("Dr Karim Benjelloun (démo)", ["Physician"]),
 	"reception": ("Réception (démo)", ["Healthcare Administrator", "Sales User", "Accounts User"]),
 	"pharmacie": ("Pharmacie (démo)", ["Stock User", "Stock Manager", "Sales User"]),
 	"compta": ("Comptabilité (démo)", ["Accounts Manager", "Accounts User"]),
@@ -742,9 +742,15 @@ def utilisateurs():
 		email = f"demo.{cle}@chtmed.ma"
 		if frappe.db.exists("User", email):
 			u = frappe.get_doc("User", email)
-			manquants = [r for r in roles if r not in {x.role for x in u.roles}]
+			actuels = {x.role for x in u.roles}
+			manquants = [r for r in roles if r not in actuels]
 			if manquants:
 				u.add_roles(*manquants)
+			# un compte ne garde que les rôles de son métier : un rôle en trop ouvre des menus qui ne le concernent pas
+			geres = {r for _, rs in ROLES_DEMO.values() for r in rs}
+			en_trop = [r for r in actuels if r in geres and r not in roles]
+			if en_trop:
+				u.remove_roles(*en_trop)
 			continue
 		mdp = secrets.token_urlsafe(9)
 		u = frappe.get_doc(

@@ -385,8 +385,23 @@ class TestMenusParRole(Base):
 	def test_la_reception_ne_voit_ni_pilotage_ni_clinique(self):
 		vus = self._espaces("reception")
 		self.assertIn("Réception", vus)
-		for interdit in ("Tableau de bord", "Laboratoire", "Soins infirmiers"):
+		# ni pilotage, ni clinique, ni comptabilité complète, ni module Healthcare natif, ni ventes
+		for interdit in ("Tableau de bord", "Laboratoire", "Soins infirmiers", "Accounting", "Payables",
+		                 "Receivables", "Financial Reports", "Healthcare", "Selling"):
 			self.assertNotIn(interdit, vus)
+
+	def test_chaque_metier_ne_voit_que_ses_espaces(self):
+		autorises = {
+			"medecin": {"Cabinet médecin", "Guide démo"},
+			"infirmier": {"Soins infirmiers", "Guide démo"},
+			"labo": {"Laboratoire", "Guide démo"},
+			"pharmacie": {"Pharmacie", "Stock", "Guide démo"},
+			"compta": {"Tableau de bord", "MedMa", "Accounting", "Payables", "Receivables", "Financial Reports",
+			           "Guide démo"},
+		}
+		for role, ok in autorises.items():
+			vus = self._espaces(role)
+			self.assertFalse(vus - ok, f"{role} voit des espaces hors métier : {sorted(vus - ok)}")
 
 	def test_la_direction_voit_tout_le_metier(self):
 		vus = self._espaces("direction")

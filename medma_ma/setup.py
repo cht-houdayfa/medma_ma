@@ -141,7 +141,6 @@ ESPACES = [
         "actions": [
             ("Nouveau patient", "/app/patient/new"),
             ("Nouveau rendez-vous", "/app/patient-appointment/new"),
-            ("Patients arrivés", "/app/patient-appointment?status=Checked%20In"),
             ("Nouvelle facture", "/app/sales-invoice/new"),
         ],
         "rapports": ["Rendez-vous du jour (liste)"],
@@ -201,7 +200,7 @@ ESPACES = [
         "name": "MedMa",
         "module": "MedMa",
         "icon": "heart",
-        "roles": [],
+        "roles": ["Healthcare Administrator", "Accounts Manager", "Accounts User", "System Manager"],
         "cartes": [],
         "titre": "Prise en charge et remboursements",
         "raccourcis": [
@@ -252,7 +251,8 @@ def ensure_workspaces():
     ensure_rapport_rdv_jour()
     for spec in ESPACES:
         content = [{"id": "h", "type": "header", "data": {"text": f'<span class="h4"><b>{spec["titre"]}</b></span>', "col": 12}}]
-        content += [{"id": f"c{i}", "type": "number_card", "data": {"number_card_name": c, "col": 4}} for i, c in enumerate(spec["cartes"])]
+        col_carte = {1: 4, 2: 6, 3: 4, 4: 3}.get(len(spec["cartes"]), 4)
+        content += [{"id": f"c{i}", "type": "number_card", "data": {"number_card_name": c, "col": col_carte}} for i, c in enumerate(spec["cartes"])]
         actions = spec.get("actions", [])
         rapports = spec.get("rapports", [])
         if actions:
@@ -297,7 +297,15 @@ def restreindre_espaces_admin():
     restrictions = {
         "Users": ["System Manager"],
         "Build": ["System Manager"],
-        "Healthcare": ["Healthcare Administrator", "System Manager"],
+        # Healthcare natif (tous les écrans) : l'administration technique seulement ; chaque métier a son espace
+        "Healthcare": ["System Manager"],
+        # Comptabilité complète : le comptable et la direction ; la réception facture depuis son espace
+        "Accounting": ["Accounts Manager", "System Manager"],
+        "Payables": ["Accounts Manager", "System Manager"],
+        "Receivables": ["Accounts Manager", "System Manager"],
+        "Financial Reports": ["Accounts Manager", "System Manager"],
+        # Ventes : inutile à la pharmacie et à la réception
+        "Selling": ["Sales Manager", "System Manager"],
     }
     for nom, roles in restrictions.items():
         if not frappe.db.exists("Workspace", nom):
