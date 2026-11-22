@@ -86,6 +86,7 @@ def after_install_and_migrate():
     ensure_permissions_reception()
     ensure_permissions_pharmacie()
     ensure_fuseau()
+    ensure_devise()
     ensure_patient_sans_compte()
     restreindre_espaces_admin()
 
@@ -385,6 +386,15 @@ def ensure_fuseau():
 
     if frappe.db.get_single_value("System Settings", "time_zone") != "Africa/Algiers":
         frappe.db.set_single_value("System Settings", "time_zone", "Africa/Algiers")
+        frappe.clear_cache()
+
+
+def ensure_devise():
+    """ERPNext affiche « د.م. » après chaque montant, même en français : on affiche « MAD », lisible partout."""
+    import frappe
+
+    if frappe.db.exists("Currency", "MAD") and frappe.db.get_value("Currency", "MAD", "symbol") != "MAD":
+        frappe.db.set_value("Currency", "MAD", "symbol", "MAD")
         frappe.clear_cache()
 
 

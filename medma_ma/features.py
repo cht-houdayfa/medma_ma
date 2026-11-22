@@ -62,7 +62,7 @@ CARTES_BORD = {
 	"Chiffre d'affaires facturé": {
 		"document_type": "Sales Invoice",
 		"function": "Sum",
-		"aggregate_function_based_on": "grand_total",
+		"aggregate_function_based_on": "net_total",
 		"filters_json": [["Sales Invoice", "docstatus", "=", 1]],
 	},
 	"Créances ouvertes (MAD)": {
@@ -79,7 +79,7 @@ GRAPHIQUES = {
 		"chart_type": "Sum",
 		"document_type": "Sales Invoice",
 		"based_on": "posting_date",
-		"value_based_on": "grand_total",
+		"value_based_on": "net_total",
 		"time_interval": "Monthly",
 		"timespan": "Last Year",
 		"timeseries": 1,
@@ -311,6 +311,11 @@ frappe.ui.form.on('Sales Invoice', {
 	},
 	refresh(frm) {
 		if (frm.doc.docstatus !== 0) return;
+		// « Healthcare Services » lit les consultations : réservé aux soignants (secret médical), la réception utilise le bouton ci-dessous
+		if (!frappe.user.has_role('Physician') && !frappe.user.has_role('System Manager')) {
+			setTimeout(() => frm.remove_custom_button(__('Healthcare Services')), 300);
+			setTimeout(() => frm.remove_custom_button(__('Healthcare Services')), 1500);
+		}
 		frm.add_custom_button(__('Ajouter la consultation'), () => {
 			const d = new frappe.ui.Dialog({
 				title: __('Consultation du praticien'),
