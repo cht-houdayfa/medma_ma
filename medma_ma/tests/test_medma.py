@@ -440,3 +440,25 @@ class TestPrescriptionParDci(Base):
 			{"medication": "Amlodipine", "dosage_form": "Comprimé", "period": "1 Week"}]})
 		self.assertEqual(type(doc).__name__, "PatientEncounterMedMa")
 		doc.validate_medications()  # ne doit pas lever « Drug Code is mandatory »
+
+
+class TestCorrectifs(Base):
+	def test_la_pharmacie_lit_les_ordonnances_sans_les_modifier(self):
+		user = frappe.db.get_value("User", {"email": "demo.pharmacie@chtmed.ma"}, "name")
+		self.assertTrue(frappe.has_permission("Medication Request", "read", user=user))
+		self.assertFalse(frappe.has_permission("Medication Request", "write", user=user))
+		self.assertFalse(frappe.has_permission("Patient Encounter", "read", user=user))
+
+	def test_patient_sans_invitation_par_defaut(self):
+		self.assertEqual(str(frappe.get_meta("Patient").get_field("invite_user").default), "0")
+
+	def test_etat_du_prelevement_a_une_etape_validee(self):
+		options = frappe.get_meta("Lab Test").get_field("etat_prelevement").options.split("\n")
+		self.assertIn("Résultat validé", options)
+
+	def test_fuseau_a_utc_plus_un(self):
+		from frappe.utils import get_system_timezone, now_datetime
+		import datetime
+		self.assertEqual(get_system_timezone(), "Africa/Algiers")
+		ecart = now_datetime() - datetime.datetime.utcnow()
+		self.assertAlmostEqual(ecart.total_seconds(), 3600, delta=60)

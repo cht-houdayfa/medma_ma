@@ -19,3 +19,12 @@ def creer_analyse_depuis_demande(doc, methode=None):
     analyse = make_lab_test(frappe._dict(doc.as_dict()))
     analyse.flags.ignore_permissions = True
     analyse.insert()
+
+
+def marquer_resultat_valide(doc, method=None):
+    """À la validation de l'analyse, l'état du prélèvement passe à « Résultat validé »."""
+    import frappe
+
+    if doc.meta.has_field("etat_prelevement"):
+        frappe.db.set_value("Lab Test", doc.name, "etat_prelevement", "Résultat validé", update_modified=False)
+        doc.etat_prelevement = "Résultat validé"

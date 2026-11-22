@@ -13,7 +13,7 @@ CUSTOM_FIELDS = {
         {"fieldname": "section_prelevement", "label": "Prélèvement", "fieldtype": "Section Break",
          "insert_after": "company"},
         {"fieldname": "etat_prelevement", "label": "État du prélèvement", "fieldtype": "Select",
-         "options": "À prélever\nPrélevé - en attente du résultat", "default": "À prélever", "read_only": 1,
+         "options": "À prélever\nPrélevé - en attente du résultat\nRésultat validé", "default": "À prélever", "read_only": 1,
          "in_standard_filter": 1, "allow_on_submit": 1, "insert_after": "section_prelevement"},
         {"fieldname": "date_prelevement", "label": "Date et heure du prélèvement", "fieldtype": "Datetime",
          "read_only": 1, "allow_on_submit": 1, "insert_after": "etat_prelevement"},
@@ -84,6 +84,9 @@ def after_install_and_migrate():
     ensure_all()
     ensure_permissions()
     ensure_permissions_reception()
+    ensure_permissions_pharmacie()
+    ensure_fuseau()
+    ensure_patient_sans_compte()
     restreindre_espaces_admin()
 
 
@@ -357,6 +360,45 @@ def ensure_permissions_reception():
         for droit in droits:
             update_permission_property(dt, role, 0, droit, 1)
         frappe.clear_cache(doctype=dt)
+
+
+def ensure_permissions_pharmacie():
+    """La pharmacie délivre sur ordonnance : elle doit lire les prescriptions (Medication Request), le catalogue
+    des médicaments et le nom du patient. Lecture seule : aucune modification du dossier médical."""
+    import frappe
+    from frappe.permissions import add_permission, update_permission_property
+
+    role = "Stock User"
+    for dt in ("Medication Request", "Medication", "Patient"):
+        if not frappe.db.exists("Custom DocPerm", {"parent": dt, "role": role, "permlevel": 0}):
+            add_permission(dt, role, 0, "read")
+        for droit in ("read", "print", "report"):
+            update_permission_property(dt, role, 0, droit, 1)
+        frappe.clear_cache(doctype=dt)
+
+
+def ensure_fuseau():
+    """Le Maroc vit à UTC+1 toute l'année (sauf le mois de Ramadan). La base de fuseaux de Python donne UTC+0 pour
+    « Africa/Casablanca » en dehors des années passées : les heures et les cartes « du jour » avaient 1 h de retard.
+    « Africa/Algiers » est fixe à UTC+1 et correspond à l'heure marocaine hors Ramadan."""
+    import frappe
+
+    if frappe.db.get_single_value("System Settings", "time_zone") != "Africa/Algiers":
+        frappe.db.set_single_value("System Settings", "time_zone", "Africa/Algiers")
+        frappe.clear_cache()
+
+
+def ensure_patient_sans_compte():
+    """Healthcare coche « Inviter en tant qu'Utilisateur » par défaut : chaque nouveau patient créerait un compte
+    et enverrait un e-mail. À la clinique, on ne le fait que sur demande."""
+    import frappe
+
+    if frappe.db.get_value("DocField", {"parent": "Patient", "fieldname": "invite_user"}, "default") in (None, "", "0"):
+        return
+    from frappe.custom.doctype.property_setter.property_setter import make_property_setter
+
+    make_property_setter("Patient", "invite_user", "default", "0", "Data")
+    frappe.clear_cache(doctype="Patient")
 
 
 def _initialiser_prelevements():

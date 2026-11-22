@@ -12,6 +12,7 @@ after_migrate = "medma_ma.setup.after_install_and_migrate"
 doc_events = {
     "Sales Invoice": {"validate": "medma_ma.invoice.calculer_prise_en_charge"},
     "Service Request": {"on_submit": "medma_ma.laboratoire.creer_analyse_depuis_demande"},
+    "Lab Test": {"on_submit": "medma_ma.laboratoire.marquer_resultat_valide"},
 }
 
 # Thème MedMa (couleurs, écran de connexion, logo)
