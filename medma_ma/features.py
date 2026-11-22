@@ -285,6 +285,72 @@ def ensure_client_scripts():
 		frappe.get_doc({"doctype": "Client Script", "name": nom, **valeurs}).insert(ignore_permissions=True)
 
 
+def ensure_taxes():
+	"""Les actes médicaux (consultations, analyses) sont exonérés de TVA : le modèle par défaut ne doit pas ajouter 20 %.
+	On crée un modèle « Actes médicaux (exonéré de TVA) » sans ligne de taxe et on le met par défaut ; les modèles TVA
+	existants restent disponibles (parapharmacie, vente de produits).
+	À faire valider par le comptable de l'établissement selon la nature des prestations facturées."""
+	societe = frappe.db.get_value("Company", {}, "name")
+	if not societe:
+		return
+	abbr = frappe.db.get_value("Company", societe, "abbr")
+	nom = f"Actes médicaux (exonéré de TVA) - {abbr}"
+	if not frappe.db.exists("Sales Taxes and Charges Template", nom):
+		frappe.get_doc({"doctype": "Sales Taxes and Charges Template", "title": "Actes médicaux (exonéré de TVA)",
+		                "company": societe, "is_default": 1}).insert(ignore_permissions=True)
+	frappe.db.sql("update `tabSales Taxes and Charges Template` set is_default = 0 where name != %s and company = %s",
+	              (nom, societe))
+	frappe.db.set_value("Sales Taxes and Charges Template", nom, "is_default", 1, update_modified=False)
+
+
+SCRIPT_FACTURE = """
+frappe.ui.form.on('Sales Invoice', {
+	setup(frm) {
+		// on ne propose que les couvertures du patient de la facture
+		frm.set_query('couverture_patient', () => ({filters: {patient: frm.doc.patient || '', actif: 1}}));
+	},
+	refresh(frm) {
+		if (frm.doc.docstatus !== 0) return;
+		frm.add_custom_button(__('Ajouter la consultation'), () => {
+			const d = new frappe.ui.Dialog({
+				title: __('Consultation du praticien'),
+				fields: [{fieldname: 'praticien', fieldtype: 'Link', options: 'Healthcare Practitioner', label: __('Praticien'),
+				          reqd: 1, default: frm.doc.ref_practitioner}],
+				primary_action_label: __('Ajouter'),
+				primary_action(v) {
+					frappe.db.get_value('Healthcare Practitioner', v.praticien, ['op_consulting_charge_item', 'op_consulting_charge'])
+						.then(r => {
+							const p = r.message || {};
+							if (!p.op_consulting_charge_item) {
+								frappe.msgprint(__("Aucun tarif de consultation n'est défini pour ce praticien."));
+								return;
+							}
+							const ligne = frm.add_child('items', {item_code: p.op_consulting_charge_item, qty: 1});
+							frm.refresh_field('items');
+							frappe.model.set_value(ligne.doctype, ligne.name, 'item_code', p.op_consulting_charge_item).then(() =>
+								frappe.model.set_value(ligne.doctype, ligne.name, 'rate', p.op_consulting_charge || 0));
+							d.hide();
+						});
+				}
+			});
+			d.show();
+		});
+	}
+});
+"""
+
+
+def ensure_client_script_facture():
+	nom = "MedMa - Facture"
+	valeurs = {"dt": "Sales Invoice", "view": "Form", "enabled": 1, "script": SCRIPT_FACTURE}
+	if frappe.db.exists("Client Script", nom):
+		cs = frappe.get_doc("Client Script", nom)
+		cs.update(valeurs)
+		cs.save(ignore_permissions=True)
+	else:
+		frappe.get_doc({"doctype": "Client Script", "name": nom, **valeurs}).insert(ignore_permissions=True)
+
+
 SCRIPT_ARRIVEE = """
 frappe.ui.form.on('Patient Appointment', {
 	refresh(frm) {
@@ -424,6 +490,8 @@ def ensure_all():
 	ensure_dashboard()
 	ensure_client_scripts()
 	ensure_client_script_arrivee()
+	ensure_client_script_facture()
+	ensure_taxes()
 	ensure_client_script_prelevement()
 	ensure_client_scripts_dossier()
 	ensure_client_scripts_couverture()

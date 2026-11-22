@@ -179,6 +179,25 @@ class TestImpression(Base):
 		self.assertIn("Part à payer par le patient", html)
 		self.assertIn("120,00 MAD", html)  # 30 % de 400
 		self.assertIn("400,00 MAD", html)  # total à payer
+		self.assertIn("exonéré de TVA", html)  # modèle par défaut : pas de TVA sur les actes médicaux
+
+	def test_modele_de_taxe_par_defaut_sans_tva(self):
+		defaut = frappe.get_all("Sales Taxes and Charges Template", filters={"is_default": 1}, pluck="name")
+		self.assertEqual(len(defaut), 1)
+		self.assertIn("exonéré", defaut[0])
+		self.assertFalse(frappe.get_doc("Sales Taxes and Charges Template", defaut[0]).taxes)
+
+	def test_la_facture_avec_tva_affiche_ht_tva_ttc(self):
+		modele = frappe.db.get_value("Sales Taxes and Charges Template", {"name": ["like", "%VAT 20%"]}, "name")
+		si = self._facture(400)
+		ligne = frappe.get_doc("Sales Taxes and Charges Template", modele).taxes[0]
+		si.taxes_and_charges = modele
+		si.append("taxes", {"charge_type": "On Net Total", "account_head": ligne.account_head,
+		                    "description": "TVA", "rate": 20})
+		si.save()
+		html = frappe.get_print("Sales Invoice", si.name, print_format="Facture MedMa")
+		for texte in ("Total HT", "Total TTC", "480,00 MAD"):
+			self.assertIn(texte, html)
 
 
 SURVEILLES = ["Certificat Medical", "Sales Invoice", "Patient", "Customer", "Item", "Organisme Payeur", "Couverture Patient",

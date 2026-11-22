@@ -26,7 +26,15 @@
   </table>
 
   <table class="tot" style="width:60%; margin-left:auto">
-    <tr><td class="lbl">Total</td><td class="num"><b>{{ mad(doc.rounded_total or doc.grand_total) }}</b></td></tr>
+    {% if doc.taxes %}
+    <tr><td class="lbl">Total HT</td><td class="num">{{ mad(doc.net_total) }}</td></tr>
+    {% for tx in doc.taxes %}
+    <tr><td class="lbl">{{ tx.description or "TVA" }}{% if tx.rate %} ({{ tx.rate }} %){% endif %}</td><td class="num">{{ mad(tx.tax_amount) }}</td></tr>
+    {% endfor %}
+    <tr><td class="lbl">Total TTC</td><td class="num"><b>{{ mad(doc.rounded_total or doc.grand_total) }}</b></td></tr>
+    {% else %}
+    <tr><td class="lbl">Total <span class="muted">(exonéré de TVA)</span></td><td class="num"><b>{{ mad(doc.rounded_total or doc.grand_total) }}</b></td></tr>
+    {% endif %}
     {% if cov %}
     <tr><td class="lbl">Part {{ cov.organisme }} ({{ cov.taux_prise_en_charge }} %)</td><td class="num">{{ mad(doc.part_organisme) }}</td></tr>
     <tr><td class="lbl strong">Part à payer par le patient</td><td class="num strong">{{ mad(doc.part_patient) }}</td></tr>
