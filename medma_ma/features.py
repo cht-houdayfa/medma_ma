@@ -550,53 +550,66 @@ def ensure_branding():
 # --- Guide de démonstration par rôle ----------------------------------------------------------------
 
 GUIDE = [
-    ("Médecin", "Espace « Cabinet médecin »",
-     ["Rendez-vous du jour → ouvrir un patient → Consultation → ordonnance (marque + générique).",
-      "Prescrire une analyse ; Imprimer → « Ordonnance MedMa » (PDF).",
-      "Certificats médicaux → Nouveau : arrêt de travail (jours calculés) ; Imprimer → « Certificat MedMa ».",
-      "Carte « Analyses à valider » : résultats en attente."]),
-    ("Réception", "Espace « Réception »",
-     ["Nouveau patient (CIN, couverture CNSS/CNOPS/AMO) ; prendre un rendez-vous.",
-      "Facture : choisir la couverture, part organisme / part patient calculées seules ; Imprimer → « Facture MedMa ».",
-      "Encaisser la part patient (Paiement)."]),
-    ("Infirmier", "Espace « Soins infirmiers »",
-     ["Prendre les constantes (tension, poids, température) d'un patient.",
-      "Suivre les patients hospitalisés et les rendez-vous du jour."]),
-    ("Laboratoire", "Espace « Laboratoire »",
-     ["Carte « Analyses à valider » : saisir les résultats puis valider.",
-      "Le résultat apparaît aussitôt dans le dossier du patient."]),
-    ("Direction", "Espace « Tableau de bord »",
-     ["Vue d'ensemble : chiffre d'affaires, créances, activité et accès à tous les modules métier."]),
-    ("Patient (portail)", "Portail /lab-test, /prescription, /patient-appointments",
-     ["Se connecter avec demo.patient : le patient ne voit que ses rendez-vous, analyses et ordonnances.",
-      "Aucun accès au bureau, aux factures ni aux dossiers des autres patients."]),
-    ("Pharmacie", "Espace « Pharmacie »",
-     ["Carte « Médicaments en stock bas » (2 médicaments sous 50 unités).",
-      "Niveaux de stock, mouvement de stock (réception / sortie), prescriptions à délivrer."]),
-    ("Comptabilité", "Espaces « Tableau de bord » et « MedMa »",
-     ["Chiffre d'affaires, créances, rapport « Créances par organisme ».",
-      "Dossier de remboursement : Charger les factures → Marquer comme envoyé → Enregistrer un paiement ; Imprimer → « Bordereau MedMa »."]),
+    ("Guide Réception", ["Healthcare Administrator"], "Votre journée à la réception", "Espace « Réception »",
+     ["Nouveau patient : nom, CIN, téléphone, puis la couverture (CNSS / CNOPS / AMO / mutuelle).",
+      "Nouveau rendez-vous : choisir le praticien, « Check Availability » (créneaux libres), réserver.",
+      "À l'arrivée du patient : ouvrir son rendez-vous → bouton « Patient arrivé ». Il apparaît chez le médecin.",
+      "Facture : bouton « Ajouter la consultation », choisir la couverture : part organisme / part patient sont calculées seules.",
+      "Encaisser la part patient : bouton « Enregistrer le paiement » ; Imprimer → « Facture MedMa ».",
+      "Rapport « Rendez-vous du jour (liste) » pour suivre la salle d'attente."]),
+    ("Guide Médecin", ["Physician"], "Votre journée de consultation", "Espace « Cabinet médecin »",
+     ["Carte « Patients en salle d'attente » : les patients arrivés apparaissent ici.",
+      "Ouvrir le rendez-vous → Consultation : motif, constantes, diagnostic.",
+      "Ordonnance : médicament par nom de marque ou générique (DCI) ; analyses : elles partent seules au laboratoire.",
+      "Valider la consultation, puis Imprimer → « Ordonnance MedMa » (PDF).",
+      "Certificats médicaux → Nouveau : arrêt de travail (nombre de jours calculé) ; Imprimer → « Certificat MedMa ».",
+      "Carte « Analyses à valider » : consulter les résultats reçus du laboratoire."]),
+    ("Guide Infirmier", ["Nursing User"], "Vos tâches de soins", "Espace « Soins infirmiers »",
+     ["Rendez-vous du jour et patients en salle d'attente.",
+      "Prendre les constantes (tension, pouls, température, poids) dans « Signes vitaux » du patient.",
+      "Suivre les patients hospitalisés : lits, soins et observations.",
+      "Les informations de facturation ne sont pas visibles pour ce rôle."]),
+    ("Guide Laboratoire", ["Laboratory User"], "Du prélèvement au résultat", "Espace « Laboratoire »",
+     ["Carte « Prélèvements à faire » : les analyses prescrites apparaissent automatiquement.",
+      "Ouvrir l'analyse → bouton « Prélèvement effectué » : l'état passe à « en attente du résultat ».",
+      "Carte « Résultats en attente » : saisir les valeurs, ou les recevoir automatiquement de l'automate (voir deploy/LIS.md).",
+      "Valider l'analyse : l'état devient « Résultat validé » et le médecin et le patient la voient."]),
+    ("Guide Pharmacie", ["Stock User"], "Délivrer sur ordonnance", "Espace « Pharmacie »",
+     ["Prescriptions : liste des ordonnances (lecture seule) à délivrer.",
+      "Carte « Médicaments en stock bas » : médicaments sous le seuil de 50 unités.",
+      "Mouvements de stock : entrée (réception fournisseur) ou sortie (délivrance).",
+      "Niveaux de stock : quantité disponible par médicament."]),
+    ("Guide Comptabilité", ["Accounts Manager"], "Facturation et remboursements", "Espaces « Tableau de bord » et « MedMa »",
+     ["Tableau de bord : chiffre d'affaires hors taxes, créances ouvertes, factures émises.",
+      "Rapport « Créances par organisme » : ce que doivent la CNSS, la CNOPS, l'AMO et les mutuelles.",
+      "Dossier de remboursement : Charger les factures → Marquer comme envoyé → Enregistrer un paiement.",
+      "Imprimer → « Bordereau MedMa » pour l'envoi à l'organisme.",
+      "Les actes médicaux sont exonérés de TVA : aucune taxe n'est ajoutée par défaut."]),
 ]
 
 
 def ensure_guide():
+    """Un guide par rôle : chaque utilisateur ne voit dans son menu que le guide de son propre métier."""
     import json
 
     esc = frappe.utils.escape_html
-    contenu = [{"id": "gh", "type": "header", "data": {"text": '<span class="h4"><b>Guide de démonstration</b></span>', "col": 12}},
-               {"id": "gp", "type": "paragraph", "data": {"text": "Chaque rôle voit uniquement son propre menu. Données 100 % fictives ; connectez-vous avec les comptes demo.* (médecin, réception, pharmacie, compta).", "col": 12}}]
-    for i, (role, espace, etapes) in enumerate(GUIDE):
-        contenu.append({"id": f"r{i}", "type": "header", "data": {"text": f'<span class="h5"><b>{esc(role)}</b> — {esc(espace)}</span>', "col": 12}})
-        for j, e in enumerate(etapes):
-            contenu.append({"id": f"r{i}_{j}", "type": "paragraph", "data": {"text": f"• {esc(e)}", "col": 12}})
-    valeurs = {"label": "Guide démo", "title": "Guide démo", "module": "Desk", "public": 1, "is_hidden": 0,
-               "icon": "book", "content": json.dumps(contenu, ensure_ascii=False)}
+    # l'ancien guide unique, visible de tous, est remplacé
     if frappe.db.exists("Workspace", "Guide démo"):
-        ws = frappe.get_doc("Workspace", "Guide démo")
-        ws.update(valeurs)
-        ws.save(ignore_permissions=True)
-    else:
-        frappe.get_doc({"doctype": "Workspace", "name": "Guide démo", **valeurs}).insert(ignore_permissions=True)
+        frappe.delete_doc("Workspace", "Guide démo", force=True, ignore_permissions=True)
+    for nom, roles, titre, espace, etapes in GUIDE:
+        contenu = [{"id": "gh", "type": "header", "data": {"text": f'<span class="h4"><b>{esc(titre)}</b></span>', "col": 12}},
+                   {"id": "gp", "type": "paragraph", "data": {"text": f"Votre espace de travail : {esc(espace)}. Données de démonstration fictives.", "col": 12}}]
+        for j, e in enumerate(etapes):
+            contenu.append({"id": f"e{j}", "type": "paragraph", "data": {"text": f"{j + 1}. {esc(e)}", "col": 12}})
+        valeurs = {"label": nom, "title": nom, "module": "Desk", "public": 1, "is_hidden": 0,
+                   "icon": "book", "content": json.dumps(contenu, ensure_ascii=False)}
+        if frappe.db.exists("Workspace", nom):
+            ws = frappe.get_doc("Workspace", nom)
+            ws.update(valeurs)
+        else:
+            ws = frappe.get_doc({"doctype": "Workspace", "name": nom, **valeurs})
+        ws.set("roles", [{"role": r} for r in roles + ["System Manager"]])
+        ws.save(ignore_permissions=True) if ws.get("creation") else ws.insert(ignore_permissions=True)
 
 
 # --- Portail patient ------------------------------------------------------------------------------

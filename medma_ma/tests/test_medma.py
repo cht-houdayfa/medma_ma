@@ -408,15 +408,18 @@ class TestMenusParRole(Base):
 		for interdit in ("Tableau de bord", "Laboratoire", "Soins infirmiers", "Accounting", "Payables",
 		                 "Receivables", "Financial Reports", "Healthcare", "Selling"):
 			self.assertNotIn(interdit, vus)
+		# son guide, et seulement le sien
+		self.assertIn("Guide Réception", vus)
+		self.assertFalse({v for v in vus if v.startswith("Guide ")} - {"Guide Réception"})
 
 	def test_chaque_metier_ne_voit_que_ses_espaces(self):
 		autorises = {
-			"medecin": {"Cabinet médecin", "Guide démo"},
-			"infirmier": {"Soins infirmiers", "Guide démo"},
-			"labo": {"Laboratoire", "Guide démo"},
-			"pharmacie": {"Pharmacie", "Stock", "Guide démo"},
+			"medecin": {"Cabinet médecin", "Guide Médecin"},
+			"infirmier": {"Soins infirmiers", "Guide Infirmier"},
+			"labo": {"Laboratoire", "Guide Laboratoire"},
+			"pharmacie": {"Pharmacie", "Stock", "Guide Pharmacie"},
 			"compta": {"Tableau de bord", "MedMa", "Accounting", "Payables", "Receivables", "Financial Reports",
-			           "Guide démo"},
+			           "Guide Comptabilité"},
 		}
 		for role, ok in autorises.items():
 			vus = self._espaces(role)
