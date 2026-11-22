@@ -231,3 +231,11 @@ Investigations,Examens complémentaires
 Procedures,Actes
 Patient Demographics,Informations du patient
 Bin,Niveau de stock
+Order Time,Heure de la prescription
+Order Source,Origine de la prescription
+Sequence in Order Group,Rang dans le groupe de prescription
+Request Details,Détails de la demande
+Order Specifications,Détails de la prescription
+Quantity Invoiced,Quantité facturée
+Medical Coding,Codification médicale
+Experimental,Expérimental

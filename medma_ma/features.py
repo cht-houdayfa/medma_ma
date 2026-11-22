@@ -313,8 +313,9 @@ frappe.ui.form.on('Sales Invoice', {
 		if (frm.doc.docstatus !== 0) return;
 		// « Healthcare Services » lit les consultations : réservé aux soignants (secret médical), la réception utilise le bouton ci-dessous
 		if (!frappe.user.has_role('Physician') && !frappe.user.has_role('System Manager')) {
-			setTimeout(() => frm.remove_custom_button(__('Healthcare Services')), 300);
-			setTimeout(() => frm.remove_custom_button(__('Healthcare Services')), 1500);
+			const retirer = () => ['Healthcare Services', 'Prescriptions'].forEach(b => frm.remove_custom_button(__(b), __('Get Items From')));
+			setTimeout(retirer, 300);
+			setTimeout(retirer, 1500);
 		}
 		frm.add_custom_button(__('Ajouter la consultation'), () => {
 			const d = new frappe.ui.Dialog({

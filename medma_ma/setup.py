@@ -370,7 +370,7 @@ def ensure_permissions_pharmacie():
     from frappe.permissions import add_permission, update_permission_property
 
     role = "Stock User"
-    for dt in ("Medication Request", "Medication", "Patient"):
+    for dt in ("Medication Request", "Medication", "Patient", "Code Value"):
         if not frappe.db.exists("Custom DocPerm", {"parent": dt, "role": role, "permlevel": 0}):
             add_permission(dt, role, 0, "read")
         for droit in ("read", "print", "report"):
