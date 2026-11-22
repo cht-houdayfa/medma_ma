@@ -325,7 +325,9 @@ frappe.ui.form.on('Sales Invoice', {
 								frappe.msgprint(__("Aucun tarif de consultation n'est défini pour ce praticien."));
 								return;
 							}
-							const ligne = frm.add_child('items', {item_code: p.op_consulting_charge_item, qty: 1});
+							// le code article est posé APRÈS la création de la ligne : c'est ce changement qui déclenche le
+							// chargement du nom, de l'unité et du compte de produits par ERPNext
+							const ligne = frm.add_child('items', {qty: 1});
 							frm.refresh_field('items');
 							frappe.model.set_value(ligne.doctype, ligne.name, 'item_code', p.op_consulting_charge_item).then(() =>
 								frappe.model.set_value(ligne.doctype, ligne.name, 'rate', p.op_consulting_charge || 0));

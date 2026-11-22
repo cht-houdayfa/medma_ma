@@ -216,7 +216,7 @@ Rôle : **Laboratoire**.
 
 ## 6. Réception : facturer et encaisser
 
-Rôle : **Réception** (ou Comptabilité). La facture est **partagée** : une part pour l'organisme (CNSS, CNOPS…) et une part pour le patient.
+Rôle : **Réception** (ou Comptabilité). La facture est **partagée** : une part pour l'organisme (CNSS, CNOPS…) et une part pour le patient. Les actes médicaux sont **exonérés de TVA** par défaut.
 
 1. **Enregistrer la couverture du patient** (une seule fois) : *Couverture patient* → *Nouveau*. Choisissez le patient, l'organisme et saisissez le numéro d'affiliation ; le taux de prise en charge (70 % pour la CNSS) est repris automatiquement.
 
@@ -242,51 +242,59 @@ Rôle : **Réception** (ou Comptabilité). La facture est **partagée** : une pa
 
 *Patient choisi*
 
-3. Dans *Prise en charge*, choisissez la **couverture du patient**. Le système refuse une couverture qui appartient à un autre patient.
+3. Dans *Prise en charge*, choisissez la **couverture du patient** : la liste ne propose que les couvertures de ce patient.
 
-![Choix de la couverture](captures/40-reception-facture-choix-couverture.jpg)
+![Choix de la couverture (filtrée sur le patient)](captures/40-reception-facture-choix-couverture.jpg)
 
-*Choix de la couverture*
+*Choix de la couverture (filtrée sur le patient)*
 
-4. Ajoutez l'article de consultation : *Ajouter une ligne*, tapez « Consultation - Dr … », choisissez l'article et saisissez le prix. (Le bouton *Obtenir les articles de → Healthcare Services* n'est pas ouvert à la réception, car il lit le dossier médical ; l'article se saisit à la main.)
+4. Cliquez sur **Ajouter la consultation**, choisissez le praticien : l'article de consultation et son tarif sont ajoutés automatiquement.
 
-![Menu « Obtenir les articles de »](captures/41-reception-facture-obtenir-articles.jpg)
+![Choix du praticien](captures/41-reception-facture-ajouter-consultation.jpg)
 
-*Menu « Obtenir les articles de »*
+*Choix du praticien*
 
-5. Enregistrez : les parts sont calculées. Ici, total 480,00 MAD, **part CNSS 336,00 MAD** et **part patient 144,00 MAD**. Cliquez sur **Valider** et confirmez.
+![Praticien sélectionné](captures/42-reception-facture-consultation-praticien.jpg)
 
-![Part organisme / part patient](captures/43-reception-facture-parts-organisme-patient.jpg)
+*Praticien sélectionné*
+
+![Consultation ajoutée (200,00 MAD) et facture enregistrée](captures/43-reception-facture-consultation-ajoutee.jpg)
+
+*Consultation ajoutée (200,00 MAD) et facture enregistrée*
+
+5. Les parts sont calculées. Ici, total 200,00 MAD, **part CNSS 140,00 MAD** et **part patient 60,00 MAD**. Cliquez sur **Valider** et confirmez : la facture est *Impayée*.
+
+![Part organisme / part patient](captures/44-reception-facture-parts-organisme-patient.jpg)
 
 *Part organisme / part patient*
 
-![Facture validée (Impayé)](captures/44-reception-facture-validee.jpg)
+![Facture validée (Impayé)](captures/45-reception-facture-validee.jpg)
 
 *Facture validée (Impayé)*
 
 6. **Encaisser la part du patient** : menu **Créer → Paiement**.
 
-![Menu Créer → Paiement](captures/45-reception-facture-menu-creer.jpg)
+![Menu Créer → Paiement](captures/46-reception-facture-menu-creer.jpg)
 
 *Menu Créer → Paiement*
 
-![Écriture de paiement (montant total par défaut)](captures/46-reception-paiement-nouveau.jpg)
+![Écriture de paiement (montant total par défaut)](captures/47-reception-paiement-nouveau.jpg)
 
 *Écriture de paiement (montant total par défaut)*
 
-7. Choisissez le moyen de paiement (*Espèces*) et remplacez le montant par **la part du patient (144,00)**. Enregistrez puis validez. La part de l'organisme reste due.
+7. Choisissez le moyen de paiement (*Espèces*) et remplacez le montant par **la part du patient (60,00)**. Enregistrez puis validez. La part de l'organisme reste due.
 
-![Paiement de la part patient](captures/47-reception-paiement-part-patient.jpg)
+![Paiement de la part patient](captures/48-reception-paiement-part-patient.jpg)
 
 *Paiement de la part patient*
 
-![Paiement validé](captures/48-reception-paiement-valide.jpg)
+![Paiement validé](captures/49-reception-paiement-valide.jpg)
 
 *Paiement validé*
 
 8. **Imprimer la facture** : *Imprimer* → **Facture MedMa**. Elle indique le patient, la CIN, l'organisme, la part de l'organisme, la part à payer par le patient, le déjà réglé et le reste dû.
 
-![Facture imprimée](captures/49-reception-facture-imprimee.jpg)
+![Facture imprimée](captures/50-reception-facture-imprimee.jpg)
 
 *Facture imprimée*
 
@@ -296,55 +304,55 @@ Rôle : **Comptabilité**. Un dossier de remboursement regroupe les factures d'u
 
 1. Ouvrez *Dossier Remboursement* → *Nouveau*. Choisissez l'**organisme**, la période (*Du* / *Au*), puis cliquez sur **Charger les factures**.
 
-![Nouveau dossier](captures/50-compta-dossier-nouveau.jpg)
+![Nouveau dossier : choix de l'organisme](captures/51-compta-dossier-nouveau.jpg)
 
-*Nouveau dossier*
+*Nouveau dossier : choix de l'organisme*
 
-![Organisme choisi](captures/51-compta-dossier-organisme.jpg)
+![Organisme et période saisis](captures/52-compta-dossier-organisme-periode.jpg)
 
-*Organisme choisi*
+*Organisme et période saisis*
 
-![Factures chargées](captures/52-compta-dossier-factures-chargees.jpg)
+![Factures chargées](captures/53-compta-dossier-factures-chargees.jpg)
 
 *Factures chargées*
 
-2. Enregistrez : la part de l'organisme est calculée (336,00 MAD). Puis **Actions → Marquer comme envoyé** : le statut devient *Envoyé*.
+2. Enregistrez : la part de l'organisme est calculée (140,00 MAD). Puis **Actions → Marquer comme envoyé** : le statut devient *Envoyé*.
 
-![Dossier enregistré (Brouillon)](captures/53-compta-dossier-enregistre.jpg)
+![Dossier enregistré (Brouillon)](captures/54-compta-dossier-enregistre.jpg)
 
 *Dossier enregistré (Brouillon)*
 
-![Menu Actions](captures/54-compta-dossier-menu-actions.jpg)
+![Menu Actions](captures/55-compta-dossier-menu-actions.jpg)
 
 *Menu Actions*
 
-![Dossier envoyé](captures/55-compta-dossier-envoye.jpg)
+![Dossier envoyé](captures/56-compta-dossier-envoye.jpg)
 
 *Dossier envoyé*
 
 3. À réception du virement : **Actions → Enregistrer un paiement**. Saisissez le montant reçu, la date et la **référence du virement**. Le paiement est réparti sur les factures, de la plus ancienne à la plus récente ; le statut passe à *Payé partiellement* puis *Payé*.
 
-![Paiement de l'organisme](captures/56-compta-dossier-paiement-organisme.jpg)
+![Paiement de l'organisme](captures/57-compta-dossier-paiement-organisme.jpg)
 
 *Paiement de l'organisme*
 
-![Dossier payé](captures/57-compta-dossier-paye.jpg)
+![Dossier payé](captures/58-compta-dossier-paye.jpg)
 
 *Dossier payé*
 
 4. **Imprimer le bordereau** à joindre au dossier envoyé à l'organisme : *Imprimer* → **Bordereau MedMa**.
 
-![Bordereau de remboursement](captures/58-compta-bordereau-imprime.jpg)
+![Bordereau de remboursement](captures/59-compta-bordereau-imprime.jpg)
 
 *Bordereau de remboursement*
 
 5. **Suivre les créances.** Le *Tableau de bord* donne le chiffre d'affaires, les créances ouvertes et la part des organismes. Le rapport *Créances par organisme* indique ce qui reste à recouvrer.
 
-![Tableau de bord](captures/59-compta-tableau-de-bord.jpg)
+![Tableau de bord](captures/60-compta-tableau-de-bord.jpg)
 
 *Tableau de bord*
 
-![Créances par organisme](captures/60-compta-creances-par-organisme.jpg)
+![Créances par organisme](captures/61-compta-creances-par-organisme.jpg)
 
 *Créances par organisme*
 
@@ -400,5 +408,5 @@ Rôle : **Patient**. Le patient consulte ses propres informations, en lecture se
 - Le rappel de rendez-vous par WhatsApp est un lien à envoyer manuellement (bouton *Actions → Rappel WhatsApp* sur le rendez-vous).
 - Les tarifs, taux de prise en charge et la liste des analyses sont des **valeurs d'exemple** à remplacer par ceux de l'établissement avant usage réel.
 - La liste des médicaments provient de la liste officielle AMMPS (prix au jour de l'import).
-- Un modèle de taxe (TVA 20 %) est appliqué par défaut aux factures : à faire valider par le comptable selon la nature des actes.
+- Les actes médicaux sont facturés **sans TVA** par défaut (modèle « Actes médicaux (exonéré de TVA) ») : à faire valider par le comptable de l'établissement ; les modèles TVA 20 % et 10 % restent disponibles.
 - Certains libellés de l'interface restent en anglais (Check Availability, Book, Checked In, Medications…) : ils proviennent du module santé d'origine.
