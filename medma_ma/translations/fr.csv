@@ -239,3 +239,41 @@ Order Specifications,Détails de la prescription
 Quantity Invoiced,Quantité facturée
 Medical Coding,Codification médicale
 Experimental,Expérimental
+Image,Photo
+Personal and Social History,Antécédents personnels et sociaux
+"Allergies, Medical and Surgical History","Allergies, antécédents médicaux et chirurgicaux"
+Allergies,Allergies
+Risk Factors,Facteurs de risque
+Reference Sales Invoice,Facture de référence
+Submit Orders on Save,Valider les prescriptions à l'enregistrement
+Encounter Impression,Impression clinique
+In print,À l'impression
+Get Applicable Treatment Plans,Récupérer les plans de traitement applicables
+Diagnosis,Diagnostic
+Rehabilitation,Rééducation
+Encounter Details,Détails de la consultation
+Compound Test Result,Résultat de l'analyse composée
+Worksheet Print,Impression de la feuille de travail
+Result Legend Print,Impression de la légende
+Print Position,Position à l'impression
+Result Legend,Légende des résultats
+Prescription,Ordonnance
+Vital Signs,Signes vitaux
+Abdomen,Abdomen
+Reflexes,Réflexes
+Nutrition Values,Valeurs nutritionnelles
+BMI,IMC
+Medication Item,Médicament
+Order Group (Encounter),Groupe de prescription (consultation)
+Order Item Code,Code de l'article prescrit
+Intent,Intention
+Consume Stock,Consommer le stock
+Invoice Consumables Separately,Facturer les consommables séparément
+Consumable Total Amount,Montant total des consommables
+Admission Order Details,Détails de l'admission
+Discharge Details,Détails de la sortie
+Discharge Ordered Date,Date de sortie prévue
+Source Doc,Document source
+Order Details,Détails de la prescription
+Source,Origine
+Service Details,Détails du service
