@@ -1,0 +1,46 @@
+{% include "_style.html" %}
+{%- set pat = frappe.get_doc("Patient", doc.patient) -%}
+{%- set cos = frappe.get_all("Company", pluck="name", limit=1) -%}
+{%- set co = frappe.get_doc("Company", cos[0]) if cos else none -%}
+<div class="mm">
+  <div class="hdr">
+    <div>
+      <h2>Service des urgences</h2>
+      <div class="muted">Arrivée : {{ frappe.utils.format_datetime(doc.date_arrivee, "dd/MM/yyyy HH:mm") }} — {{ doc.mode_arrivee or "" }}</div>
+    </div>
+    <div style="text-align:right"><b>{{ co.company_name if co else "" }}</b></div>
+  </div>
+
+  <div class="title">FICHE D'URGENCE<span class="ar">بطاقة المستعجلات</span></div>
+
+  <div class="box">
+    <b>{{ pat.patient_name }}</b>{% if pat.get("cin") %} — CIN : {{ pat.cin }}{% endif %}
+    {% if pat.get("dob") %} — né(e) le {{ frappe.utils.formatdate(pat.dob) }}{% endif %}
+    {% if pat.get("mobile") %} — Tél : {{ pat.mobile }}{% endif %}
+    <br>Niveau de tri : <b>{{ doc.niveau_triage }}</b> — Statut : {{ doc.statut }}
+    {% if doc.practitioner %}— Médecin : {{ doc.practitioner }}{% endif %}
+  </div>
+
+  <p><b>Motif :</b> {{ doc.motif }}</p>
+
+  <table>
+    <tr><th>Tension</th><th>Pouls</th><th>Fréq. resp.</th><th>SpO2</th><th>Temp.</th><th>Glycémie</th><th>Douleur</th><th>Glasgow</th></tr>
+    <tr>
+      <td>{% if doc.tension_systolique %}{{ doc.tension_systolique }}/{{ doc.tension_diastolique }}{% endif %}</td>
+      <td>{{ doc.frequence_cardiaque or "" }}</td><td>{{ doc.frequence_respiratoire or "" }}</td>
+      <td>{% if doc.saturation %}{{ doc.saturation }} %{% endif %}</td>
+      <td>{% if doc.temperature %}{{ doc.temperature }} °C{% endif %}</td>
+      <td>{% if doc.glycemie %}{{ doc.glycemie }} g/L{% endif %}</td>
+      <td>{{ doc.score_douleur if doc.score_douleur is not none else "" }}</td><td>{{ doc.glasgow or "" }}</td>
+    </tr>
+  </table>
+
+  {% if doc.diagnostic %}<p><b>Diagnostic :</b> {{ doc.diagnostic }}</p>{% endif %}
+  {% if doc.traitement %}<p><b>Soins et traitement :</b> {{ doc.traitement }}</p>{% endif %}
+  {% if doc.orientation %}<p><b>Orientation :</b> {{ doc.orientation }}
+    — sortie le {{ frappe.utils.format_datetime(doc.date_sortie, "dd/MM/yyyy HH:mm") }}</p>{% endif %}
+  {% if doc.delai_attente %}<p class="muted">Délai avant prise en charge : {{ doc.delai_attente }} min</p>{% endif %}
+
+  <div class="sign">Signature et cachet du médecin</div>
+  <div class="foot">Document généré par MedMa — N° {{ doc.name }}</div>
+</div>

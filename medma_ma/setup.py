@@ -85,8 +85,10 @@ def after_install_and_migrate():
     ensure_permissions()
     ensure_permissions_reception()
     ensure_permissions_pharmacie()
+    ensure_permissions_urgences()
     ensure_fuseau()
     ensure_devise()
+    ensure_identifiant_patient()
     ensure_patient_sans_compte()
     restreindre_espaces_admin()
 
@@ -101,6 +103,16 @@ CARTES = {
         "Patient Appointment",
         [["Patient Appointment", "status", "=", "Checked In"], ["Patient Appointment", "appointment_date", "Timespan", "today"]],
     ),
+    "Urgences en attente": ("Passage Urgences", [["Passage Urgences", "statut", "=", "En attente"]]),
+    "Urgences en cours": (
+        "Passage Urgences",
+        [["Passage Urgences", "statut", "in", ["En cours de soins", "En observation"]]]),
+    "Urgences vitales en cours": (
+        "Passage Urgences",
+        [["Passage Urgences", "statut", "!=", "Terminé"],
+         ["Passage Urgences", "niveau_triage", "in", ["1 - Détresse vitale", "2 - Très urgent"]]]),
+    "Passages urgences du jour": (
+        "Passage Urgences", [["Passage Urgences", "date_arrivee", "Timespan", "today"]]),
     "Médicaments en stock bas": ("Bin", [["Bin", "actual_qty", "<", 50]]),
     "Rendez-vous à venir": ("Patient Appointment", [["Patient Appointment", "status", "=", "Scheduled"]]),
     "Patients hospitalisés": ("Inpatient Record", [["Inpatient Record", "status", "=", "Admitted"]]),
@@ -170,6 +182,20 @@ ESPACES = [
             ("Hospitalisations", "Inpatient Record"),
             ("Rendez-vous", "Patient Appointment"),
             ("Consultations", "Patient Encounter"),
+        ],
+    },
+    {
+        "name": "Urgences",
+        "module": "Healthcare",
+        "icon": "alert-triangle",
+        "roles": ["Physician", "Nursing User", "Healthcare Administrator", "System Manager"],
+        "cartes": ["Urgences en attente", "Urgences en cours", "Urgences vitales en cours", "Passages urgences du jour"],
+        "titre": "Service des urgences",
+        "actions": [("Nouveau passage aux urgences", "/app/passage-urgences/new")],
+        "rapports": ["File d'attente des urgences"],
+        "raccourcis": [
+            ("Passages aux urgences", "Passage Urgences"),
+            ("Patients", "Patient"),
         ],
     },
     {
@@ -378,6 +404,22 @@ def ensure_permissions_pharmacie():
         frappe.clear_cache(doctype=dt)
 
 
+def ensure_permissions_urgences():
+    """Les urgences accueillent tout patient : l'infirmier de tri, le médecin et la réception doivent trouver le patient
+    et le médecin d'astreinte. Lecture seule : le dossier médical n'est pas ouvert."""
+    import frappe
+    from frappe.permissions import add_permission, update_permission_property
+
+    for role, dts in {"Nursing User": ("Patient", "Healthcare Practitioner"), "Physician": ("Patient", "Healthcare Practitioner")}.items():
+        for dt in dts:
+            if not frappe.db.exists("Custom DocPerm", {"parent": dt, "role": role, "permlevel": 0}) and not any(
+                p.role == role and p.read for p in frappe.get_meta(dt).permissions
+            ):
+                add_permission(dt, role, 0, "read")
+                update_permission_property(dt, role, 0, "read", 1)
+            frappe.clear_cache(doctype=dt)
+
+
 def ensure_fuseau():
     """Le Maroc vit à UTC+1 toute l'année (sauf le mois de Ramadan). La base de fuseaux de Python donne UTC+0 pour
     « Africa/Casablanca » en dehors des années passées : les heures et les cartes « du jour » avaient 1 h de retard.
@@ -387,6 +429,16 @@ def ensure_fuseau():
     if frappe.db.get_single_value("System Settings", "time_zone") != "Africa/Algiers":
         frappe.db.set_single_value("System Settings", "time_zone", "Africa/Algiers")
         frappe.clear_cache()
+
+
+def ensure_identifiant_patient():
+    """Identifiant du patient : un numéro de série (HLC-PAT-2026-00001), pas son nom. Deux patients homonymes
+    ne se distinguaient que par un suffixe « - 1 ». Ne concerne que les nouveaux patients."""
+    import frappe
+
+    if frappe.db.get_single_value("Healthcare Settings", "patient_name_by") != "Naming Series":
+        frappe.db.set_single_value("Healthcare Settings", "patient_name_by", "Naming Series")
+        frappe.clear_cache(doctype="Healthcare Settings")
 
 
 def ensure_devise():

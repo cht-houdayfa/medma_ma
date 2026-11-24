@@ -200,7 +200,7 @@ class TestImpression(Base):
 			self.assertIn(texte, html)
 
 
-SURVEILLES = ["Certificat Medical", "Sales Invoice", "Patient", "Customer", "Item", "Organisme Payeur", "Couverture Patient",
+SURVEILLES = ["Passage Urgences", "Certificat Medical", "Sales Invoice", "Patient", "Customer", "Item", "Organisme Payeur", "Couverture Patient",
               "Dossier Remboursement", "Payment Entry", "GL Entry"]
 
 
@@ -414,8 +414,8 @@ class TestMenusParRole(Base):
 
 	def test_chaque_metier_ne_voit_que_ses_espaces(self):
 		autorises = {
-			"medecin": {"Cabinet médecin", "Guide Médecin"},
-			"infirmier": {"Soins infirmiers", "Guide Infirmier"},
+			"medecin": {"Cabinet médecin", "Urgences", "Guide Médecin"},
+			"infirmier": {"Soins infirmiers", "Urgences", "Guide Infirmier"},
 			"labo": {"Laboratoire", "Guide Laboratoire"},
 			"pharmacie": {"Pharmacie", "Stock", "Guide Pharmacie"},
 			"compta": {"Tableau de bord", "MedMa", "Accounting", "Payables", "Receivables", "Financial Reports",
@@ -465,3 +465,89 @@ class TestCorrectifs(Base):
 		self.assertEqual(get_system_timezone(), "Africa/Algiers")
 		ecart = now_datetime() - datetime.datetime.utcnow()
 		self.assertAlmostEqual(ecart.total_seconds(), 3600, delta=60)
+
+
+class TestIdentifiantPatient(Base):
+	def _patient_cin(self, nom, cin):
+		doc = frappe.get_doc({"doctype": "Patient", "first_name": nom, "sex": "Male", "cin": cin})
+		doc.insert(ignore_permissions=True)
+		return doc
+
+	def test_identifiant_serie_et_cin_unique(self):
+		a = self._patient_cin("TestIdA", " zz 99 ")
+		try:
+			self.assertTrue(a.name.startswith("HLC-PAT-"), a.name)
+			self.assertEqual(a.cin, "ZZ99")
+			# même nom autorisé, identifiants distincts
+			b = frappe.get_doc({"doctype": "Patient", "first_name": "TestIdA", "sex": "Male"}).insert(ignore_permissions=True)
+			self.assertNotEqual(a.name, b.name)
+			# même CIN refusé, même écrit autrement
+			with self.assertRaises(frappe.ValidationError):
+				self._patient_cin("TestIdC", "zz99")
+			frappe.delete_doc("Patient", b.name, force=True, ignore_permissions=True)
+		finally:
+			frappe.delete_doc("Patient", a.name, force=True, ignore_permissions=True)
+
+
+class TestUrgences(Base):
+	def _passage(self, **kw):
+		return frappe.get_doc({"doctype": "Passage Urgences", "patient": self.patient.name, "motif": "Douleur thoracique",
+		                       "niveau_triage": "2 - Très urgent", **kw}).insert(ignore_permissions=True)
+
+	def test_cycle_de_prise_en_charge_et_delai(self):
+		p = self._passage()
+		self.assertTrue(p.name.startswith("URG-"))
+		self.assertEqual(p.statut, "En attente")
+		self.assertFalse(p.date_prise_en_charge)
+		p.statut = "En cours de soins"
+		p.date_arrivee = frappe.utils.add_to_date(frappe.utils.now_datetime(), minutes=-25)
+		p.save()
+		p.reload()
+		self.assertTrue(p.date_prise_en_charge)
+		self.assertGreaterEqual(p.delai_attente, 24)
+		# la sortie exige une orientation
+		p.statut = "Terminé"
+		with self.assertRaises(frappe.ValidationError):
+			p.save()
+		p.reload()
+		p.statut = "Terminé"
+		p.orientation = "Retour à domicile"
+		p.save()
+		self.assertTrue(p.date_sortie)
+
+	def test_heure_darrivee_prise_sur_le_serveur(self):
+		p = self._passage()
+		self.assertTrue(p.date_arrivee)
+		self.assertLess(abs((frappe.utils.now_datetime() - frappe.utils.get_datetime(p.date_arrivee)).total_seconds()), 60)
+
+	def test_constantes_aberrantes_refusees(self):
+		with self.assertRaises(frappe.ValidationError):
+			self._passage(saturation=250)
+		with self.assertRaises(frappe.ValidationError):
+			self._passage(tension_systolique=80, tension_diastolique=120)
+
+	def test_menu_rapport_et_fiche(self):
+		from frappe.desk.desktop import get_workspace_sidebar_items
+
+		for role in ("medecin", "infirmier", "reception"):
+			frappe.set_user(f"demo.{role}@chtmed.ma")
+			try:
+				self.assertIn("Urgences", {p["name"] for p in get_workspace_sidebar_items().get("pages", [])}, role)
+			finally:
+				frappe.set_user("Administrator")
+		self._passage(niveau_triage="1 - Détresse vitale", motif="Arrêt respiratoire")
+		self._passage(niveau_triage="4 - Moins urgent", motif="Entorse")
+		res = frappe.db.sql(frappe.db.get_value("Report", "File d'attente des urgences", "query"), as_dict=False)
+		self.assertTrue(res[0][0].startswith("1"))
+		html = frappe.get_print("Passage Urgences", self._passage(motif="Fièvre").name, print_format="Fiche Urgences MedMa")
+		for texte in ("FICHE D'URGENCE", "Fièvre", "Niveau de tri"):
+			self.assertIn(texte, html)
+
+	def test_cartes_et_acces(self):
+		self._passage(niveau_triage="1 - Détresse vitale")
+		for carte in ("Urgences en attente", "Urgences vitales en cours", "Passages urgences du jour"):
+			self.assertTrue(frappe.db.exists("Number Card", carte), carte)
+		for role, droit in (("infirmier", "create"), ("medecin", "write"), ("reception", "create")):
+			self.assertTrue(frappe.has_permission("Passage Urgences", droit, user=f"demo.{role}@chtmed.ma"), role)
+		for role in ("labo", "pharmacie", "compta"):
+			self.assertFalse(frappe.has_permission("Passage Urgences", "read", user=f"demo.{role}@chtmed.ma"), role)

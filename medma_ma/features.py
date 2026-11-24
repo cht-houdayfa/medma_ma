@@ -28,6 +28,7 @@ FORMATS = [
 	("Facture MedMa", "Sales Invoice", "facture.html"),
 	("Bordereau MedMa", "Dossier Remboursement", "bordereau.html"),
 	("Certificat MedMa", "Certificat Medical", "certificat.html"),
+	("Fiche Urgences MedMa", "Passage Urgences", "urgences.html"),
 ]
 
 
@@ -140,17 +141,35 @@ REPORT_RDV_JOUR = {
 		"WHEN 'Confirmed' THEN 'Confirmé' WHEN 'Closed' THEN 'Terminé' WHEN 'Cancelled' THEN 'Annulé' "
 		"ELSE pa.status END AS `Statut:Data:100`, pa.name AS `Rendez-vous:Link/Patient Appointment:150` "
 		"FROM `tabPatient Appointment` pa "
-		"WHERE pa.appointment_date = CURDATE() AND pa.status != 'Cancelled' "
+		"WHERE pa.appointment_date = DATE(CONVERT_TZ(UTC_TIMESTAMP(), '+00:00', '+01:00')) AND pa.status != 'Cancelled' "
 		"ORDER BY pa.appointment_time"
 	),
 }
 
 
+REPORT_FILE_URGENCES = {
+	"name": "File d'attente des urgences",
+	"query": (
+		"SELECT pu.niveau_triage AS `Niveau:Data:150`, pu.patient_name AS `Patient:Data:200`, "
+		"pu.motif AS `Motif:Data:240`, pu.statut AS `Statut:Data:130`, "
+		"TIMESTAMPDIFF(MINUTE, pu.date_arrivee, CONVERT_TZ(UTC_TIMESTAMP(), '+00:00', '+01:00')) AS `Attente (min):Int:110`, "
+		"pu.date_arrivee AS `Arrivée:Datetime:150`, pu.practitioner AS `Médecin:Link/Healthcare Practitioner:160`, "
+		"pu.name AS `Passage:Link/Passage Urgences:140` "
+		"FROM `tabPassage Urgences` pu WHERE pu.statut != 'Terminé' "
+		"ORDER BY pu.niveau_triage, pu.date_arrivee"
+	),
+}
+
+
 def ensure_rapport_rdv_jour():
-	rep = REPORT_RDV_JOUR
+	for rep, dt in ((REPORT_RDV_JOUR, "Patient Appointment"), (REPORT_FILE_URGENCES, "Passage Urgences")):
+		_ensure_rapport(rep, dt)
+
+
+def _ensure_rapport(rep, ref_doctype):
 	valeurs = {
 		"report_name": rep["name"],
-		"ref_doctype": "Patient Appointment",
+		"ref_doctype": ref_doctype,
 		"report_type": "Query Report",
 		"is_standard": "No",
 		"module": "MedMa",
@@ -556,18 +575,21 @@ GUIDE = [
       "À l'arrivée du patient : ouvrir son rendez-vous → bouton « Patient arrivé ». Il apparaît chez le médecin.",
       "Facture : bouton « Ajouter la consultation », choisir la couverture : part organisme / part patient sont calculées seules.",
       "Encaisser la part patient : bouton « Enregistrer le paiement » ; Imprimer → « Facture MedMa ».",
-      "Rapport « Rendez-vous du jour (liste) » pour suivre la salle d'attente."]),
+      "Rapport « Rendez-vous du jour (liste) » pour suivre la salle d'attente.",
+      "Espace « Urgences » : enregistrer l'arrivée d'un patient aux urgences (identité, motif, mode d'arrivée)."]),
     ("Guide Médecin", ["Physician"], "Votre journée de consultation", "Espace « Cabinet médecin »",
      ["Carte « Patients en salle d'attente » : les patients arrivés apparaissent ici.",
       "Ouvrir le rendez-vous → Consultation : motif, constantes, diagnostic.",
       "Ordonnance : médicament par nom de marque ou générique (DCI) ; analyses : elles partent seules au laboratoire.",
       "Valider la consultation, puis Imprimer → « Ordonnance MedMa » (PDF).",
       "Certificats médicaux → Nouveau : arrêt de travail (nombre de jours calculé) ; Imprimer → « Certificat MedMa ».",
-      "Carte « Analyses à valider » : consulter les résultats reçus du laboratoire."]),
+      "Carte « Analyses à valider » : consulter les résultats reçus du laboratoire.",
+      "Espace « Urgences » : prendre en charge un patient trié (bouton « Prendre en charge »), puis clôturer avec son orientation."]),
     ("Guide Infirmier", ["Nursing User"], "Vos tâches de soins", "Espace « Soins infirmiers »",
      ["Rendez-vous du jour et patients en salle d'attente.",
       "Prendre les constantes (tension, pouls, température, poids) dans « Signes vitaux » du patient.",
       "Suivre les patients hospitalisés : lits, soins et observations.",
+      "Espace « Urgences » : enregistrer l'arrivée, trier le patient (niveau 1 à 5) et saisir ses constantes.",
       "Les informations de facturation ne sont pas visibles pour ce rôle."]),
     ("Guide Laboratoire", ["Laboratory User"], "Du prélèvement au résultat", "Espace « Laboratoire »",
      ["Carte « Prélèvements à faire » : les analyses prescrites apparaissent automatiquement.",
