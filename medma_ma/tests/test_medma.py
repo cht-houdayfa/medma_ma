@@ -515,6 +515,10 @@ class TestUrgences(Base):
 		p.save()
 		self.assertTrue(p.date_sortie)
 
+	def test_liens_affichent_le_nom_et_pas_le_numero(self):
+		for dt in ("Patient", "Healthcare Practitioner"):
+			self.assertTrue(frappe.get_meta(dt).show_title_field_in_link, dt)
+
 	def test_heure_darrivee_prise_sur_le_serveur(self):
 		p = self._passage()
 		self.assertTrue(p.date_arrivee)

@@ -87,6 +87,7 @@ def after_install_and_migrate():
     ensure_permissions_pharmacie()
     ensure_permissions_urgences()
     ensure_fuseau()
+    ensure_titres_liens()
     ensure_devise()
     ensure_identifiant_patient()
     ensure_patient_sans_compte()
@@ -429,6 +430,20 @@ def ensure_fuseau():
     if frappe.db.get_single_value("System Settings", "time_zone") != "Africa/Algiers":
         frappe.db.set_single_value("System Settings", "time_zone", "Africa/Algiers")
         frappe.clear_cache()
+    # le fuseau personnel des utilisateurs s'affiche sous chaque champ date-heure : il doit être le même
+    frappe.db.sql("update tabUser set time_zone = 'Africa/Algiers' where time_zone is not null and time_zone != 'Africa/Algiers'")
+
+
+def ensure_titres_liens():
+    """Les identifiants patient sont des numéros (HLC-PAT-2026-00001) : dans les champs de liaison (urgences, rendez-vous,
+    factures...) on affiche le nom du patient et du praticien, pas leur numéro."""
+    import frappe
+    from frappe.custom.doctype.property_setter.property_setter import make_property_setter
+
+    for dt in ("Patient", "Healthcare Practitioner"):
+        if not frappe.get_meta(dt).show_title_field_in_link:
+            make_property_setter(dt, None, "show_title_field_in_link", "1", "Check", for_doctype=True)
+            frappe.clear_cache(doctype=dt)
 
 
 def ensure_identifiant_patient():

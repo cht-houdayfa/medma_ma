@@ -1,0 +1,13 @@
+MedMa (medma_ma) — couche marocaine pour Frappe Health.
+Licence : GNU General Public License v3 (voir LICENSE).
+
+Ce logiciel s'appuie sur des logiciels libres, dont les droits d'auteur et les licences sont conservés :
+
+- Healthcare (Frappe Health) — earthians Health Informatics Pvt. Ltd. — GNU GPL v3
+- ERPNext — Frappe Technologies Pvt. Ltd. — GNU GPL v3
+- Frappe Framework — Frappe Technologies — MIT
+
+« ERPNext » et « Frappe » sont des marques de leurs propriétaires respectifs ; MedMa n'est ni affilié
+à ces sociétés ni approuvé par elles.
+
+Le code source de MedMa est disponible : https://github.com/cht-houdayfa/medma_ma

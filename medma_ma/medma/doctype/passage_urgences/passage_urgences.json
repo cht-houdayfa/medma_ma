@@ -41,7 +41,7 @@
   {"fieldname": "col4", "fieldtype": "Column Break"},
   {"fieldname": "diagnostic", "label": "Diagnostic", "fieldtype": "Small Text"},
   {"fieldname": "traitement", "label": "Soins et traitement", "fieldtype": "Small Text"},
-  {"fieldname": "section_sortie", "label": "Sortie", "fieldtype": "Section Break"},
+  {"fieldname": "section_sortie", "label": "Sortie", "fieldtype": "Section Break", "depends_on": "eval:doc.statut=='Terminé'"},
   {"fieldname": "orientation", "label": "Orientation", "fieldtype": "Select", "options": "\nRetour à domicile\nHospitalisation\nTransfert vers un autre établissement\nSortie contre avis médical\nDécès", "depends_on": "eval:doc.statut=='Terminé'", "mandatory_depends_on": "eval:doc.statut=='Terminé'", "in_list_view": 1},
   {"fieldname": "date_sortie", "label": "Sortie à", "fieldtype": "Datetime", "read_only": 1},
   {"fieldname": "col5", "fieldtype": "Column Break"},
