@@ -18,7 +18,7 @@
     {% if pat.get("dob") %} — né(e) le {{ frappe.utils.formatdate(pat.dob) }}{% endif %}
     {% if pat.get("mobile") %} — Tél : {{ pat.mobile }}{% endif %}
     <br>Niveau de tri : <b>{{ doc.niveau_triage }}</b> — Statut : {{ doc.statut }}
-    {% if doc.practitioner %}— Médecin : {{ doc.practitioner }}{% endif %}
+    {% if doc.practitioner %}— Médecin : Dr {{ frappe.db.get_value("Healthcare Practitioner", doc.practitioner, "practitioner_name") }}{% endif %}
   </div>
 
   <p><b>Motif :</b> {{ doc.motif }}</p>
@@ -31,7 +31,7 @@
       <td>{% if doc.saturation %}{{ doc.saturation }} %{% endif %}</td>
       <td>{% if doc.temperature %}{{ doc.temperature }} °C{% endif %}</td>
       <td>{% if doc.glycemie %}{{ doc.glycemie }} g/L{% endif %}</td>
-      <td>{{ doc.score_douleur if doc.score_douleur is not none else "" }}</td><td>{{ doc.glasgow or "" }}</td>
+      <td>{{ doc.score_douleur or "" }}</td><td>{{ doc.glasgow or "" }}</td>
     </tr>
   </table>
 
