@@ -22,7 +22,7 @@ app_include_css = "/assets/medma_ma/css/medma.css"
 web_include_css = "/assets/medma_ma/css/medma.css"
 app_logo_url = "/assets/medma_ma/images/medma-logo.svg"
 add_to_apps_screen = [
-    {"name": "medma_ma", "logo": "/assets/medma_ma/images/medma-logo.svg", "title": "MedMa", "route": "/app/cabinet-medecin"}
+    {"name": "medma_ma", "logo": "/assets/medma_ma/images/medma-logo.svg", "title": "MedMa", "route": "/app/cabinet-médecin"}
 ]
 
 override_doctype_class = {

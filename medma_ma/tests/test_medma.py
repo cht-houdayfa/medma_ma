@@ -718,3 +718,13 @@ class TestBoutonsCliniques(Base):
 		self.assertTrue(frappe.has_permission("Patient Encounter", "read", user="demo.medecin@chtmed.ma"))
 		raccourcis = frappe.get_all("Workspace Shortcut", {"parent": "Soins infirmiers"}, pluck="link_to")
 		self.assertNotIn("Patient Encounter", raccourcis)
+
+
+class TestRoutes(Base):
+	def test_route_de_lecran_des_applications_pointe_un_espace_existant(self):
+		from medma_ma import hooks
+
+		route = hooks.add_to_apps_screen[0]["route"]
+		espace = route.replace("/app/", "")
+		attendus = {w.lower().replace(" ", "-") for w in frappe.get_all("Workspace", pluck="name")}
+		self.assertIn(espace, attendus)
