@@ -636,3 +636,17 @@ class TestUrgencesComplements(Base):
 			self.assertTrue(frappe.has_permission("Healthcare Service Unit", "read", user=f"demo.{role}@chtmed.ma"), role)
 		self.assertTrue(frappe.has_permission("Resume Sortie", "create", user="demo.medecin@chtmed.ma"))
 		self.assertFalse(frappe.has_permission("Resume Sortie", "create", user="demo.infirmier@chtmed.ma"))
+
+
+class TestTitreRendezVous(Base):
+	def test_titre_est_patient_avec_praticien(self):
+		from medma_ma.setup import ensure_titres_rendez_vous
+
+		rdv = frappe.db.get_value("Patient Appointment", {}, "name")
+		if not rdv:
+			return
+		frappe.db.set_value("Patient Appointment", rdv, "title", rdv)
+		ensure_titres_rendez_vous()
+		titre = frappe.db.get_value("Patient Appointment", rdv, "title")
+		self.assertNotEqual(titre, rdv)
+		self.assertIn(" avec ", titre)

@@ -95,6 +95,7 @@ def after_install_and_migrate():
     ensure_permissions_urgences()
     ensure_fuseau()
     ensure_titres_liens()
+    ensure_titres_rendez_vous()
     ensure_devise()
     ensure_identifiant_patient()
     ensure_patient_sans_compte()
@@ -482,6 +483,18 @@ def ensure_titres_liens():
         if not frappe.get_meta(dt).show_title_field_in_link:
             make_property_setter(dt, None, "show_title_field_in_link", "1", "Check", for_doctype=True)
             frappe.clear_cache(doctype=dt)
+
+
+def ensure_titres_rendez_vous():
+    """Le titre d'un rendez-vous (colonne « Titre » des listes) doit être « Patient avec Praticien », pas son numéro
+    ni « with » en anglais. Corrige aussi les rendez-vous créés avant la traduction."""
+    import frappe
+
+    frappe.db.sql(
+        """update `tabPatient Appointment`
+           set title = concat(ifnull(patient_name, patient), ' avec ', ifnull(practitioner_name, practitioner))
+           where (title is null or title = '' or title = name or title like '% with %')
+             and (practitioner_name is not null or practitioner is not null)""")
 
 
 def ensure_identifiant_patient():
