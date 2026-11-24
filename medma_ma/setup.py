@@ -21,6 +21,8 @@ CUSTOM_FIELDS = {
          "read_only": 1, "allow_on_submit": 1, "insert_after": "date_prelevement"},
     ],
     "Patient Encounter": [
+        {"fieldname": "interaction_confirmee", "label": "Prescrire malgré l'interaction signalée", "fieldtype": "Check",
+         "insert_after": "drug_prescription", "description": "À cocher seulement après avoir pesé le risque d'interaction"},
         {"fieldname": "allergie_confirmee", "label": "Prescrire malgré l'allergie signalée", "fieldtype": "Check",
          "insert_after": "drug_prescription", "description": "À cocher seulement après avoir pesé le risque d'allergie"},
     ],
@@ -92,6 +94,7 @@ def after_install_and_migrate():
     ensure_permissions_reception()
     ensure_permissions_pharmacie()
     ensure_unites_urgences()
+    seed_interactions()
     ensure_permissions_urgences()
     ensure_fuseau()
     ensure_titres_liens()
@@ -126,6 +129,8 @@ CARTES = {
         "Healthcare Service Unit",
         [["Healthcare Service Unit", "service_unit_type", "=", "Box d'urgence"],
          ["Healthcare Service Unit", "occupancy_status", "=", "Vacant"]]),
+    "Médicaments à administrer": (
+        "Administration Medicament", [["Administration Medicament", "statut", "=", "À donner"]]),
     "Médicaments en stock bas": ("Bin", [["Bin", "actual_qty", "<", 50]]),
     "Rendez-vous à venir": ("Patient Appointment", [["Patient Appointment", "status", "=", "Scheduled"]]),
     "Patients hospitalisés": ("Inpatient Record", [["Inpatient Record", "status", "=", "Admitted"]]),
@@ -154,6 +159,7 @@ ESPACES = [
             ("Rendez-vous", "Patient Appointment"),
             ("Consultations", "Patient Encounter"),
             ("Certificats médicaux", "Certificat Medical"),
+            ("Interactions médicamenteuses", "Interaction Medicamenteuse"),
             ("Analyses", "Lab Test"),
             ("Constantes", "Vital Signs"),
             ("Hospitalisations", "Inpatient Record"),
@@ -187,14 +193,17 @@ ESPACES = [
         "module": "Healthcare",
         "icon": "heart",
         "roles": ["Nursing User", "System Manager"],
-        "cartes": ["Patients en salle d'attente", "Rendez-vous du jour", "Patients hospitalisés"],
+        "cartes": ["Médicaments à administrer", "Patients en salle d'attente", "Rendez-vous du jour", "Patients hospitalisés"],
         "titre": "Soins et hospitalisation",
+        "actions": [("Nouvelle administration", "/app/administration-medicament/new"),
+                    ("Nouvelle transmission de garde", "/app/transmission-garde/new")],
         "raccourcis": [
+            ("Administrations de médicaments", "Administration Medicament"),
+            ("Transmissions de garde", "Transmission Garde"),
             ("Patients", "Patient"),
             ("Constantes", "Vital Signs"),
             ("Hospitalisations", "Inpatient Record"),
             ("Rendez-vous", "Patient Appointment"),
-            ("Consultations", "Patient Encounter"),
         ],
     },
     {
@@ -210,6 +219,8 @@ ESPACES = [
         "raccourcis": [
             ("Passages aux urgences", "Passage Urgences"),
             ("Résumés de sortie", "Resume Sortie"),
+            ("Administrations de médicaments", "Administration Medicament"),
+            ("Transmissions de garde", "Transmission Garde"),
             ("Patients", "Patient"),
         ],
     },
@@ -417,6 +428,32 @@ def ensure_permissions_pharmacie():
         for droit in ("read", "print", "report"):
             update_permission_property(dt, role, 0, droit, 1)
         frappe.clear_cache(doctype=dt)
+
+
+# Interactions très documentées, à titre de départ. Le pharmacien ou le médecin responsable doit valider et compléter
+# cette liste (menu « Interactions médicamenteuses ») : elle ne remplace pas une base pharmacologique officielle.
+INTERACTIONS = [
+    ("warfarine", "aspirine", "Majeure", "Risque hémorragique majeur : association à éviter ou surveillance INR rapprochée."),
+    ("warfarine", "ibuprofène", "Majeure", "Risque hémorragique et digestif : éviter les AINS sous anticoagulant."),
+    ("warfarine", "diclofénac", "Majeure", "Risque hémorragique et digestif : éviter les AINS sous anticoagulant."),
+    ("ibuprofène", "aspirine", "Modérée", "Les AINS peuvent annuler l'effet antiagrégant de l'aspirine et majorent le risque digestif."),
+    ("ibuprofène", "diclofénac", "Modérée", "Deux AINS ensemble : pas d'intérêt, risque digestif et rénal accru."),
+    ("méthotrexate", "ibuprofène", "Majeure", "Toxicité du méthotrexate accrue : association déconseillée."),
+    ("clarithromycine", "simvastatine", "Majeure", "Risque de rhabdomyolyse : suspendre la statine pendant le traitement."),
+    ("tramadol", "sertraline", "Majeure", "Risque de syndrome sérotoninergique et de convulsions."),
+    ("amoxicilline", "méthotrexate", "Modérée", "Les pénicillines peuvent augmenter la toxicité du méthotrexate."),
+    ("metformine", "ibuprofène", "Mineure", "Surveiller la fonction rénale en cas d'AINS prolongé."),
+]
+
+
+def seed_interactions():
+    import frappe
+
+    if frappe.db.count("Interaction Medicamenteuse"):
+        return
+    for a, b, gravite, conseil in INTERACTIONS:
+        frappe.get_doc({"doctype": "Interaction Medicamenteuse", "substance_a": a, "substance_b": b,
+                        "gravite": gravite, "conseil": conseil}).insert(ignore_permissions=True)
 
 
 def ensure_unites_urgences():

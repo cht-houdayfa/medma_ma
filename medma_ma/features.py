@@ -331,6 +331,35 @@ def ensure_client_scripts_allergies():
 			frappe.get_doc({"doctype": "Client Script", "name": nom, **valeurs}).insert(ignore_permissions=True)
 
 
+SCRIPT_BOUTONS_CLINIQUES = """
+function medma_masquer_boutons(frm) {
+	// secret médical : sans droit sur les consultations, ni le bouton « Consultation » ni l'historique du patient
+	if (frappe.model.can_read('Patient Encounter')) return;
+	const retirer = () => {
+		frm.remove_custom_button(__('Consultation'), __('Create'));
+		frm.remove_custom_button(__('Patient History'), __('View'));
+		frm.remove_custom_button(__('Patient History'));
+	};
+	retirer();
+	setTimeout(retirer, 300);
+	setTimeout(retirer, 1500);
+}
+frappe.ui.form.on('%(dt)s', { refresh: medma_masquer_boutons });
+"""
+
+
+def ensure_client_script_boutons_cliniques():
+	for dt in ("Patient Appointment", "Patient"):
+		nom = f"MedMa - Boutons cliniques {dt}"
+		valeurs = {"dt": dt, "view": "Form", "enabled": 1, "script": SCRIPT_BOUTONS_CLINIQUES % {"dt": dt}}
+		if frappe.db.exists("Client Script", nom):
+			cs = frappe.get_doc("Client Script", nom)
+			cs.update(valeurs)
+			cs.save(ignore_permissions=True)
+		else:
+			frappe.get_doc({"doctype": "Client Script", "name": nom, **valeurs}).insert(ignore_permissions=True)
+
+
 def ensure_taxes():
 	"""Les actes médicaux (consultations, analyses) sont exonérés de TVA : le modèle par défaut ne doit pas ajouter 20 %.
 	On crée un modèle « Actes médicaux (exonéré de TVA) » sans ligne de taxe et on le met par défaut ; les modèles TVA
@@ -550,6 +579,7 @@ def ensure_all():
 	ensure_client_scripts_dossier()
 	ensure_client_scripts_couverture()
 	ensure_client_scripts_allergies()
+	ensure_client_script_boutons_cliniques()
 	ensure_branding()
 	ensure_guide()
 	ensure_portail()
@@ -610,6 +640,7 @@ GUIDE = [
       "Ouvrir le rendez-vous → Consultation : motif, constantes, diagnostic.",
       "Ordonnance : médicament par nom de marque ou générique (DCI) ; analyses : elles partent seules au laboratoire.",
       "Allergies : saisies dans la fiche patient, elles s'affichent en rouge et bloquent une prescription incompatible.",
+      "Interactions : une ordonnance avec une association dangereuse est bloquée ou signalée ; la liste se complète dans « Interactions médicamenteuses ».",
       "Valider la consultation, puis Imprimer → « Ordonnance MedMa » (PDF).",
       "Certificats médicaux → Nouveau : arrêt de travail (nombre de jours calculé) ; Imprimer → « Certificat MedMa ».",
       "Carte « Analyses à valider » : consulter les résultats reçus du laboratoire.",
@@ -619,6 +650,8 @@ GUIDE = [
       "Prendre les constantes (tension, pouls, température, poids) dans « Signes vitaux » du patient.",
       "Suivre les patients hospitalisés : lits, soins et observations.",
       "Espace « Urgences » : enregistrer l'arrivée, trier le patient (niveau 1 à 5) et saisir ses constantes.",
+      "Administration des médicaments : noter l'heure prévue, puis « Donné », « Refusé » ou « Reporté » ; une allergie bloque l'administration.",
+      "Transmission de garde : en fin de service, lister l'état de chaque patient pour l'équipe suivante.",
       "Les informations de facturation ne sont pas visibles pour ce rôle."]),
     ("Guide Laboratoire", ["Laboratory User"], "Du prélèvement au résultat", "Espace « Laboratoire »",
      ["Carte « Prélèvements à faire » : les analyses prescrites apparaissent automatiquement.",

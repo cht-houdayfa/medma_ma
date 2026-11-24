@@ -283,3 +283,7 @@ Allergie Patient,Allergie du patient
 Box d'urgence,Box d'urgence
 {0} with {1},{0} avec {1}
 {0} at {1},{0} à {1}
+Interaction Medicamenteuse,Interaction médicamenteuse
+Administration Medicament,Administration de médicament
+Transmission Garde,Transmission de garde
+Transmission Patient,Transmission par patient

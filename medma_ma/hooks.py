@@ -12,7 +12,7 @@ after_migrate = "medma_ma.setup.after_install_and_migrate"
 doc_events = {
     "Sales Invoice": {"validate": "medma_ma.invoice.calculer_prise_en_charge"},
     "Patient": {"validate": "medma_ma.patient.verifier_cin"},
-    "Patient Encounter": {"validate": "medma_ma.allergies.verifier_prescription"},
+    "Patient Encounter": {"validate": ["medma_ma.allergies.verifier_prescription", "medma_ma.allergies.verifier_interactions"]},
     "Service Request": {"on_submit": "medma_ma.laboratoire.creer_analyse_depuis_demande"},
     "Lab Test": {"on_submit": "medma_ma.laboratoire.marquer_resultat_valide"},
 }

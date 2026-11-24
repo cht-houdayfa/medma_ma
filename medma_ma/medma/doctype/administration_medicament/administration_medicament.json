@@ -1,0 +1,38 @@
+{
+ "doctype": "DocType",
+ "name": "Administration Medicament",
+ "module": "MedMa",
+ "custom": 0,
+ "engine": "InnoDB",
+ "autoname": "format:ADM-{YYYY}-{#####}",
+ "naming_rule": "Expression",
+ "title_field": "patient_name",
+ "track_changes": 1,
+ "sort_field": "heure_prevue",
+ "sort_order": "ASC",
+ "field_order": ["patient", "patient_name", "medication", "col1", "dose", "voie", "heure_prevue", "section_admin", "statut", "heure_administration", "col2", "infirmier", "motif", "section_lien", "passage_urgences", "inpatient_record", "observations"],
+ "fields": [
+  {"fieldname": "patient", "label": "Patient", "fieldtype": "Link", "options": "Patient", "reqd": 1, "in_standard_filter": 1},
+  {"fieldname": "patient_name", "label": "Nom du patient", "fieldtype": "Data", "fetch_from": "patient.patient_name", "read_only": 1, "in_list_view": 1},
+  {"fieldname": "medication", "label": "Médicament", "fieldtype": "Link", "options": "Medication", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "col1", "fieldtype": "Column Break"},
+  {"fieldname": "dose", "label": "Dose (ex. 1 g)", "fieldtype": "Data", "reqd": 1, "in_list_view": 1},
+  {"fieldname": "voie", "label": "Voie", "fieldtype": "Select", "options": "Orale\nIntraveineuse\nIntramusculaire\nSous-cutanée\nInhalée\nCutanée\nAutre", "default": "Orale"},
+  {"fieldname": "heure_prevue", "label": "Heure prévue", "fieldtype": "Datetime", "in_list_view": 1, "description": "Laissez vide : maintenant (heure du serveur)"},
+  {"fieldname": "section_admin", "label": "Administration", "fieldtype": "Section Break"},
+  {"fieldname": "statut", "label": "Statut", "fieldtype": "Select", "options": "À donner\nDonné\nRefusé par le patient\nReporté", "default": "À donner", "reqd": 1, "in_list_view": 1, "in_standard_filter": 1},
+  {"fieldname": "heure_administration", "label": "Heure réelle", "fieldtype": "Datetime", "read_only": 1},
+  {"fieldname": "col2", "fieldtype": "Column Break"},
+  {"fieldname": "infirmier", "label": "Infirmier", "fieldtype": "Link", "options": "User", "read_only": 1},
+  {"fieldname": "motif", "label": "Motif (refus ou report)", "fieldtype": "Small Text", "depends_on": "eval:doc.statut=='Refusé par le patient' || doc.statut=='Reporté'"},
+  {"fieldname": "section_lien", "label": "Rattachement", "fieldtype": "Section Break", "collapsible": 1},
+  {"fieldname": "passage_urgences", "label": "Passage aux urgences", "fieldtype": "Link", "options": "Passage Urgences"},
+  {"fieldname": "inpatient_record", "label": "Hospitalisation", "fieldtype": "Link", "options": "Inpatient Record"},
+  {"fieldname": "observations", "label": "Observations", "fieldtype": "Small Text"}
+ ],
+ "permissions": [
+  {"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1, "print": 1, "report": 1, "export": 1},
+  {"role": "Nursing User", "read": 1, "write": 1, "create": 1, "print": 1, "report": 1},
+  {"role": "Physician", "read": 1, "write": 1, "create": 1, "print": 1, "report": 1}
+ ]
+}

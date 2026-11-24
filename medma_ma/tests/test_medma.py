@@ -200,7 +200,7 @@ class TestImpression(Base):
 			self.assertIn(texte, html)
 
 
-SURVEILLES = ["Passage Urgences", "Resume Sortie", "Certificat Medical", "Sales Invoice", "Patient", "Customer", "Item", "Organisme Payeur", "Couverture Patient",
+SURVEILLES = ["Passage Urgences", "Resume Sortie", "Administration Medicament", "Transmission Garde", "Interaction Medicamenteuse", "Certificat Medical", "Sales Invoice", "Patient", "Customer", "Item", "Organisme Payeur", "Couverture Patient",
               "Dossier Remboursement", "Payment Entry", "GL Entry"]
 
 
@@ -650,3 +650,71 @@ class TestTitreRendezVous(Base):
 		titre = frappe.db.get_value("Patient Appointment", rdv, "title")
 		self.assertNotEqual(titre, rdv)
 		self.assertIn(" avec ", titre)
+
+
+class TestSoinsInfirmiers(Base):
+	def _med(self):
+		return frappe.db.get_value("Medication", {}, "name")
+
+	def test_interactions_detectees_dans_une_ordonnance(self):
+		from medma_ma.allergies import interactions_de, verifier_interactions
+
+		assert frappe.db.count("Interaction Medicamenteuse") >= 5
+		lignes = [frappe._dict(drug_name="Warfarine 5 mg", medication=None), frappe._dict(drug_name="Aspirine 100", medication=None)]
+		trouvees = interactions_de(lignes)
+		self.assertTrue(any(g == "Majeure" for g, _l, _c in trouvees))
+		with self.assertRaises(frappe.ValidationError):
+			verifier_interactions(frappe._dict(drug_prescription=lignes, interaction_confirmee=0))
+		verifier_interactions(frappe._dict(drug_prescription=lignes, interaction_confirmee=1))
+		# deux médicaments sans interaction connue : rien
+		self.assertFalse(interactions_de([frappe._dict(drug_name="Paracétamol", medication=None),
+		                                 frappe._dict(drug_name="Oméprazole", medication=None)]))
+
+	def test_administration_medicament(self):
+		med = self._med()
+		a = frappe.get_doc({"doctype": "Administration Medicament", "patient": self.patient.name, "medication": med,
+		                    "dose": "1 g", "heure_prevue": frappe.utils.now_datetime()}).insert(ignore_permissions=True)
+		self.assertEqual(a.statut, "À donner")
+		self.assertFalse(a.heure_administration)
+		a.statut = "Reporté"
+		with self.assertRaises(frappe.ValidationError):
+			a.save()
+		a.reload()
+		a.statut = "Donné"
+		a.save()
+		self.assertTrue(a.heure_administration)
+		self.assertEqual(a.infirmier, "Administrator")
+
+	def test_allergie_bloque_ladministration(self):
+		med = self._med()
+		nom = frappe.db.get_value("Medication", med, "name")
+		self.patient.append("allergies_connues", {"categorie": "Médicament", "substance": nom, "gravite": "Sévère"})
+		self.patient.save(ignore_permissions=True)
+		a = frappe.get_doc({"doctype": "Administration Medicament", "patient": self.patient.name, "medication": med,
+		                    "dose": "1 g", "heure_prevue": frappe.utils.now_datetime(), "statut": "Donné"})
+		with self.assertRaises(frappe.ValidationError):
+			a.insert(ignore_permissions=True)
+
+	def test_transmission_de_garde_et_droits(self):
+		t = frappe.get_doc({"doctype": "Transmission Garde", "equipe": "Nuit", "service": "Urgences",
+		                    "patients": [{"patient": self.patient.name, "situation": "Stable, perfusion en cours"}]}).insert(ignore_permissions=True)
+		self.assertIn("Nuit", t.libelle)
+		self.assertTrue(t.infirmier_sortant)
+		u = "demo.infirmier@chtmed.ma"
+		for dt in ("Administration Medicament", "Transmission Garde"):
+			self.assertTrue(frappe.has_permission(dt, "create", user=u), dt)
+		self.assertFalse(frappe.has_permission("Administration Medicament", "create", user="demo.labo@chtmed.ma"))
+		self.assertTrue(frappe.has_permission("Interaction Medicamenteuse", "read", user=u))
+		self.assertFalse(frappe.has_permission("Interaction Medicamenteuse", "write", user=u))
+
+
+class TestBoutonsCliniques(Base):
+	def test_script_masque_consultation_pour_qui_na_pas_le_droit(self):
+		for dt in ("Patient Appointment", "Patient"):
+			script = frappe.db.get_value("Client Script", f"MedMa - Boutons cliniques {dt}", "script")
+			self.assertIn("can_read('Patient Encounter')", script)
+			self.assertIn(f"frappe.ui.form.on('{dt}'", script)
+		self.assertFalse(frappe.has_permission("Patient Encounter", "read", user="demo.infirmier@chtmed.ma"))
+		self.assertTrue(frappe.has_permission("Patient Encounter", "read", user="demo.medecin@chtmed.ma"))
+		raccourcis = frappe.get_all("Workspace Shortcut", {"parent": "Soins infirmiers"}, pluck="link_to")
+		self.assertNotIn("Patient Encounter", raccourcis)
