@@ -200,7 +200,7 @@ class TestImpression(Base):
 			self.assertIn(texte, html)
 
 
-SURVEILLES = ["Passage Urgences", "Certificat Medical", "Sales Invoice", "Patient", "Customer", "Item", "Organisme Payeur", "Couverture Patient",
+SURVEILLES = ["Passage Urgences", "Resume Sortie", "Certificat Medical", "Sales Invoice", "Patient", "Customer", "Item", "Organisme Payeur", "Couverture Patient",
               "Dossier Remboursement", "Payment Entry", "GL Entry"]
 
 
@@ -555,3 +555,84 @@ class TestUrgences(Base):
 			self.assertTrue(frappe.has_permission("Passage Urgences", droit, user=f"demo.{role}@chtmed.ma"), role)
 		for role in ("labo", "pharmacie", "compta"):
 			self.assertFalse(frappe.has_permission("Passage Urgences", "read", user=f"demo.{role}@chtmed.ma"), role)
+
+
+class TestUrgencesComplements(Base):
+	def _passage(self, **kw):
+		return frappe.get_doc({"doctype": "Passage Urgences", "patient": self.patient.name, "motif": "Chute",
+		                       "niveau_triage": "3 - Urgent", **kw}).insert(ignore_permissions=True)
+
+	def _boxes(self):
+		return frappe.get_all("Healthcare Service Unit", {"service_unit_type": "Box d'urgence", "is_group": 0}, pluck="name", order_by="name")
+
+	def test_les_boxes_existent_et_se_liberent(self):
+		boxes = self._boxes()
+		self.assertGreaterEqual(len(boxes), 4)
+		p = self._passage(unite_service=boxes[0])
+		self.assertEqual(frappe.db.get_value("Healthcare Service Unit", boxes[0], "occupancy_status"), "Occupied")
+		# un second patient ne peut pas prendre le même lit
+		autre = self._patient("AutreUrg")
+		with self.assertRaises(frappe.ValidationError):
+			frappe.get_doc({"doctype": "Passage Urgences", "patient": autre.name, "motif": "Fièvre", "niveau_triage": "4 - Moins urgent",
+			                "unite_service": boxes[0]}).insert(ignore_permissions=True)
+		# changement de lit : l'ancien se libère
+		p.reload()
+		p.unite_service = boxes[1]
+		p.save()
+		self.assertEqual(frappe.db.get_value("Healthcare Service Unit", boxes[0], "occupancy_status"), "Vacant")
+		self.assertEqual(frappe.db.get_value("Healthcare Service Unit", boxes[1], "occupancy_status"), "Occupied")
+		# la clôture libère le lit
+		p.reload()
+		p.statut = "Terminé"
+		p.orientation = "Retour à domicile"
+		p.save()
+		self.assertEqual(frappe.db.get_value("Healthcare Service Unit", boxes[1], "occupancy_status"), "Vacant")
+
+	def test_un_lit_dhospitalisation_est_refuse_aux_urgences(self):
+		chambre = frappe.db.get_value("Healthcare Service Unit", {"service_unit_type": "Chambre d'hospitalisation"}, "name")
+		if chambre:
+			with self.assertRaises(frappe.ValidationError):
+				self._passage(unite_service=chambre)
+
+	def test_allergie_bloque_la_prescription(self):
+		from medma_ma.allergies import verifier_prescription
+
+		self.patient.append("allergies_connues", {"categorie": "Médicament", "substance": "pénicilline", "gravite": "Sévère"})
+		self.patient.save(ignore_permissions=True)
+		ordonnance = frappe._dict(patient=self.patient.name, allergie_confirmee=0,
+		                          drug_prescription=[frappe._dict(drug_name="Pénicilline V 1MUI", medication=None)])
+		with self.assertRaises(frappe.ValidationError):
+			verifier_prescription(ordonnance)
+		# médicament sans rapport : aucune alerte
+		verifier_prescription(frappe._dict(patient=self.patient.name, allergie_confirmee=0,
+		                                   drug_prescription=[frappe._dict(drug_name="Paracétamol 1g", medication=None)]))
+		# confirmation explicite du médecin : autorisé
+		ordonnance.allergie_confirmee = 1
+		verifier_prescription(ordonnance)
+		# le passage aux urgences affiche l'allergie
+		self.assertIn("pénicilline", self._passage().allergies_alerte)
+
+	def test_resume_de_sortie_prerempli_et_imprimable(self):
+		prat = frappe.db.get_value("Healthcare Practitioner", {}, "name")
+		p = self._passage(diagnostic="Entorse de cheville", traitement="Repos, glaçage", practitioner=prat)
+		p.reload()
+		p.statut = "Terminé"
+		p.orientation = "Retour à domicile"
+		p.save()
+		r = frappe.get_doc({"doctype": "Resume Sortie", "patient": self.patient.name, "practitioner": prat,
+		                    "passage_urgences": p.name, "diagnostic": "Entorse de cheville"}).insert(ignore_permissions=True)
+		self.assertEqual(r.traitement_sortie, "Repos, glaçage")
+		self.assertEqual(r.orientation, "Retour à domicile")
+		html = frappe.get_print("Resume Sortie", r.name, print_format="Résumé de sortie MedMa")
+		for texte in ("RÉSUMÉ DE SORTIE", "Entorse de cheville", "Repos, glaçage"):
+			self.assertIn(texte, html)
+		with self.assertRaises(frappe.ValidationError):
+			frappe.get_doc({"doctype": "Resume Sortie", "patient": self._patient("Autre2").name, "practitioner": prat,
+			                "passage_urgences": p.name, "diagnostic": "x"}).insert(ignore_permissions=True)
+
+	def test_carte_lits_libres_et_droits(self):
+		self.assertTrue(frappe.db.exists("Number Card", "Lits d'urgence libres"))
+		for role in ("infirmier", "medecin", "reception"):
+			self.assertTrue(frappe.has_permission("Healthcare Service Unit", "read", user=f"demo.{role}@chtmed.ma"), role)
+		self.assertTrue(frappe.has_permission("Resume Sortie", "create", user="demo.medecin@chtmed.ma"))
+		self.assertFalse(frappe.has_permission("Resume Sortie", "create", user="demo.infirmier@chtmed.ma"))

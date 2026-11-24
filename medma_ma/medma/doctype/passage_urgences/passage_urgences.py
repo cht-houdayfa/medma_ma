@@ -3,6 +3,8 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import get_datetime, now_datetime, time_diff_in_seconds
 
+TYPE_BOX = "Box d'urgence"
+
 # (champ, minimum, maximum, libellé) : bornes de saisie plausibles, pour repérer une faute de frappe
 BORNES = [
     ("tension_systolique", 30, 300, "Tension systolique"),
@@ -19,6 +21,10 @@ BORNES = [
 
 class PassageUrgences(Document):
     def validate(self):
+        self._verifier_lit()
+        from medma_ma.allergies import resume
+
+        self.allergies_alerte = resume(self.patient)
         # heure du serveur (fuseau du Maroc) : l'horloge du navigateur peut être décalée
         self.date_arrivee = self.date_arrivee or now_datetime()
         self._verifier_constantes()
@@ -51,3 +57,34 @@ class PassageUrgences(Document):
         else:
             self.date_sortie = None
             self.orientation = None
+
+    def _verifier_lit(self):
+        if not self.unite_service or self.statut == "Terminé":
+            return
+        unite = frappe.db.get_value("Healthcare Service Unit", self.unite_service, ["service_unit_type", "occupancy_status"], as_dict=True)
+        if unite.service_unit_type != TYPE_BOX:
+            frappe.throw(_("Choisissez un box d'urgence (type « {0} »).").format(TYPE_BOX))
+        autre = frappe.db.get_value(
+            "Passage Urgences", {"unite_service": self.unite_service, "statut": ["!=", "Terminé"], "name": ["!=", self.name or ""]}, "name")
+        if autre:
+            frappe.throw(_("Le lit {0} est déjà occupé par le passage {1}.").format(self.unite_service, autre))
+
+    def on_update(self):
+        self._synchroniser_lit()
+
+    def on_trash(self):
+        if self.unite_service:
+            _marquer(self.unite_service, False)
+
+    def _synchroniser_lit(self):
+        """Le lit passe à « Occupied » tant que le passage est actif, puis redevient libre à la clôture ou au changement de lit."""
+        avant = self.get_doc_before_save()
+        ancien = avant.unite_service if avant else None
+        if ancien and ancien != self.unite_service:
+            _marquer(ancien, False)
+        if self.unite_service:
+            _marquer(self.unite_service, self.statut != "Terminé")
+
+
+def _marquer(unite, occupe):
+    frappe.db.set_value("Healthcare Service Unit", unite, "occupancy_status", "Occupied" if occupe else "Vacant")

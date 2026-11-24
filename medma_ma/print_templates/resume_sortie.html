@@ -1,0 +1,38 @@
+{% include "_style.html" %}
+{%- set pr = frappe.get_doc("Healthcare Practitioner", doc.practitioner) -%}
+{%- set pat = frappe.get_doc("Patient", doc.patient) -%}
+{%- set cos = frappe.get_all("Company", pluck="name", limit=1) -%}
+{%- set co = frappe.get_doc("Company", cos[0]) if cos else none -%}
+<div class="mm">
+  <div class="hdr">
+    <div>
+      <h2>Dr {{ pr.practitioner_name }}</h2>
+      {% if pr.mobile_phone %}<div class="muted">Tél : {{ pr.mobile_phone }}</div>{% endif %}
+    </div>
+    <div style="text-align:right">
+      <b>{{ co.company_name if co else "" }}</b>
+      {% if co and co.get("ice") %}<div class="muted">ICE : {{ co.ice }}</div>{% endif %}
+    </div>
+  </div>
+
+  <div class="title">RÉSUMÉ DE SORTIE<span class="ar">ملخص الخروج</span></div>
+
+  <div class="box">
+    <b>{{ pat.patient_name }}</b>{% if pat.get("cin") %} — CIN : {{ pat.cin }}{% endif %}
+    {% if pat.get("dob") %} — né(e) le {{ frappe.utils.formatdate(pat.dob) }}{% endif %}
+    <br>Sortie le {{ frappe.utils.format_datetime(doc.date_sortie, "dd/MM/yyyy HH:mm") }}
+    {% if doc.orientation %} — Orientation : {{ doc.orientation }}{% endif %}
+    {% if pat.allergies_connues %}<br><b>Allergies :</b>
+      {% for a in pat.allergies_connues %}{{ a.substance }}{% if a.gravite %} ({{ a.gravite }}){% endif %}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}
+  </div>
+
+  {% if doc.motif %}<p><b>Motif de la venue :</b> {{ doc.motif }}</p>{% endif %}
+  <p><b>Diagnostic de sortie :</b> {{ doc.diagnostic }}</p>
+  {% if doc.evolution %}<p><b>Évolution :</b> {{ doc.evolution }}</p>{% endif %}
+  {% if doc.traitement_sortie %}<div class="box"><b>Traitement de sortie :</b><br>{{ doc.traitement_sortie }}</div>{% endif %}
+  {% if doc.consignes %}<p><b>Consignes et surveillance :</b> {{ doc.consignes }}</p>{% endif %}
+  {% if doc.date_controle %}<p><b>Contrôle :</b> rendez-vous le {{ frappe.utils.formatdate(doc.date_controle) }}</p>{% endif %}
+
+  <div class="sign">Signature et cachet<br><br><br>Dr {{ pr.practitioner_name }}</div>
+  <div class="foot">Document généré par MedMa — N° {{ doc.name }}</div>
+</div>

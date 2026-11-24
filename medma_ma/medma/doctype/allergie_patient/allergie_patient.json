@@ -1,0 +1,17 @@
+{
+ "doctype": "DocType",
+ "name": "Allergie Patient",
+ "module": "MedMa",
+ "custom": 0,
+ "istable": 1,
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": ["categorie", "substance", "gravite", "reaction"],
+ "fields": [
+  {"fieldname": "categorie", "label": "Catégorie", "fieldtype": "Select", "options": "Médicament\nAliment\nAutre", "default": "Médicament", "reqd": 1, "in_list_view": 1, "columns": 2},
+  {"fieldname": "substance", "label": "Substance (ex. pénicilline, amoxicilline)", "fieldtype": "Data", "reqd": 1, "in_list_view": 1, "columns": 3},
+  {"fieldname": "gravite", "label": "Gravité", "fieldtype": "Select", "options": "Légère\nModérée\nSévère", "default": "Modérée", "in_list_view": 1, "columns": 2},
+  {"fieldname": "reaction", "label": "Réaction observée", "fieldtype": "Data", "in_list_view": 1, "columns": 3}
+ ],
+ "permissions": []
+}

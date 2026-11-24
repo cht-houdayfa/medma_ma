@@ -1,0 +1,39 @@
+{
+ "doctype": "DocType",
+ "name": "Resume Sortie",
+ "module": "MedMa",
+ "custom": 0,
+ "engine": "InnoDB",
+ "autoname": "format:RES-{YYYY}-{#####}",
+ "naming_rule": "Expression",
+ "title_field": "patient_name",
+ "track_changes": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "field_order": ["patient", "patient_name", "practitioner", "col1", "date_sortie", "passage_urgences", "inpatient_record", "section_clinique", "motif", "diagnostic", "evolution", "section_sortie", "traitement_sortie", "consignes", "col2", "orientation", "date_controle"],
+ "fields": [
+  {"fieldname": "patient", "label": "Patient", "fieldtype": "Link", "options": "Patient", "reqd": 1, "in_standard_filter": 1},
+  {"fieldname": "patient_name", "label": "Nom du patient", "fieldtype": "Data", "fetch_from": "patient.patient_name", "read_only": 1, "in_list_view": 1},
+  {"fieldname": "practitioner", "label": "Médecin", "fieldtype": "Link", "options": "Healthcare Practitioner", "reqd": 1, "in_list_view": 1, "in_standard_filter": 1},
+  {"fieldname": "col1", "fieldtype": "Column Break"},
+  {"fieldname": "date_sortie", "label": "Date de sortie", "fieldtype": "Datetime", "in_list_view": 1},
+  {"fieldname": "passage_urgences", "label": "Passage aux urgences", "fieldtype": "Link", "options": "Passage Urgences"},
+  {"fieldname": "inpatient_record", "label": "Hospitalisation", "fieldtype": "Link", "options": "Inpatient Record"},
+  {"fieldname": "section_clinique", "label": "Séjour", "fieldtype": "Section Break"},
+  {"fieldname": "motif", "label": "Motif de la venue", "fieldtype": "Small Text"},
+  {"fieldname": "diagnostic", "label": "Diagnostic de sortie", "fieldtype": "Small Text", "reqd": 1},
+  {"fieldname": "evolution", "label": "Évolution pendant le séjour", "fieldtype": "Small Text"},
+  {"fieldname": "section_sortie", "label": "Conduite à tenir à la sortie", "fieldtype": "Section Break"},
+  {"fieldname": "traitement_sortie", "label": "Traitement de sortie", "fieldtype": "Small Text"},
+  {"fieldname": "consignes", "label": "Consignes et surveillance", "fieldtype": "Small Text"},
+  {"fieldname": "col2", "fieldtype": "Column Break"},
+  {"fieldname": "orientation", "label": "Orientation", "fieldtype": "Data"},
+  {"fieldname": "date_controle", "label": "Rendez-vous de contrôle", "fieldtype": "Date"}
+ ],
+ "permissions": [
+  {"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1, "print": 1, "report": 1, "export": 1},
+  {"role": "Physician", "read": 1, "write": 1, "create": 1, "print": 1, "email": 1, "report": 1},
+  {"role": "Nursing User", "read": 1, "print": 1},
+  {"role": "Healthcare Administrator", "read": 1, "print": 1}
+ ]
+}

@@ -17,6 +17,8 @@
     <b>{{ pat.patient_name }}</b>{% if pat.get("cin") %} — CIN : {{ pat.cin }}{% endif %}
     {% if pat.get("dob") %} — né(e) le {{ frappe.utils.formatdate(pat.dob) }}{% endif %}
     {% if pat.get("mobile") %} — Tél : {{ pat.mobile }}{% endif %}
+    {% if doc.unite_service %}<br>Lit : {{ doc.unite_service }}{% endif %}
+    {% if doc.allergies_alerte %}<br><b>⚠ Allergies :</b> {{ doc.allergies_alerte }}{% endif %}
     <br>Niveau de tri : <b>{{ doc.niveau_triage }}</b> — Statut : {{ doc.statut }}
     {% if doc.practitioner %}— Médecin : Dr {{ frappe.db.get_value("Healthcare Practitioner", doc.practitioner, "practitioner_name") }}{% endif %}
   </div>

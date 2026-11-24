@@ -20,7 +20,13 @@ CUSTOM_FIELDS = {
         {"fieldname": "preleve_par", "label": "Prélevé par", "fieldtype": "Link", "options": "User",
          "read_only": 1, "allow_on_submit": 1, "insert_after": "date_prelevement"},
     ],
+    "Patient Encounter": [
+        {"fieldname": "allergie_confirmee", "label": "Prescrire malgré l'allergie signalée", "fieldtype": "Check",
+         "insert_after": "drug_prescription", "description": "À cocher seulement après avoir pesé le risque d'allergie"},
+    ],
     "Patient": [
+        {"fieldname": "allergies_connues", "label": "Allergies connues (liste structurée)", "fieldtype": "Table",
+         "options": "Allergie Patient", "insert_after": "allergies"},
         {"fieldname": "cin", "label": "CIN (carte d'identité nationale)", "fieldtype": "Data",
          "insert_after": "sex", "unique": 0, "in_standard_filter": 1},
     ],
@@ -85,6 +91,7 @@ def after_install_and_migrate():
     ensure_permissions()
     ensure_permissions_reception()
     ensure_permissions_pharmacie()
+    ensure_unites_urgences()
     ensure_permissions_urgences()
     ensure_fuseau()
     ensure_titres_liens()
@@ -114,6 +121,10 @@ CARTES = {
          ["Passage Urgences", "niveau_triage", "in", ["1 - Détresse vitale", "2 - Très urgent"]]]),
     "Passages urgences du jour": (
         "Passage Urgences", [["Passage Urgences", "date_arrivee", "Timespan", "today"]]),
+    "Lits d'urgence libres": (
+        "Healthcare Service Unit",
+        [["Healthcare Service Unit", "service_unit_type", "=", "Box d'urgence"],
+         ["Healthcare Service Unit", "occupancy_status", "=", "Vacant"]]),
     "Médicaments en stock bas": ("Bin", [["Bin", "actual_qty", "<", 50]]),
     "Rendez-vous à venir": ("Patient Appointment", [["Patient Appointment", "status", "=", "Scheduled"]]),
     "Patients hospitalisés": ("Inpatient Record", [["Inpatient Record", "status", "=", "Admitted"]]),
@@ -190,12 +201,14 @@ ESPACES = [
         "module": "Healthcare",
         "icon": "alert-triangle",
         "roles": ["Physician", "Nursing User", "Healthcare Administrator", "System Manager"],
-        "cartes": ["Urgences en attente", "Urgences en cours", "Urgences vitales en cours", "Passages urgences du jour"],
+        "cartes": ["Urgences en attente", "Urgences en cours", "Urgences vitales en cours", "Lits d'urgence libres"],
         "titre": "Service des urgences",
-        "actions": [("Nouveau passage aux urgences", "/app/passage-urgences/new")],
+        "actions": [("Nouveau passage aux urgences", "/app/passage-urgences/new"),
+                    ("Lits d'urgence", "/app/healthcare-service-unit?service_unit_type=Box%20d%27urgence")],
         "rapports": ["File d'attente des urgences"],
         "raccourcis": [
             ("Passages aux urgences", "Passage Urgences"),
+            ("Résumés de sortie", "Resume Sortie"),
             ("Patients", "Patient"),
         ],
     },
@@ -405,13 +418,38 @@ def ensure_permissions_pharmacie():
         frappe.clear_cache(doctype=dt)
 
 
+def ensure_unites_urgences():
+    """Crée (une seule fois) le type « Box d'urgence » et quatre boxes sous un groupe « Urgences »."""
+    import frappe
+
+    if not frappe.db.exists("Healthcare Service Unit Type", "Box d'urgence"):
+        frappe.get_doc({"doctype": "Healthcare Service Unit Type", "service_unit_type": "Box d'urgence",
+                        "inpatient_occupancy": 1, "allow_appointments": 0, "is_billable": 0}).insert(ignore_permissions=True)
+    company = frappe.db.get_value("Company", {}, "name")
+    racine = frappe.db.get_value("Healthcare Service Unit", {"is_group": 1, "parent_healthcare_service_unit": ["is", "not set"], "company": company}, "name")
+    if not racine:
+        return
+    groupe = frappe.db.get_value("Healthcare Service Unit", {"healthcare_service_unit_name": "Urgences", "is_group": 1}, "name")
+    if not groupe:
+        groupe = frappe.get_doc({"doctype": "Healthcare Service Unit", "healthcare_service_unit_name": "Urgences", "is_group": 1,
+                                 "parent_healthcare_service_unit": racine, "company": company}).insert(ignore_permissions=True).name
+    for n in range(1, 5):
+        nom = f"Box urgences {n}"
+        if not frappe.db.exists("Healthcare Service Unit", {"healthcare_service_unit_name": nom}):
+            frappe.get_doc({"doctype": "Healthcare Service Unit", "healthcare_service_unit_name": nom, "is_group": 0,
+                            "service_unit_type": "Box d'urgence", "parent_healthcare_service_unit": groupe, "company": company,
+                            "inpatient_occupancy": 1}).insert(ignore_permissions=True)
+
+
 def ensure_permissions_urgences():
     """Les urgences accueillent tout patient : l'infirmier de tri, le médecin et la réception doivent trouver le patient
     et le médecin d'astreinte. Lecture seule : le dossier médical n'est pas ouvert."""
     import frappe
     from frappe.permissions import add_permission, update_permission_property
 
-    for role, dts in {"Nursing User": ("Patient", "Healthcare Practitioner"), "Physician": ("Patient", "Healthcare Practitioner")}.items():
+    for role, dts in {"Nursing User": ("Patient", "Healthcare Practitioner", "Healthcare Service Unit"),
+                      "Physician": ("Patient", "Healthcare Practitioner", "Healthcare Service Unit"),
+                      "Healthcare Administrator": ("Healthcare Service Unit",)}.items():
         for dt in dts:
             if not frappe.db.exists("Custom DocPerm", {"parent": dt, "role": role, "permlevel": 0}) and not any(
                 p.role == role and p.read for p in frappe.get_meta(dt).permissions

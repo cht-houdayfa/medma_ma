@@ -29,6 +29,7 @@ FORMATS = [
 	("Bordereau MedMa", "Dossier Remboursement", "bordereau.html"),
 	("Certificat MedMa", "Certificat Medical", "certificat.html"),
 	("Fiche Urgences MedMa", "Passage Urgences", "urgences.html"),
+	("Résumé de sortie MedMa", "Resume Sortie", "resume_sortie.html"),
 ]
 
 
@@ -153,7 +154,7 @@ REPORT_FILE_URGENCES = {
 		"SELECT pu.niveau_triage AS `Niveau:Data:150`, pu.patient_name AS `Patient:Data:200`, "
 		"pu.motif AS `Motif:Data:240`, pu.statut AS `Statut:Data:130`, "
 		"TIMESTAMPDIFF(MINUTE, pu.date_arrivee, CONVERT_TZ(UTC_TIMESTAMP(), '+00:00', '+01:00')) AS `Attente (min):Int:110`, "
-		"pu.date_arrivee AS `Arrivée:Datetime:150`, pu.practitioner AS `Médecin:Link/Healthcare Practitioner:160`, "
+		"pu.date_arrivee AS `Arrivée:Datetime:150`, pu.unite_service AS `Lit:Link/Healthcare Service Unit:140`, pu.practitioner AS `Médecin:Link/Healthcare Practitioner:160`, "
 		"pu.name AS `Passage:Link/Passage Urgences:140` "
 		"FROM `tabPassage Urgences` pu WHERE pu.statut != 'Terminé' "
 		"ORDER BY pu.niveau_triage, pu.date_arrivee"
@@ -302,6 +303,32 @@ def ensure_client_scripts():
 		cs.save(ignore_permissions=True)
 	else:
 		frappe.get_doc({"doctype": "Client Script", "name": nom, **valeurs}).insert(ignore_permissions=True)
+
+
+SCRIPT_ALLERGIES = """
+frappe.ui.form.on('%(dt)s', {
+	refresh(frm) {
+		if (frm.is_new() || !%(patient)s) return;
+		frappe.xcall('medma_ma.allergies.resume', {patient: %(patient)s}).then((t) => {
+			frm.dashboard.clear_headline();
+			if (t) frm.dashboard.set_headline('<span class="indicator-pill red">⚠ Allergies : ' + frappe.utils.escape_html(t) + '</span>');
+		});
+	},
+});
+"""
+
+
+def ensure_client_scripts_allergies():
+	"""Bandeau rouge des allergies connues sur la fiche patient et la consultation."""
+	for dt, patient in (("Patient", "frm.doc.name"), ("Patient Encounter", "frm.doc.patient")):
+		nom = f"MedMa - Allergies {dt}"
+		valeurs = {"dt": dt, "view": "Form", "enabled": 1, "script": SCRIPT_ALLERGIES % {"dt": dt, "patient": patient}}
+		if frappe.db.exists("Client Script", nom):
+			cs = frappe.get_doc("Client Script", nom)
+			cs.update(valeurs)
+			cs.save(ignore_permissions=True)
+		else:
+			frappe.get_doc({"doctype": "Client Script", "name": nom, **valeurs}).insert(ignore_permissions=True)
 
 
 def ensure_taxes():
@@ -522,6 +549,7 @@ def ensure_all():
 	ensure_client_script_prelevement()
 	ensure_client_scripts_dossier()
 	ensure_client_scripts_couverture()
+	ensure_client_scripts_allergies()
 	ensure_branding()
 	ensure_guide()
 	ensure_portail()
@@ -581,10 +609,11 @@ GUIDE = [
      ["Carte « Patients en salle d'attente » : les patients arrivés apparaissent ici.",
       "Ouvrir le rendez-vous → Consultation : motif, constantes, diagnostic.",
       "Ordonnance : médicament par nom de marque ou générique (DCI) ; analyses : elles partent seules au laboratoire.",
+      "Allergies : saisies dans la fiche patient, elles s'affichent en rouge et bloquent une prescription incompatible.",
       "Valider la consultation, puis Imprimer → « Ordonnance MedMa » (PDF).",
       "Certificats médicaux → Nouveau : arrêt de travail (nombre de jours calculé) ; Imprimer → « Certificat MedMa ».",
       "Carte « Analyses à valider » : consulter les résultats reçus du laboratoire.",
-      "Espace « Urgences » : prendre en charge un patient trié (bouton « Prendre en charge »), puis clôturer avec son orientation."]),
+      "Espace « Urgences » : prendre en charge un patient trié (bouton « Prendre en charge »), puis clôturer avec son orientation ; « Résumé de sortie » génère le courrier de sortie."]),
     ("Guide Infirmier", ["Nursing User"], "Vos tâches de soins", "Espace « Soins infirmiers »",
      ["Rendez-vous du jour et patients en salle d'attente.",
       "Prendre les constantes (tension, pouls, température, poids) dans « Signes vitaux » du patient.",
