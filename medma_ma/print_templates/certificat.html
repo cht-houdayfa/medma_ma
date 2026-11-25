@@ -39,7 +39,7 @@
     {% endif %}
   </p>
   {% if doc.observations %}<div class="box"><b>Observations :</b> {{ doc.observations }}</div>{% endif %}
-  <p>Certificat établi le {{ frappe.utils.formatdate(doc.date_certificat) }}, remis à l'intéressé(e) pour servir et valoir ce que de droit.</p>
+  <p style="font-size:14px;line-height:1.8">Certificat établi le {{ frappe.utils.formatdate(doc.date_certificat) }}, remis à l'intéressé(e) pour servir et valoir ce que de droit.</p>
 
   <div class="sign">Signature et cachet<br><br><br>Dr {{ pr.practitioner_name }}</div>
   <div class="foot">Document généré par MedMa — N° {{ doc.name }}</div>
