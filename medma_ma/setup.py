@@ -27,8 +27,10 @@ CUSTOM_FIELDS = {
          "insert_after": "drug_prescription", "description": "À cocher seulement après avoir pesé le risque d'allergie"},
     ],
     "Patient": [
-        {"fieldname": "allergies_connues", "label": "Allergies connues (liste structurée)", "fieldtype": "Table",
-         "options": "Allergie Patient", "insert_after": "allergies"},
+        {"fieldname": "section_allergies_connues", "label": "Allergies connues (liste structurée)",
+         "fieldtype": "Section Break", "insert_after": "surgical_history"},
+        {"fieldname": "allergies_connues", "label": "Allergies connues", "fieldtype": "Table",
+         "options": "Allergie Patient", "insert_after": "section_allergies_connues"},
         {"fieldname": "cin", "label": "CIN (carte d'identité nationale)", "fieldtype": "Data",
          "insert_after": "sex", "unique": 0, "in_standard_filter": 1},
     ],
