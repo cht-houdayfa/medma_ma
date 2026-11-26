@@ -51,12 +51,14 @@ def ensure(doctype, name, **fields):
 
 # --------------------------------------------------------------------------- données
 
+DEPARTEMENTS = ("Médecine générale", "Pédiatrie", "Cardiologie", "Gynécologie", "Hématologie", "Biochimie")
+
 PRATICIENS = [
 	# prénom, nom, sexe, département, tarif consultation (MAD, exemple), téléphone fictif
 	("Karim", "Benjelloun", "Male", "Médecine générale", 200, "0600000101"),
 	("Salma", "El Fassi", "Female", "Pédiatrie", 250, "0600000102"),
-	("Youssef", "Amrani", "Male", "Cardiology", 400, "0600000103"),
-	("Nadia", "Cherkaoui", "Female", "Gynaecology", 350, "0600000104"),
+	("Youssef", "Amrani", "Male", "Cardiologie", 400, "0600000103"),
+	("Nadia", "Cherkaoui", "Female", "Gynécologie", 350, "0600000104"),
 ]
 
 # prénom, nom, sexe, âge, groupe sanguin, ville, organisme, taux
@@ -90,11 +92,11 @@ MEDICAMENTS = [
 
 ANALYSES = [
 	# nom, département, prix (MAD, exemple)
-	("NFS (Numération formule sanguine)", "Haematology", 90),
-	("Glycémie à jeun", "Biochemistry", 40),
-	("Bilan lipidique", "Biochemistry", 150),
-	("CRP", "Biochemistry", 120),
-	("Créatinine", "Biochemistry", 50),
+	("NFS (Numération formule sanguine)", "Hématologie", 90),
+	("Glycémie à jeun", "Biochimie", 40),
+	("Bilan lipidique", "Biochimie", 150),
+	("CRP", "Biochimie", 120),
+	("Créatinine", "Biochimie", 50),
 ]
 
 DIAGNOSTICS = [
@@ -122,7 +124,7 @@ def ref_data():
 		ensure("UOM", u, uom_name=u)
 	for c in ("Antalgique", "Antibiotique", "Inhibiteur de la pompe à protons", "Antidiabétique", "Antihypertenseur"):
 		ensure("Medication Class", c, medication_class=c)
-	for d in ("Médecine générale", "Pédiatrie"):
+	for d in DEPARTEMENTS:
 		ensure("Medical Department", d, department=d)
 	for dx, sym, _ in DIAGNOSTICS:
 		ensure("Diagnosis", dx, diagnosis=dx)
