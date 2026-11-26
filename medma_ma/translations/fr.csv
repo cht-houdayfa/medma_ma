@@ -289,3 +289,34 @@ Transmission Garde,Transmission de garde
 Transmission Patient,Transmission par patient
 Practitioner,Praticien
 Reschedule,Reprogrammer
+Add Video Conferencing,Ajouter une visioconférence
+Do not add Video Conferencing,Ne pas ajouter de visioconférence
+Google Meet Link,Lien Google Meet
+Appointment Based On Check In,Rendez-vous selon l'heure d'arrivée
+Checked Out,Patient sorti
+Allow Booking For,Autoriser la réservation pour
+Appointment Type Service Items,Prestations du type de rendez-vous
+Agents,Agents
+Internal,Interne
+External,Externe
+Practitioner Primary Contact,Contact principal du praticien
+Practitioner Primary Address,Adresse principale du praticien
+Reschedule Appointment,Reprogrammer le rendez-vous
+Fetching Schedule...,Chargement des horaires...
+Practitioner Schedule: ,Horaires du praticien : 
+Service Unit: ,Unité de soins : 
+Maximum Capacity:,Capacité maximale :
+slots available for booking,créneaux disponibles à la réservation
+Each slot indicates the capacity currently available for booking,Chaque créneau indique la capacité actuellement disponible à la réservation
+Patient has fee validity till,Le patient bénéficie d'un tarif de suivi jusqu'au
+Patient has no fee validity,Le patient ne bénéficie d'aucun tarif de suivi
+Video Conferencing disabled for group consultations,Visioconférence désactivée pour les consultations de groupe
+There are no procedure prescribed for ,Aucun acte n'est prescrit pour 
+Day(s),Jour(s)
+Month(s),Mois
+Years(s),Année(s)
+Patient already has an appointment booked for the same day!,Le patient a déjà un rendez-vous le même jour !
+Service Unit Not Found,Unité de soins introuvable
+Invalid Healthcare Service Unit,Unité de soins invalide
+"Could not add conferencing to this Appointment, please contact System Manager","Impossible d'ajouter la visioconférence à ce rendez-vous, veuillez contacter l'administrateur système"
+Appointment for service units with Inpatient Occupancy can only be created against the unit where patient has been admitted.,Un rendez-vous pour une unité d'hospitalisation ne peut être créé que dans l'unité où le patient est admis.
