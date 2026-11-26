@@ -629,7 +629,7 @@ def ensure_branding():
 GUIDE = [
     ("Guide Réception", ["Healthcare Administrator"], "Votre journée à la réception", "Espace « Réception »",
      ["Nouveau patient : nom, CIN, téléphone, puis la couverture (CNSS / CNOPS / AMO / mutuelle).",
-      "Nouveau rendez-vous : choisir le praticien, « Check Availability » (créneaux libres), réserver.",
+      "Nouveau rendez-vous : choisir le praticien, « Vérifier la disponibilité » (créneaux libres), réserver.",
       "À l'arrivée du patient : ouvrir son rendez-vous → bouton « Patient arrivé ». Il apparaît chez le médecin.",
       "Facture : bouton « Ajouter la consultation », choisir la couverture : part organisme / part patient sont calculées seules.",
       "Encaisser la part patient : bouton « Enregistrer le paiement » ; Imprimer → « Facture MedMa ».",

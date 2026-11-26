@@ -26,10 +26,10 @@ SECTIONS = [
        [("04-reception-patient-enregistre.jpg", "Patient enregistré")]),
       ("**Prendre le rendez-vous.** Cliquez sur *Nouveau rendez-vous*, choisissez le patient, le type de rendez-vous et le praticien.",
        [("05-reception-rdv-choix-patient.jpg", "Choix du patient")]),
-      ("Cliquez sur **Check Availability**, indiquez la date : les créneaux libres du praticien s'affichent (un créneau grisé est déjà pris).",
+      ("Cliquez sur **Vérifier la disponibilité**, indiquez la date : les créneaux libres du praticien s'affichent (un créneau grisé est déjà pris).",
        [("06-reception-rdv-disponibilites-vide.jpg", "Fenêtre de disponibilités"),
         ("07-reception-rdv-creneaux.jpg", "Créneaux disponibles")]),
-      ("Choisissez le créneau puis cliquez sur **Book**. Le rendez-vous est créé avec le statut *Prévu*.",
+      ("Choisissez le créneau puis cliquez sur **Réserver**. Le rendez-vous est créé avec le statut *Prévu*.",
        [("08-reception-rdv-enregistre.jpg", "Rendez-vous enregistré")]),
       ("**Le jour du rendez-vous**, à l'arrivée du patient, ouvrez son rendez-vous et cliquez sur **Patient arrivé**. Le statut passe à *Checked In* et le patient apparaît dans la salle d'attente du médecin et de l'infirmier.",
        [("09-reception-rdv-bouton-patient-arrive.jpg", "Bouton « Patient arrivé »"),
@@ -48,7 +48,7 @@ SECTIONS = [
     ("4. Médecin : consulter et prescrire", "Rôle : **Médecin**. Le médecin dispose de listes prédéfinies de médicaments (liste officielle AMMPS) et d'analyses.",
      [("**Page d'accueil.** Le compteur *Patients en salle d'attente* indique les patients arrivés.",
        [("62-medecin-accueil.jpg", "Espace Cabinet médecin")]),
-      ("Ouvrez le rendez-vous du patient arrivé. Le menu **Créer** propose *Consultation* et *Vital Signs*.",
+      ("Ouvrez le rendez-vous du patient arrivé. Le menu **Créer** propose *Consultation* et *Signes vitaux*.",
        [("16-medecin-rdv-patient-arrive.jpg", "Rendez-vous avec le bandeau « Patient arrivé »"),
         ("17-medecin-menu-creer-consultation.jpg", "Menu Créer → Consultation")]),
       ("Choisissez **Consultation** : le patient, le praticien et le rendez-vous sont repris automatiquement. Saisissez les symptômes et le diagnostic.",
@@ -147,7 +147,7 @@ LIMITES = [
     "Les tarifs, taux de prise en charge et la liste des analyses sont des **valeurs d'exemple** à remplacer par ceux de l'établissement avant usage réel.",
     "La liste des médicaments provient de la liste officielle AMMPS (prix au jour de l'import).",
     "Les actes médicaux sont facturés **sans TVA** par défaut (modèle « Actes médicaux (exonéré de TVA) ») : à faire valider par le comptable de l'établissement ; les modèles TVA 20 % et 10 % restent disponibles.",
-    "Certains libellés de l'interface restent en anglais (Check Availability, Book, Checked In, Medications…) : ils proviennent du module santé d'origine.",
+    "Quelques libellés secondaires du module santé d'origine peuvent encore apparaître en anglais : ils sont traduits au fur et à mesure dans le fichier de traductions de MedMa.",
 ]
 
 

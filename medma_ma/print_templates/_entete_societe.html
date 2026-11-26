@@ -10,3 +10,28 @@
 {%- macro mad(x) -%}
   {{ "{:,.2f}".format(x or 0).replace(",", " ").replace(".", ",") }} MAD
 {%- endmacro -%}
+
+{#- Libellés de référence de Healthcare (anglais en base) : les impressions restent en français quelle que soit la langue de l'utilisateur. -#}
+{%- macro departement(d) -%}
+  {%- set noms = {
+    "Accident And Emergency Care": "Urgences", "Anaesthetics": "Anesthésie", "Biochemistry": "Biochimie",
+    "Body Scan": "Scanner", "Cardiology": "Cardiologie", "Dermatology": "Dermatologie",
+    "Diagnostic Imaging": "Imagerie médicale", "ENT": "ORL", "Gastroenterology": "Gastro-entérologie",
+    "General Surgery": "Chirurgie générale", "Gynaecology": "Gynécologie", "Haematology": "Hématologie",
+    "Maternity": "Maternité", "Microbiology": "Microbiologie", "Nephrology": "Néphrologie", "Neurology": "Neurologie",
+    "Oncology": "Oncologie", "Orthopaedics": "Orthopédie", "Pathology": "Anatomopathologie",
+    "Physiotherapy": "Kinésithérapie", "Rheumatology": "Rhumatologie", "Serology": "Sérologie", "Urology": "Urologie"} -%}
+  {{ noms.get(d, d) or "" }}
+{%- endmacro -%}
+
+{%- macro forme(f) -%}
+  {%- set noms = {
+    "Tablet": "Comprimé", "Capsule": "Gélule", "Syrup": "Sirop", "Injection": "Injection", "Cream": "Crème",
+    "Drops": "Gouttes", "Gel": "Gel", "Inhaler": "Inhalateur", "Lotion": "Lotion", "Ointment": "Pommade",
+    "Powder": "Poudre", "Spray": "Spray", "Suppository": "Suppositoire"} -%}
+  {{ noms.get(f, f) or "" }}
+{%- endmacro -%}
+
+{%- macro duree(p) -%}
+  {{ (p or "") | replace("Week", "semaine(s)") | replace("Month", "mois") | replace("Day", "jour(s)") | replace("Hour", "heure(s)") }}
+{%- endmacro -%}
