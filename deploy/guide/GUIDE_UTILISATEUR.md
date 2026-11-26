@@ -60,7 +60,7 @@ Rôle : **Réception**. La réception enregistre le patient, prend le rendez-vou
 
 *Rendez-vous enregistré*
 
-7. **Le jour du rendez-vous**, à l'arrivée du patient, ouvrez son rendez-vous et cliquez sur **Patient arrivé**. Le statut passe à *Checked In* et le patient apparaît dans la salle d'attente du médecin et de l'infirmier.
+7. **Le jour du rendez-vous**, à l'arrivée du patient, ouvrez son rendez-vous et cliquez sur **Patient arrivé**. Le statut passe à *Patient arrivé* et le patient apparaît dans la salle d'attente du médecin et de l'infirmier.
 
 ![Bouton « Patient arrivé »](captures/09-reception-rdv-bouton-patient-arrive.jpg)
 
@@ -130,7 +130,7 @@ Rôle : **Médecin**. Le médecin dispose de listes prédéfinies de médicament
 
 *Nouvelle consultation*
 
-4. **Prescrire un médicament.** Dans *Medications*, cliquez sur *Ajouter une ligne*. La liste des médicaments s'affiche ; tapez le début du nom pour filtrer, puis choisissez la **posologie** et la **durée** dans les listes. La forme (comprimé…) se remplit seule.
+4. **Prescrire un médicament.** Dans *Médicaments*, cliquez sur *Ajouter une ligne*. La liste des médicaments s'affiche ; tapez le début du nom pour filtrer, puis choisissez la **posologie** et la **durée** dans les listes. La forme (comprimé…) se remplit seule.
 
 ![Liste des médicaments](captures/20-medecin-liste-medicaments.jpg)
 
@@ -148,7 +148,7 @@ Rôle : **Médecin**. Le médecin dispose de listes prédéfinies de médicament
 
 *Durée*
 
-5. **Prescrire une analyse.** Dans *Investigations*, cliquez sur *Ajouter une ligne* et choisissez l'analyse dans la liste.
+5. **Prescrire une analyse.** Dans *Examens complémentaires*, cliquez sur *Ajouter une ligne* et choisissez l'analyse dans la liste.
 
 ![Liste des analyses](captures/19-medecin-liste-analyses.jpg)
 
@@ -262,7 +262,7 @@ Rôle : **Réception** (ou Comptabilité). La facture est **partagée** : une pa
 
 *Consultation ajoutée (200,00 MAD) et facture enregistrée*
 
-5. Les parts sont calculées. Ici, total 200,00 MAD, **part CNSS 140,00 MAD** et **part patient 60,00 MAD**. Cliquez sur **Valider** et confirmez : la facture est *Impayée*.
+5. Les parts sont calculées. Ici, total 200,00 MAD, **part CNSS 140,00 MAD** et **part patient 60,00 MAD**. Cliquez sur **Valider** et confirmez : la facture est *Impayé*.
 
 ![Part organisme / part patient](captures/44-reception-facture-parts-organisme-patient.jpg)
 
@@ -302,7 +302,7 @@ Rôle : **Réception** (ou Comptabilité). La facture est **partagée** : une pa
 
 Rôle : **Comptabilité**. Un dossier de remboursement regroupe les factures d'un organisme pour une période.
 
-1. Ouvrez *Dossier Remboursement* → *Nouveau*. Choisissez l'**organisme**, la période (*Du* / *Au*), puis cliquez sur **Charger les factures**.
+1. Ouvrez *Dossier de remboursement* → *Nouveau*. Choisissez l'**organisme**, la période (*Du* / *Au*), puis cliquez sur **Charger les factures**.
 
 ![Nouveau dossier : choix de l'organisme](captures/51-compta-dossier-nouveau.jpg)
 

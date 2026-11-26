@@ -19,9 +19,9 @@
 
   <div class="title">{{ doc.type_certificat | upper }}<span class="ar">
     {%- if doc.type_certificat == "Arrêt de travail" %}شهادة توقف عن العمل
-    {%- elif doc.type_certificat == "Certificat d'aptitude" %}شهادة القدرة
+    {%- elif doc.type_certificat == "Certificat d'aptitude" %}شهادة اللياقة الطبية
     {%- elif doc.type_certificat == "Certificat de présence" %}شهادة حضور
-    {%- elif doc.type_certificat == "Dispense sportive" %}إعفاء من الرياضة
+    {%- elif doc.type_certificat == "Dispense sportive" %}إعفاء من ممارسة الرياضة
     {%- else %}شهادة طبية{% endif -%}</span></div>
 
   <p style="font-size:14px;line-height:1.8;margin:18px 0">
