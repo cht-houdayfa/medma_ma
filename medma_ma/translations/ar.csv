@@ -353,3 +353,101 @@ Cardiologie,أمراض القلب
 Gynécologie,أمراض النساء
 Hématologie,أمراض الدم
 Biochimie,الكيمياء الحيوية
+Allergie connue : le patient est allergique à une substance prescrite.,حساسية معروفة: المريض يعاني من حساسية تجاه مادة موصوفة.
+Allergie,حساسية
+Allergie médicamenteuse,حساسية دوائية
+Interaction,تفاعل
+Interaction médicamenteuse,تفاعل دوائي
+Interaction médicamenteuse majeure dans cette ordonnance :,تفاعل دوائي خطير في هذه الوصفة:
+Interaction médicamenteuse à vérifier :,تفاعل دوائي يجب التحقق منه:
+Interactions,التفاعلات
+"Modifiez l'ordonnance, ou cochez « Prescrire malgré l'interaction signalée » après avoir pesé le risque.",عدّل الوصفة، أو فعّل خانة «الوصف رغم التفاعل المُشار إليه» بعد تقدير الخطر.
+"Retirez le médicament, ou cochez « Prescrire malgré l'allergie signalée » après avoir pesé le risque.",أزل الدواء، أو فعّل خانة «الوصف رغم الحساسية المُشار إليها» بعد تقدير الخطر.
+Prescription malgré une allergie signalée :,وصف رغم حساسية مُشار إليها:
+Prescrire malgré l'interaction signalée,الوصف رغم التفاعل المُشار إليه
+Prescrire malgré l'allergie signalée,الوصف رغم الحساسية المُشار إليها
+À cocher seulement après avoir pesé le risque d'interaction,لا تفعّلها إلا بعد تقدير خطر التفاعل
+À cocher seulement après avoir pesé le risque d'allergie,لا تفعّلها إلا بعد تقدير خطر الحساسية
+Allergies connues (liste structurée),الحساسيات المعروفة (قائمة منظمة)
+Analyse introuvable : {0},التحليل غير موجود: {0}
+Droits insuffisants pour saisir des résultats.,الصلاحيات غير كافية لإدخال النتائج.
+L'analyse {0} est déjà validée ou annulée : résultats refusés.,التحليل {0} تم اعتماده أو إلغاؤه مسبقا: تم رفض النتائج.
+Résultats reçus de l'appareil {0} : {1} paramètre(s). À relire puis valider.,نتائج واردة من الجهاز {0}: {1} معيار(معايير). تُراجع ثم تُعتمد.
+CIN déjà utilisé,رقم البطاقة الوطنية مستعمل مسبقا
+Le CIN {0} est déjà enregistré pour le patient {1} ({2}).,رقم البطاقة الوطنية {0} مسجل مسبقا للمريض {1} ({2}).
+Choisissez un box d'urgence (type « {0} »).,اختر مقصورة طوارئ (من نوع «{0}»).
+Indiquez l'orientation du patient avant de clôturer le passage.,حدّد وجهة المريض قبل إغلاق المرور بالمستعجلات.
+La tension diastolique doit être inférieure à la systolique.,يجب أن يكون الضغط الانبساطي أقل من الانقباضي.
+Le lit {0} est déjà occupé par le passage {1}.,السرير {0} مشغول مسبقا بالمرور {1}.
+{0} : la valeur {1} est hors des limites plausibles ({2} à {3}).,{0}: القيمة {1} خارج الحدود المعقولة ({2} إلى {3}).
+Indiquez le motif du refus ou du report.,اذكر سبب الرفض أو التأجيل.
+Le patient est allergique à « {0} » : ne pas administrer {1}.,المريض يعاني من حساسية تجاه «{0}»: لا تُعطِ {1}.
+Renseignez les dates de début et de fin.,أدخل تاريخَي البداية والنهاية.
+Colonnes manquantes : ,أعمدة ناقصة: 
+Code : ,الرمز: 
+Non classé,غير مصنف
+Aucun tarif de consultation n'est défini pour ce praticien.,لا يوجد تعرفة فحص محددة لهذا الطبيب.
+Confirmer que l'échantillon a été prélevé ?,هل تؤكد أنه تم أخذ العينة؟
+Ajouter la consultation,إضافة الفحص
+Ajouter,إضافة
+Consultation du praticien,فحص الطبيب
+Consultation,الفحص
+Arrivée enregistrée,تم تسجيل الوصول
+Patient arrivé — en attente de consultation,المريض وصل — في انتظار الفحص
+Prélevé — en attente du résultat,تم أخذ العينة — في انتظار النتيجة
+Prélevé - en attente du résultat,تم أخذ العينة - في انتظار النتيجة
+Prélèvement enregistré,تم تسجيل أخذ العينة
+Échantillon à prélever,عينة يجب أخذها
+À prélever,يجب أخذ العينة
+Créer l'hospitalisation,إنشاء الاستشفاء
+Créer la consultation,إنشاء الفحص
+Prendre en charge,التكفل بالمريض
+Résumé de sortie,ملخص الخروج
+Résumés de sortie,ملخصات الخروج
+Laissez vide : l'heure du serveur est utilisée,اتركه فارغا: يُستعمل وقت الخادم
+Laissez vide : maintenant (heure du serveur),اتركه فارغا: الآن (وقت الخادم)
+Prélèvement,أخذ العينة
+État du prélèvement,حالة أخذ العينة
+Date et heure du prélèvement,تاريخ ووقت أخذ العينة
+Prélevé par,أخذ العينة بواسطة
+Urgences en attente,مستعجلات في الانتظار
+Urgences en cours,مستعجلات قيد التكفل
+Urgences vitales en cours,مستعجلات حيوية قيد التكفل
+Passages urgences du jour,حالات المستعجلات اليوم
+Lits d'urgence libres,أسرّة الطوارئ الشاغرة
+Lits d'urgence,أسرّة الطوارئ
+Médicaments à administrer,أدوية يجب إعطاؤها
+Service des urgences,مصلحة المستعجلات
+File d'attente des urgences,طابور انتظار المستعجلات
+Nouveau passage aux urgences,حالة جديدة بالمستعجلات
+Passages aux urgences,حالات المستعجلات
+Nouvelle administration,إعطاء دواء جديد
+Nouvelle transmission de garde,تسليم مناوبة جديد
+Administrations,عمليات الإعطاء
+Transmissions,التسليمات
+Chiffre d'affaires du mois,رقم المعاملات للشهر
+Guide Réception,دليل الاستقبال
+Guide Médecin,دليل الطبيب
+Guide Infirmier,دليل الممرض
+Guide Laboratoire,دليل المختبر
+Guide Pharmacie,دليل الصيدلية
+Guide Comptabilité,دليل المحاسبة
+Heure,الساعة
+Motif,السبب
+Niveau,المستوى
+Attente (min),الانتظار (د)
+Lit,السرير
+Passage,المرور
+Analyse,التحليل
+Analyses prescrites,التحاليل الموصوفة
+Date du résultat,تاريخ النتيجة
+Département,القسم
+Médecin prescripteur,الطبيب الواصف
+Commentaires,تعليقات
+Recommandations,التوصيات
+Résultat,النتيجة
+Résultat validé,النتيجة معتمدة
+Sexe,الجنس
+Âge,السن
+Technicien de laboratoire,تقني المختبر
+Établissement,المؤسسة
