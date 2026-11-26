@@ -184,7 +184,7 @@ Service Request,Demande de service
 Service Unit,Unité de soins
 Service Unit Capacity,Capacité de l'unité
 Service Unit Type,Type d'unité
-Specimen,Prélèvement
+Specimen,Échantillon
 Staff Role,Rôle du personnel
 Strength,Dosage
 Strength UOM,Unité du dosage
@@ -233,7 +233,7 @@ Patient Demographics,Informations du patient
 Bin,Niveau de stock
 Order Time,Heure de la prescription
 Order Source,Origine de la prescription
-Sequence in Order Group,Rang dans le groupe de prescription
+Sequence in Order Group,Rang dans le groupe de prescriptions
 Request Details,Détails de la demande
 Order Specifications,Détails de la prescription
 Quantity Invoiced,Quantité facturée
@@ -242,7 +242,6 @@ Experimental,Expérimental
 Image,Photo
 Personal and Social History,Antécédents personnels et sociaux
 "Allergies, Medical and Surgical History","Allergies, antécédents médicaux et chirurgicaux"
-Allergies,Allergies
 Risk Factors,Facteurs de risque
 Reference Sales Invoice,Facture de référence
 Submit Orders on Save,Valider les prescriptions à l'enregistrement
@@ -264,7 +263,7 @@ Reflexes,Réflexes
 Nutrition Values,Valeurs nutritionnelles
 BMI,IMC
 Medication Item,Médicament
-Order Group (Encounter),Groupe de prescription (consultation)
+Order Group (Encounter),Groupe de prescriptions (consultation)
 Order Item Code,Code de l'article prescrit
 Intent,Intention
 Consume Stock,Consommer le stock
@@ -272,7 +271,7 @@ Invoice Consumables Separately,Facturer les consommables séparément
 Consumable Total Amount,Montant total des consommables
 Admission Order Details,Détails de l'admission
 Discharge Details,Détails de la sortie
-Discharge Ordered Date,Date de sortie prévue
+Discharge Ordered Date,Date de l'ordre de sortie
 Source Doc,Document source
 Order Details,Détails de la prescription
 Source,Origine
@@ -320,3 +319,38 @@ Service Unit Not Found,Unité de soins introuvable
 Invalid Healthcare Service Unit,Unité de soins invalide
 "Could not add conferencing to this Appointment, please contact System Manager","Impossible d'ajouter la visioconférence à ce rendez-vous, veuillez contacter l'administrateur système"
 Appointment for service units with Inpatient Occupancy can only be created against the unit where patient has been admitted.,Un rendez-vous pour une unité d'hospitalisation ne peut être créé que dans l'unité où le patient est admis.
+Certificat Medical,Certificat médical
+Organisme Payeur,Organisme payeur
+Couverture Patient,Couverture du patient
+Dossier Remboursement,Dossier de remboursement
+Dossier Remboursement Facture,Facture du dossier de remboursement
+Accident And Emergency Care,Urgences
+Anaesthetics,Anesthésie
+Body Scan,Scanner
+Cardiology,Cardiologie
+Dermatology,Dermatologie
+Diagnostic Imaging,Imagerie médicale
+ENT,ORL
+Gastroenterology,Gastro-entérologie
+General Surgery,Chirurgie générale
+Haematology,Hématologie
+Maternity,Maternité
+Microbiology,Microbiologie
+Nephrology,Néphrologie
+Neurology,Neurologie
+Oncology,Oncologie
+Orthopaedics,Orthopédie
+Pathology,Anatomopathologie
+Physiotherapy,Kinésithérapie
+Rheumatology,Rhumatologie
+Serology,Sérologie
+Urology,Urologie
+Tablet,Comprimé
+Capsule,Gélule
+Syrup,Sirop
+Cream,Crème
+Drops,Gouttes
+Inhaler,Inhalateur
+Ointment,Pommade
+Powder,Poudre
+Suppository,Suppositoire

@@ -1,14 +1,14 @@
 {% include "_style.html" %}
+{% from "_entete_societe.html" import departement %}
 {%- set pr = frappe.get_doc("Healthcare Practitioner", doc.practitioner) -%}
 {%- set pat = frappe.get_doc("Patient", doc.patient) -%}
 {%- set cos = frappe.get_all("Company", pluck="name", limit=1) -%}
 {%- set co = frappe.get_doc("Company", cos[0]) if cos else none -%}
-{%- set depts = {"Cardiology": "Cardiologie", "Gynaecology": "Gynécologie"} -%}
 <div class="mm">
   <div class="hdr">
     <div>
       <h2>Dr {{ pr.practitioner_name }}</h2>
-      <div>{{ depts.get(pr.department, pr.department) or "" }}</div>
+      <div>{{ departement(pr.department) }}</div>
       {% if pr.mobile_phone %}<div class="muted">Tél : {{ pr.mobile_phone }}</div>{% endif %}
     </div>
     <div style="text-align:right">
