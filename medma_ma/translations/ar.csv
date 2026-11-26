@@ -347,3 +347,9 @@ Service Unit Not Found,وحدة الرعاية غير موجودة
 Invalid Healthcare Service Unit,وحدة رعاية غير صالحة
 "Could not add conferencing to this Appointment, please contact System Manager",تعذّرت إضافة المؤتمر بالفيديو إلى هذا الموعد، يرجى الاتصال بمدير النظام
 Appointment for service units with Inpatient Occupancy can only be created against the unit where patient has been admitted.,لا يمكن إنشاء موعد لوحدات الإيواء إلا في الوحدة التي أُدخل إليها المريض.
+Médecine générale,الطب العام
+Pédiatrie,طب الأطفال
+Cardiologie,أمراض القلب
+Gynécologie,أمراض النساء
+Hématologie,أمراض الدم
+Biochimie,الكيمياء الحيوية
