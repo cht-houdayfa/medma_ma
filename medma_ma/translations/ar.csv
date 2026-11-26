@@ -4,13 +4,13 @@ Dossier Remboursement,ملف الاسترجاع
 Dossier Remboursement Facture,فاتورة ملف الاسترجاع
 Nom de l'organisme,اسم الجهة
 Type,النوع
-Taux de prise en charge par défaut (%),نسبة التحمل الافتراضية (%)
+Taux de prise en charge par défaut (%),نسبة التغطية الافتراضية (%)
 Client comptable (créances),الزبون المحاسبي (المستحقات)
 Actif,نشط
 Patient,المريض
 Organisme payeur,الجهة الدافعة
 N° d'affiliation / immatriculation,رقم الانخراط / التسجيل
-Taux de prise en charge (%),نسبة التحمل (%)
+Taux de prise en charge (%),نسبة التغطية (%)
 Valide du,صالحة من
 Valide au,صالحة إلى
 Du,من
@@ -26,14 +26,14 @@ Date,التاريخ
 Part organisme,حصة الجهة
 Part patient,حصة المريض
 Payé par l'organisme,المدفوع من طرف الجهة
-Prise en charge (CNSS / AMO / mutuelle),التغطية (الصندوق الوطني للضمان الاجتماعي / التأمين الإجباري / التعاضدية)
+Prise en charge (CNSS / AMO / mutuelle),التغطية (الصندوق الوطني للضمان الاجتماعي / التأمين الإجباري الأساسي عن المرض / التعاضدية)
 Couverture du patient,تغطية المريض
-Taux de prise en charge,نسبة التحمل
+Taux de prise en charge,نسبة التغطية
 Identifiants légaux (Maroc),المعرّفات القانونية (المغرب)
 ICE,المعرّف الموحد للمقاولة (ICE)
 IF (identifiant fiscal),المعرّف الجبائي (IF)
 RC (registre de commerce),السجل التجاري (RC)
-Patente,الرخصة المهنية (Patente)
+Patente,الضريبة المهنية (Patente)
 CIN (carte d'identité nationale),رقم البطاقة الوطنية (CIN)
 Brouillon,مسودة
 Envoyé,مرسل
@@ -44,9 +44,9 @@ Mutuelle,تعاضدية
 Assurance privée,تأمين خاص
 Autre,أخرى
 Le taux par défaut doit être compris entre 0 et 100.,يجب أن تكون النسبة الافتراضية بين 0 و100.
-Le taux de prise en charge doit être compris entre 0 et 100.,يجب أن تكون نسبة التحمل بين 0 و100.
+Le taux de prise en charge doit être compris entre 0 et 100.,يجب أن تكون نسبة التغطية بين 0 و100.
 La date de fin de validité précède la date de début.,تاريخ نهاية الصلاحية يسبق تاريخ البداية.
-Taux de prise en charge à 0 % : le patient paiera la totalité de ses factures. Renseignez le taux prévu par le contrat.,نسبة التحمل 0 %: سيدفع المريض كامل فواتيره. أدخل النسبة المنصوص عليها في العقد.
+Taux de prise en charge à 0 % : le patient paiera la totalité de ses factures. Renseignez le taux prévu par le contrat.,نسبة التغطية 0 %: سيدفع المريض كامل فواتيره. أدخل النسبة المنصوص عليها في العقد.
 Vérifiez le taux,تحقق من النسبة
 La date de fin précède la date de début.,تاريخ النهاية يسبق تاريخ البداية.
 Facture en double : {0},فاتورة مكررة: {0}
@@ -56,7 +56,7 @@ Le dossier ne contient aucune facture.,الملف لا يحتوي على أي ف
 Le dossier doit être envoyé avant d'enregistrer un paiement.,يجب إرسال الملف قبل تسجيل أي دفعة.
 Le montant doit être positif.,يجب أن يكون المبلغ موجباً.
 La référence du virement est obligatoire.,مرجع التحويل إلزامي.
-Le montant ({0}) dépasse le reste à recouvrer ({1}).,المبلغ ({0}) يتجاوز المتبقي للاسترجاع ({1}).
+Le montant ({0}) dépasse le reste à recouvrer ({1}).,المبلغ ({0}) يتجاوز المتبقي للتحصيل ({1}).
 Couverture introuvable : {0},التغطية غير موجودة: {0}
 La couverture {0} est inactive.,التغطية {0} غير نشطة.
 La couverture {0} n'appartient pas au patient {1}.,التغطية {0} لا تخص المريض {1}.
@@ -83,7 +83,7 @@ Patients,المرضى
 Rendez-vous,المواعيد
 Consultations,الفحوصات الطبية
 Analyses,التحاليل
-Constantes,المؤشرات الحيوية
+Constantes,العلامات الحيوية
 Hospitalisations,حالات الاستشفاء
 Médicaments,الأدوية
 Paiements,المدفوعات
@@ -92,7 +92,7 @@ Organismes payeurs,الجهات الدافعة
 Dossiers de remboursement,ملفات الاسترجاع
 Rendez-vous à venir,المواعيد القادمة
 Patients hospitalisés,المرضى المقيمون
-Analyses à valider,تحاليل بانتظار التصديق
+Analyses à valider,تحاليل بانتظار الاعتماد
 Factures non soldées,فواتير غير مسددة
 Chiffre d'affaires facturé,رقم المعاملات المفوتر
 Créances ouvertes (MAD),المستحقات المفتوحة (درهم)
@@ -102,11 +102,11 @@ Rendez-vous par praticien,المواعيد حسب الطبيب
 Part des organismes (MAD),حصة الجهات (درهم)
 Créances par organisme,المستحقات حسب الجهة
 Organisme,الجهة
-À recouvrer,المتبقي للاسترجاع
+À recouvrer,المتبقي للتحصيل
 Pharmacie,الصيدلية
 Pharmacie et stock,الصيدلية والمخزون
 Soins infirmiers,التمريض
-Soins et hospitalisation,الرعاية والإيواء
+Soins et hospitalisation,الرعاية والاستشفاء
 Laboratoire,المختبر
 Analyses et résultats,التحاليل ونتائجها
 Guide démo,دليل العرض
@@ -125,9 +125,9 @@ Type de certificat,نوع الشهادة
 Date du certificat,تاريخ الشهادة
 Arrêt de travail,توقف عن العمل
 Certificat médical,شهادة طبية
-Certificat d'aptitude,شهادة القدرة
+Certificat d'aptitude,شهادة اللياقة الطبية
 Certificat de présence,شهادة حضور
-Dispense sportive,إعفاء من الرياضة
+Dispense sportive,إعفاء من ممارسة الرياضة
 Nombre de jours,عدد الأيام
 Motif / constatation,السبب / المعاينة
 Observations,ملاحظات
@@ -153,8 +153,8 @@ Available slots,المواعيد المتاحة
 Book,حجز
 Checked In,وصل المريض
 Medications,الأدوية
-Investigations,الفحوصات
-Procedures,الإجراءات
+Investigations,الفحوصات التكميلية
+Procedures,الإجراءات الطبية
 Patient Demographics,معلومات المريض
 Bin,مستوى المخزون
 Order Time,وقت الوصفة
@@ -163,7 +163,7 @@ Request Details,تفاصيل الطلب
 Order Specifications,تفاصيل الوصفة
 Quantity Invoiced,الكمية المفوترة
 Medical Coding,الترميز الطبي
-Passage Urgences,مرور بالمستعجلات
+Passage Urgences,حالة مستعجلة
 Resume Sortie,ملخص الخروج
 Allergie Patient,حساسية المريض
 Interaction Medicamenteuse,تفاعل دوائي
@@ -172,7 +172,7 @@ Transmission Garde,تسليم المناوبة
 Transmission Patient,تسليم المريض
 Dossier de remboursement,ملف الاسترجاع
 Facture du dossier de remboursement,فاتورة ملف الاسترجاع
-Box d'urgence,مقصورة الطوارئ
+Box d'urgence,حجرة المستعجلات
 Practitioner,الطبيب
 Reschedule,إعادة جدولة
 Nom du patient,اسم المريض
@@ -198,7 +198,7 @@ Médecin,الطبيب
 Infirmier de tri,ممرض الفرز
 Motif de venue,سبب القدوم
 Motif / plainte principale,السبب / الشكوى الرئيسية
-Constantes à l'arrivée,المؤشرات الحيوية عند الوصول
+Constantes à l'arrivée,العلامات الحيوية عند الوصول
 Tension systolique (mmHg),الضغط الانقباضي (mmHg)
 Tension diastolique (mmHg),الضغط الانبساطي (mmHg)
 Pouls (bpm),النبض (نبضة/دقيقة)
@@ -218,14 +218,14 @@ Orientation,التوجيه
 Retour à domicile,العودة إلى المنزل
 Hospitalisation,الاستشفاء
 Transfert vers un autre établissement,تحويل إلى مؤسسة أخرى
-Sortie contre avis médical,خروج ضد الرأي الطبي
+Sortie contre avis médical,مغادرة ضد النصيحة الطبية
 Décès,وفاة
 Sortie à,وقت الخروج
 Consultation liée,الفحص المرتبط
-Lit / box d'urgence,السرير / مقصورة الطوارئ
+Lit / box d'urgence,السرير / حجرة المستعجلات
 Allergies connues,الحساسيات المعروفة
 Date de sortie,تاريخ الخروج
-Passage aux urgences,المرور بالمستعجلات
+Passage aux urgences,حالة مستعجلة
 Séjour,الإقامة
 Motif de la venue,سبب القدوم
 Diagnostic de sortie,تشخيص الخروج
@@ -242,11 +242,11 @@ Gravité,الخطورة
 Légère,خفيفة
 Modérée,متوسطة
 Sévère,شديدة
-Réaction observée,التفاعل الملاحظ
+Réaction observée,رد الفعل الملاحظ
 Substance A (nom ou DCI),المادة أ (الاسم أو DCI)
 Substance B (nom ou DCI),المادة ب (الاسم أو DCI)
 Mineure,طفيفة
-Majeure,كبيرة
+Majeure,خطيرة
 Libellé,التسمية
 Risque et conduite à tenir,الخطر والتوصيات
 Dose (ex. 1 g),الجرعة (مثل 1 غ)
@@ -284,7 +284,7 @@ Situation et soins faits,الحالة والعلاجات المنجزة
 {0} at {1},{0} عند {1}
 Accident And Emergency Care,المستعجلات
 Anaesthetics,التخدير
-Body Scan,التصوير بالأشعة
+Body Scan,التصوير المقطعي (السكانير)
 Cardiology,أمراض القلب
 Dermatology,الأمراض الجلدية
 Diagnostic Imaging,التصوير الطبي
@@ -294,7 +294,7 @@ General Surgery,الجراحة العامة
 Haematology,أمراض الدم
 Maternity,الولادة
 Microbiology,علم الأحياء الدقيقة
-Nephrology,أمراض الكلي
+Nephrology,أمراض الكلى
 Neurology,أمراض الأعصاب
 Oncology,علم الأورام
 Orthopaedics,جراحة العظام
@@ -335,8 +335,8 @@ Service Unit: ,وحدة الرعاية:
 Maximum Capacity:,الطاقة الاستيعابية القصوى:
 slots available for booking,مواعيد متاحة للحجز
 Each slot indicates the capacity currently available for booking,يبيّن كل موعد الطاقة المتاحة حالياً للحجز
-Patient has fee validity till,للمريض تعريفة المتابعة صالحة حتى
-Patient has no fee validity,ليست للمريض تعريفة متابعة صالحة
+Patient has fee validity till,يستفيد المريض من تعريفة المتابعة حتى
+Patient has no fee validity,لا يستفيد المريض من تعريفة المتابعة
 Video Conferencing disabled for group consultations,المؤتمر بالفيديو معطّل للفحوصات الجماعية
 There are no procedure prescribed for ,لا توجد إجراءات موصوفة لـ 
 Day(s),يوم/أيام
@@ -346,7 +346,7 @@ Patient already has an appointment booked for the same day!,لدى المريض 
 Service Unit Not Found,وحدة الرعاية غير موجودة
 Invalid Healthcare Service Unit,وحدة رعاية غير صالحة
 "Could not add conferencing to this Appointment, please contact System Manager",تعذّرت إضافة المؤتمر بالفيديو إلى هذا الموعد، يرجى الاتصال بمدير النظام
-Appointment for service units with Inpatient Occupancy can only be created against the unit where patient has been admitted.,لا يمكن إنشاء موعد لوحدات الإيواء إلا في الوحدة التي أُدخل إليها المريض.
+Appointment for service units with Inpatient Occupancy can only be created against the unit where patient has been admitted.,لا يمكن إنشاء موعد لوحدات الاستشفاء إلا في الوحدة التي أُدخل إليها المريض.
 Médecine générale,الطب العام
 Pédiatrie,طب الأطفال
 Cardiologie,أمراض القلب
@@ -361,11 +361,11 @@ Interaction médicamenteuse,تفاعل دوائي
 Interaction médicamenteuse majeure dans cette ordonnance :,تفاعل دوائي خطير في هذه الوصفة:
 Interaction médicamenteuse à vérifier :,تفاعل دوائي يجب التحقق منه:
 Interactions,التفاعلات
-"Modifiez l'ordonnance, ou cochez « Prescrire malgré l'interaction signalée » après avoir pesé le risque.",عدّل الوصفة، أو فعّل خانة «الوصف رغم التفاعل المُشار إليه» بعد تقدير الخطر.
-"Retirez le médicament, ou cochez « Prescrire malgré l'allergie signalée » après avoir pesé le risque.",أزل الدواء، أو فعّل خانة «الوصف رغم الحساسية المُشار إليها» بعد تقدير الخطر.
-Prescription malgré une allergie signalée :,وصف رغم حساسية مُشار إليها:
-Prescrire malgré l'interaction signalée,الوصف رغم التفاعل المُشار إليه
-Prescrire malgré l'allergie signalée,الوصف رغم الحساسية المُشار إليها
+"Modifiez l'ordonnance, ou cochez « Prescrire malgré l'interaction signalée » après avoir pesé le risque.",عدّل الوصفة، أو فعّل خانة «وصف الدواء رغم التفاعل المُشار إليه» بعد تقدير الخطر.
+"Retirez le médicament, ou cochez « Prescrire malgré l'allergie signalée » après avoir pesé le risque.",أزل الدواء، أو فعّل خانة «وصف الدواء رغم الحساسية المُشار إليها» بعد تقدير الخطر.
+Prescription malgré une allergie signalée :,وصف دواء رغم حساسية مُشار إليها:
+Prescrire malgré l'interaction signalée,وصف الدواء رغم التفاعل المُشار إليه
+Prescrire malgré l'allergie signalée,وصف الدواء رغم الحساسية المُشار إليها
 À cocher seulement après avoir pesé le risque d'interaction,لا تفعّلها إلا بعد تقدير خطر التفاعل
 À cocher seulement après avoir pesé le risque d'allergie,لا تفعّلها إلا بعد تقدير خطر الحساسية
 Allergies connues (liste structurée),الحساسيات المعروفة (قائمة منظمة)
@@ -375,10 +375,10 @@ L'analyse {0} est déjà validée ou annulée : résultats refusés.,التحل�
 Résultats reçus de l'appareil {0} : {1} paramètre(s). À relire puis valider.,نتائج واردة من الجهاز {0}: {1} معيار(معايير). تُراجع ثم تُعتمد.
 CIN déjà utilisé,رقم البطاقة الوطنية مستعمل مسبقا
 Le CIN {0} est déjà enregistré pour le patient {1} ({2}).,رقم البطاقة الوطنية {0} مسجل مسبقا للمريض {1} ({2}).
-Choisissez un box d'urgence (type « {0} »).,اختر مقصورة طوارئ (من نوع «{0}»).
-Indiquez l'orientation du patient avant de clôturer le passage.,حدّد وجهة المريض قبل إغلاق المرور بالمستعجلات.
+Choisissez un box d'urgence (type « {0} »).,اختر حجرة مستعجلات (من نوع «{0}»).
+Indiquez l'orientation du patient avant de clôturer le passage.,حدّد وجهة المريض قبل إغلاق الحالة.
 La tension diastolique doit être inférieure à la systolique.,يجب أن يكون الضغط الانبساطي أقل من الانقباضي.
-Le lit {0} est déjà occupé par le passage {1}.,السرير {0} مشغول مسبقا بالمرور {1}.
+Le lit {0} est déjà occupé par le passage {1}.,السرير {0} مشغول مسبقا بالحالة {1}.
 {0} : la valeur {1} est hors des limites plausibles ({2} à {3}).,{0}: القيمة {1} خارج الحدود المعقولة ({2} إلى {3}).
 Indiquez le motif du refus ou du report.,اذكر سبب الرفض أو التأجيل.
 Le patient est allergique à « {0} » : ne pas administrer {1}.,المريض يعاني من حساسية تجاه «{0}»: لا تُعطِ {1}.
@@ -386,7 +386,7 @@ Renseignez les dates de début et de fin.,أدخل تاريخَي البداية
 Colonnes manquantes : ,أعمدة ناقصة: 
 Code : ,الرمز: 
 Non classé,غير مصنف
-Aucun tarif de consultation n'est défini pour ce praticien.,لا يوجد تعرفة فحص محددة لهذا الطبيب.
+Aucun tarif de consultation n'est défini pour ce praticien.,لا توجد تعريفة فحص محددة لهذا الطبيب.
 Confirmer que l'échantillon a été prélevé ?,هل تؤكد أنه تم أخذ العينة؟
 Ajouter la consultation,إضافة الفحص
 Ajouter,إضافة
@@ -410,17 +410,17 @@ Prélèvement,أخذ العينة
 État du prélèvement,حالة أخذ العينة
 Date et heure du prélèvement,تاريخ ووقت أخذ العينة
 Prélevé par,أخذ العينة بواسطة
-Urgences en attente,مستعجلات في الانتظار
-Urgences en cours,مستعجلات قيد التكفل
-Urgences vitales en cours,مستعجلات حيوية قيد التكفل
-Passages urgences du jour,حالات المستعجلات اليوم
-Lits d'urgence libres,أسرّة الطوارئ الشاغرة
-Lits d'urgence,أسرّة الطوارئ
+Urgences en attente,حالات مستعجلة في الانتظار
+Urgences en cours,حالات مستعجلة قيد التكفل
+Urgences vitales en cours,حالات تهدد الحياة قيد التكفل
+Passages urgences du jour,الحالات المستعجلة اليوم
+Lits d'urgence libres,أسرّة المستعجلات الشاغرة
+Lits d'urgence,أسرّة المستعجلات
 Médicaments à administrer,أدوية يجب إعطاؤها
 Service des urgences,مصلحة المستعجلات
-File d'attente des urgences,طابور انتظار المستعجلات
-Nouveau passage aux urgences,حالة جديدة بالمستعجلات
-Passages aux urgences,حالات المستعجلات
+File d'attente des urgences,قائمة انتظار المستعجلات
+Nouveau passage aux urgences,حالة مستعجلة جديدة
+Passages aux urgences,الحالات المستعجلة
 Nouvelle administration,إعطاء دواء جديد
 Nouvelle transmission de garde,تسليم مناوبة جديد
 Administrations,عمليات الإعطاء
@@ -437,7 +437,7 @@ Motif,السبب
 Niveau,المستوى
 Attente (min),الانتظار (د)
 Lit,السرير
-Passage,المرور
+Passage,الحالة
 Analyse,التحليل
 Analyses prescrites,التحاليل الموصوفة
 Date du résultat,تاريخ النتيجة

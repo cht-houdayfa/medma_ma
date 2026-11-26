@@ -11,7 +11,7 @@ Drug Code,Médicament
 Drug Name,Nom du médicament
 Dosage,Posologie
 Period,Durée
-Dosage Form,Forme
+Dosage Form,Forme galénique
 Comment,Remarque
 Medical Department,Département
 Gynaecology,Gynécologie
@@ -151,7 +151,7 @@ Procedure Prescription,Prescription d'actes
 Procedure Template,Modèle d'acte
 Reason Reference,Référence du motif
 Referred to Practitioner,Adressé au praticien
-Referring Practitioner,Praticien adressant
+Referring Practitioner,Médecin adresseur
 Registration Fee,Frais d'inscription
 Registration Message,Message d'inscription
 Remind Before,Rappeler avant
@@ -325,7 +325,7 @@ Couverture Patient,Couverture du patient
 Dossier Remboursement,Dossier de remboursement
 Dossier Remboursement Facture,Facture du dossier de remboursement
 Accident And Emergency Care,Urgences
-Anaesthetics,Anesthésie
+Anaesthetics,Anesthésie-réanimation
 Body Scan,Scanner
 Cardiology,Cardiologie
 Dermatology,Dermatologie
