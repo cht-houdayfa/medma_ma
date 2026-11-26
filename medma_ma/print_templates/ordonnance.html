@@ -1,14 +1,13 @@
 {% include "_style.html" %}
+{% from "_entete_societe.html" import departement, forme, duree %}
 {%- set pr = frappe.get_doc("Healthcare Practitioner", doc.practitioner) -%}
 {%- set pat = frappe.get_doc("Patient", doc.patient) -%}
 {%- set co = frappe.get_doc("Company", doc.company) if doc.company else none -%}
-{%- set formes = {"Tablet": "Comprimé", "Capsule": "Gélule", "Syrup": "Sirop", "Injection": "Injection", "Cream": "Crème"} -%}
-{%- set depts = {"Cardiology": "Cardiologie", "Gynaecology": "Gynécologie"} -%}
 <div class="mm">
   <div class="hdr">
     <div>
       <h2>Dr {{ pr.practitioner_name }}</h2>
-      <div>{{ depts.get(pr.department, pr.department) or "" }}</div>
+      <div>{{ departement(pr.department) }}</div>
       {% if pr.mobile_phone %}<div class="muted">Tél : {{ pr.mobile_phone }}</div>{% endif %}
     </div>
     <div style="text-align:right">
@@ -35,8 +34,8 @@
       <tr>
         <td>{{ loop.index }}</td>
         <td><b>{{ r.medication or r.drug_name }}</b>{% if r.drug_code and r.drug_code != r.medication %}<br><span class="muted">{{ r.drug_code }}</span>{% endif %}</td>
-        <td>{{ formes.get(r.dosage_form, r.dosage_form) or "" }}</td>
-        <td>{{ (r.period or "") | replace("Week", "semaine(s)") | replace("Day", "jour(s)") | replace("Hour", "heure(s)") }}</td>
+        <td>{{ forme(r.dosage_form) }}</td>
+        <td>{{ duree(r.period) }}</td>
         <td>{{ r.comment or r.dosage or "" }}</td>
       </tr>
     {% endfor %}
