@@ -163,3 +163,187 @@ Request Details,تفاصيل الطلب
 Order Specifications,تفاصيل الوصفة
 Quantity Invoiced,الكمية المفوترة
 Medical Coding,الترميز الطبي
+Passage Urgences,مرور بالمستعجلات
+Resume Sortie,ملخص الخروج
+Allergie Patient,حساسية المريض
+Interaction Medicamenteuse,تفاعل دوائي
+Administration Medicament,إعطاء دواء
+Transmission Garde,تسليم المناوبة
+Transmission Patient,تسليم المريض
+Dossier de remboursement,ملف الاسترجاع
+Facture du dossier de remboursement,فاتورة ملف الاسترجاع
+Box d'urgence,مقصورة الطوارئ
+Practitioner,الطبيب
+Reschedule,إعادة جدولة
+Nom du patient,اسم المريض
+Arrivée,الوصول
+Mode d'arrivée,طريقة الوصول
+Par ses propres moyens,بوسائله الخاصة
+Ambulance,سيارة إسعاف
+SAMU,الإسعاف الطبي المستعجل (SAMU)
+Protection civile,الوقاية المدنية
+Transfert d'un autre établissement,تحويل من مؤسسة أخرى
+Forces de l'ordre,قوات الأمن
+Niveau de tri,مستوى الفرز
+1 - Détresse vitale,1 - خطر على الحياة
+2 - Très urgent,2 - مستعجل جداً
+3 - Urgent,3 - مستعجل
+4 - Moins urgent,4 - أقل استعجالاً
+5 - Non urgent,5 - غير مستعجل
+En attente,قيد الانتظار
+En cours de soins,قيد العلاج
+En observation,تحت المراقبة
+Terminé,منتهٍ
+Médecin,الطبيب
+Infirmier de tri,ممرض الفرز
+Motif de venue,سبب القدوم
+Motif / plainte principale,السبب / الشكوى الرئيسية
+Constantes à l'arrivée,المؤشرات الحيوية عند الوصول
+Tension systolique (mmHg),الضغط الانقباضي (mmHg)
+Tension diastolique (mmHg),الضغط الانبساطي (mmHg)
+Pouls (bpm),النبض (نبضة/دقيقة)
+Fréquence respiratoire (/min),معدل التنفس (/دقيقة)
+Saturation en O2 (%),تشبع الأكسجين (%)
+Température (°C),الحرارة (°م)
+Glycémie (g/L),سكر الدم (غ/ل)
+Douleur (0 à 10),الألم (من 0 إلى 10)
+Score de Glasgow (3 à 15),درجة غلاسكو (من 3 إلى 15)
+Prise en charge,التكفل بالمريض
+Prise en charge à,وقت التكفل
+Délai d'attente (min),مدة الانتظار (دقيقة)
+Diagnostic,التشخيص
+Soins et traitement,العلاج والرعاية
+Sortie,الخروج
+Orientation,التوجيه
+Retour à domicile,العودة إلى المنزل
+Hospitalisation,الاستشفاء
+Transfert vers un autre établissement,تحويل إلى مؤسسة أخرى
+Sortie contre avis médical,خروج ضد الرأي الطبي
+Décès,وفاة
+Sortie à,وقت الخروج
+Consultation liée,الفحص المرتبط
+Lit / box d'urgence,السرير / مقصورة الطوارئ
+Allergies connues,الحساسيات المعروفة
+Date de sortie,تاريخ الخروج
+Passage aux urgences,المرور بالمستعجلات
+Séjour,الإقامة
+Motif de la venue,سبب القدوم
+Diagnostic de sortie,تشخيص الخروج
+Évolution pendant le séjour,التطور خلال الإقامة
+Conduite à tenir à la sortie,التوصيات عند الخروج
+Traitement de sortie,علاج الخروج
+Consignes et surveillance,التعليمات والمراقبة
+Rendez-vous de contrôle,موعد المراقبة
+Catégorie,الفئة
+Médicament,الدواء
+Aliment,غذاء
+"Substance (ex. pénicilline, amoxicilline)",المادة (مثل البنسلين، الأموكسيسيلين)
+Gravité,الخطورة
+Légère,خفيفة
+Modérée,متوسطة
+Sévère,شديدة
+Réaction observée,التفاعل الملاحظ
+Substance A (nom ou DCI),المادة أ (الاسم أو DCI)
+Substance B (nom ou DCI),المادة ب (الاسم أو DCI)
+Mineure,طفيفة
+Majeure,كبيرة
+Libellé,التسمية
+Risque et conduite à tenir,الخطر والتوصيات
+Dose (ex. 1 g),الجرعة (مثل 1 غ)
+Voie,طريقة الإعطاء
+Orale,عن طريق الفم
+Intraveineuse,عن طريق الوريد
+Intramusculaire,داخل العضل
+Sous-cutanée,تحت الجلد
+Inhalée,استنشاق
+Cutanée,موضعي على الجلد
+Heure prévue,الوقت المقرر
+Administration,الإعطاء
+À donner,للإعطاء
+Donné,تم الإعطاء
+Refusé par le patient,رفضه المريض
+Reporté,مؤجل
+Heure réelle,الوقت الفعلي
+Infirmier,الممرض
+Motif (refus ou report),السبب (رفض أو تأجيل)
+Rattachement,الربط
+Équipe sortante,الفريق المغادر
+Matin,الصباح
+Après-midi,بعد الزوال
+Nuit,الليل
+Service,المصلحة
+Urgences,المستعجلات
+Infirmier sortant,الممرض المغادر
+Infirmier entrant,الممرض القادم
+Transmissions par patient,التسليمات حسب المريض
+Remarques générales,ملاحظات عامة
+"Matériel, incidents, consignes du service",المعدات، الحوادث، تعليمات المصلحة
+Situation et soins faits,الحالة والعلاجات المنجزة
+À surveiller / à faire,للمراقبة / للإنجاز
+{0} with {1},{0} مع {1}
+{0} at {1},{0} عند {1}
+Accident And Emergency Care,المستعجلات
+Anaesthetics,التخدير
+Body Scan,التصوير بالأشعة
+Cardiology,أمراض القلب
+Dermatology,الأمراض الجلدية
+Diagnostic Imaging,التصوير الطبي
+ENT,أنف وأذن وحنجرة
+Gastroenterology,أمراض الجهاز الهضمي
+General Surgery,الجراحة العامة
+Haematology,أمراض الدم
+Maternity,الولادة
+Microbiology,علم الأحياء الدقيقة
+Nephrology,أمراض الكلي
+Neurology,أمراض الأعصاب
+Oncology,علم الأورام
+Orthopaedics,جراحة العظام
+Pathology,علم التشريح المرضي
+Physiotherapy,العلاج الطبيعي
+Rheumatology,أمراض الروماتيزم
+Serology,علم المصل
+Urology,أمراض المسالك البولية
+Gynaecology,أمراض النساء
+Biochemistry,الكيمياء الحيوية
+Tablet,أقراص
+Capsule,كبسولات
+Syrup,شراب
+Cream,كريم
+Drops,قطرات
+Inhaler,بخاخ
+Ointment,مرهم
+Powder,مسحوق
+Suppository,تحاميل
+Specimen,عينة
+Allergies,الحساسيات
+Add Video Conferencing,إضافة مؤتمر بالفيديو
+Do not add Video Conferencing,عدم إضافة مؤتمر بالفيديو
+Google Meet Link,رابط Google Meet
+Appointment Based On Check In,الموعد حسب وقت الوصول
+Checked Out,غادر المريض
+Allow Booking For,السماح بالحجز لـ
+Appointment Type Service Items,خدمات نوع الموعد
+Agents,الوكلاء
+Internal,داخلي
+External,خارجي
+Practitioner Primary Contact,جهة الاتصال الرئيسية للطبيب
+Practitioner Primary Address,العنوان الرئيسي للطبيب
+Reschedule Appointment,إعادة جدولة الموعد
+Fetching Schedule...,جارٍ تحميل الجدول...
+Practitioner Schedule: ,جدول الطبيب: 
+Service Unit: ,وحدة الرعاية: 
+Maximum Capacity:,الطاقة الاستيعابية القصوى:
+slots available for booking,مواعيد متاحة للحجز
+Each slot indicates the capacity currently available for booking,يبيّن كل موعد الطاقة المتاحة حالياً للحجز
+Patient has fee validity till,للمريض تعريفة المتابعة صالحة حتى
+Patient has no fee validity,ليست للمريض تعريفة متابعة صالحة
+Video Conferencing disabled for group consultations,المؤتمر بالفيديو معطّل للفحوصات الجماعية
+There are no procedure prescribed for ,لا توجد إجراءات موصوفة لـ 
+Day(s),يوم/أيام
+Month(s),شهر/أشهر
+Years(s),سنة/سنوات
+Patient already has an appointment booked for the same day!,لدى المريض موعد محجوز في نفس اليوم!
+Service Unit Not Found,وحدة الرعاية غير موجودة
+Invalid Healthcare Service Unit,وحدة رعاية غير صالحة
+"Could not add conferencing to this Appointment, please contact System Manager",تعذّرت إضافة المؤتمر بالفيديو إلى هذا الموعد، يرجى الاتصال بمدير النظام
+Appointment for service units with Inpatient Occupancy can only be created against the unit where patient has been admitted.,لا يمكن إنشاء موعد لوحدات الإيواء إلا في الوحدة التي أُدخل إليها المريض.
