@@ -50,7 +50,7 @@ def verifier_prescription(doc, methode=None):
         return
     frappe.throw(
         _("Allergie connue : le patient est allergique à une substance prescrite.") + "<br>" + texte + "<br><br>"
-        + _("Retirez le médicament, ou cochez « Prescrire malgré l'allergie » après avoir pesé le risque."),
+        + _("Retirez le médicament, ou cochez « Prescrire malgré l'allergie signalée » après avoir pesé le risque."),
         title=_("Allergie médicamenteuse"))
 
 
@@ -89,6 +89,6 @@ def verifier_interactions(doc, methode=None):
     if any(g == "Majeure" for g, _l, _c in trouvees) and not doc.get("interaction_confirmee"):
         frappe.throw(
             _("Interaction médicamenteuse majeure dans cette ordonnance :") + "<br>" + texte + "<br><br>"
-            + _("Modifiez l'ordonnance, ou cochez « Prescrire malgré l'interaction » après avoir pesé le risque."),
+            + _("Modifiez l'ordonnance, ou cochez « Prescrire malgré l'interaction signalée » après avoir pesé le risque."),
             title=_("Interaction médicamenteuse"))
     frappe.msgprint(_("Interaction médicamenteuse à vérifier :") + "<br>" + texte, indicator="orange", title=_("Interaction"))

@@ -311,7 +311,7 @@ frappe.ui.form.on('%(dt)s', {
 		if (frm.is_new() || !%(patient)s) return;
 		frappe.xcall('medma_ma.allergies.resume', {patient: %(patient)s}).then((t) => {
 			frm.dashboard.clear_headline();
-			if (t) frm.dashboard.set_headline('<span class="indicator-pill red">⚠ Allergies : ' + frappe.utils.escape_html(t) + '</span>');
+			if (t) frm.dashboard.set_headline('<span class="indicator-pill red">⚠ ' + __('Allergies') + ' : ' + frappe.utils.escape_html(t) + '</span>');
 		});
 	},
 });
